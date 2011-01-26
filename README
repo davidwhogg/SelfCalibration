@@ -1,0 +1,13 @@
+Euclid project
+Rory Holmes (MPIA) & David W. Hogg (NYU)
+-----
+
+before editing, type
+
+  svn up ; svn st
+
+after editing is done, type
+
+  svn ci -m "euclid: wrote code or whatever"
+
+if you hit a conflict, proceed with caution.
