@@ -1,0 +1,100 @@
+\documentclass[12pt,a4paper,twoside]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{color}
+\usepackage{listings}
+
+\author{David Hogg, Rory Holmes}
+\title{Ubercalibration Simulations \\(Euclid)}
+\date{Jan 2011}
+
+\makeatletter
+\def\maketitle{%
+  \null
+  \thispagestyle{empty}%
+  \vfill
+  \begin{center}\leavevmode
+    \normalfont
+    {\LARGE \@title\par}%
+    \vskip 1cm
+    {\Large \@author\par}%
+    \vskip 1cm
+    {\Large \@date\par}%
+  \end{center}%
+  \vfill
+  \null
+  \cleardoublepage
+  }
+\makeatother
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+These simulations... 
+
+\section{General}
+
+\subsection{Parameter File}
+
+Simulation parameters are stored in the parameter.py file.
+
+\subsection{General Functions}
+The functions.py file contains two routine for converting between magnitudes and fluxes. ..
+
+\section{Sky Catalog}
+The 
+
+\section{Camera Model}
+
+\subsection{Sky to Focal Plane Coordinate Transformations}
+
+\subsection{Uncertainty Inverse-Variance}
+
+\subsection{Catalog to Measured Flux Conversion}
+
+\section{Ubercalibration}
+The ubercalibration procedure works in two sub-steps: (i) the star fluxes are refined based on the latest flat-field estimate (\textit{s\_step}) and (ii) the flat-field parameters are refined based on the latest star flux estimates (\textit{q\_step}). We iterate these steps until the parameters converge. In our notation $j$ refers to the iteration step. 
+
+Our flat-field is defined by a set of parameters $\vec{q}$. After the $j$th iteration, the flat-field parameters will be indexed as $\vec{q_j}$. The individual star measurements are defined as $c_i$ (``counts''), where each $i$ corresponds to a exposure number $n$, a specific star with ID number $k$ and a focal plane position $\vec{x}$.
+
+XX Our model is
+
+\begin{equation}
+c_i = f(\vec{x_i} | \vec{q_j}) . s_{kj} + e_{ij}
+\end{equation}
+
+where $s_k$ is the true flux from star $k$ and our error is drawn from the Normal Distribution $e_{ij} = N(e|0,{\sigma_i}^2)$.
+
+\subsection{Star Flux Refinement: \textbf{\textit{s\_step}}}
+@j, for each star
+
+\begin{equation}
+\chi^2 = \sum_{i touching k} \frac{(c_i-f_{ij}s_{kj})^2}{{\sigma_i}^2}
+\end{equation}
+
+\begin{equation}
+\frac{d\chi^2}{d s_{kj}} = \sum_{i touching k} \frac{-2 f_{ij} (c_i-f_{ij}s_{kj+1})}{{\sigma_i}^2} = 0
+\end{equation}
+
+\begin{equation}
+\Rightarrow \sum_{i touching k} \frac{f_{ij} c_i}{{\sigma_i}^2}= \sum_{i touching k} \frac{f_{ij}^2 s_{kj+1}}{{\sigma_i}^2}
+\end{equation}
+
+\begin{equation}
+\Rightarrow s_{kj+1} = \frac{\sum_{i touching k} \frac{f_{ij} c_i}{{\sigma_i}^2}}/{\sum_{i touching k} \frac{f_{ij}^2 s_{kj+1}}{{\sigma_i}^2}}
+\end{equation}
+
+
+
+The 
+The measurements of each star are refined based on 
+
+
+On the $j$th iteration, the following proce
+
+\subsection{Flat-Field Refinement: \textbf{\textit{p\_step}}}
+
+\end{document}
