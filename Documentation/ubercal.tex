@@ -88,28 +88,26 @@ The flux estimates, $s_k$, for each star can be considered individually. At step
 \end{equation}
 
 \subsection{Flat-Field Refinement: \textbf{\textit{p\_step}}}
-The flat-field parameters can now be refined with the latest star flux estimates. Minimise error function with respect to the...
-
-Consider all measurements
+The flat-field parameters can now be refined with the latest star flux estimates. To do this we minimize the error function for all measurements with respect to the flat-field parameters.
 
 \begin{equation}
-\chi^2 = \sum_{all~i} \frac{(c_i-f_{ij}s_{kj})^2}{{\sigma_i}^2}
+\chi^2 = \sum_{i} \frac{(c_i-f_{ij}s_{kj+1})^2}{{\sigma_i}^2}
 \end{equation}
 
 \begin{equation}
-f_{ij} = \sum_{l = 1}^L q_{lj} g_i(\vec{x_i})
+f_{ij} = \sum_{l = 1}^L q_{lj} g_l(\vec{x_i})
 \end{equation}
 
 \begin{equation}
-\chi^2 = \sum_{all~i} \frac{(c_i- s_{kj} \sum_{l = 1}^L q_{lj} g_i(\vec{x_i}))^2}{{\sigma_i}^2}
+\chi^2 = \sum_{i} \frac{(c_i- s_{kj+1} \sum_{l = 1}^L q_{lj} g_l(\vec{x_i}))^2}{{\sigma_i}^2}
 \end{equation}
 
 \begin{equation}
-\frac{d\chi^2}{dq_{lj}} = \sum_{all~i} \frac{-2 g_l(\vec{x_i}) s_{kj+1} (c_i- s_{kj} \sum_{l = 1}^L q_{lj} g_i(\vec{x_i}))}{{\sigma_i}^2} = 0
+\frac{d\chi^2}{dq_{lj}} = \sum_{i} \frac{-2 g_l(\vec{x_i}) s_{kj+1} (c_i- s_{kj+1} \sum_{l' = 1}^{L'} q_{l'j} g_{l'}(\vec{x_i}))}{{\sigma_i}^2} = 0
 \end{equation}
 
 \begin{equation}
-\sum_{all~i} \frac{g_l(\vec{x_i}) s_{kj+1} c_i}{{\sigma_i}^2} = \sum_{all~i} \frac{g_l(\vec{x_i}) s_{kj+1}^2 \sum_{l = 1}^L q_{lj+1} g_l(\vec{x_i})}{{\sigma_i}^2}
+\sum_{i} \frac{g_l(\vec{x_i}) s_{kj+1} c_i}{{\sigma_i}^2} = \sum_{i} \frac{g_l(\vec{x_i}) s_{kj+1}^2 \sum_{l' = 1}^{L'} q_{l'j+1} g_{l'}(\vec{x_i})}{{\sigma_i}^2}
 \end{equation}
 
 \end{document}
