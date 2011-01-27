@@ -13,7 +13,7 @@ def flat_field(x,y):
   c = 0
   d = 0.5
   e = -1
-  return a + b*x + c*y + d*x**2 + e*y**2
+  return a + b*x + c*y + d*x**2 + e*y**2 
 
 def generate_magnitudes(m_min,m_max,powerlaw,size):
   # Randomly generate source magnitudes according to probability distribution
