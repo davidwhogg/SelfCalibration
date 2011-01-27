@@ -52,9 +52,13 @@ observation_catalog = survey.survey(sky_catalog, "A.txt", plots=plots, verbose=v
 #********************* Ubercalibration ***********************
 #*************************************************************
 
-p = [1,0,0,0,0]
+q = [1,0,0,0,0,0]
 
-test = functions.s_step(observation_catalog,p,plots=plots, verbose=verbose)
+s, s_invvar = functions.s_step(observation_catalog,q)
+
+order = 2
+
+#q, q_invvar = functions.q_star(observation_catalog, s, order)
 
 #*************************************************************
 #*********************** Health Checks ***********************

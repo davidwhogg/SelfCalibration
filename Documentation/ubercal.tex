@@ -62,6 +62,12 @@ The \textit{Transformation Method} is used generate random numbers with the appr
 \frac{d N}{d m} =10^ {A + B m}
 \end{equation}
 
+prob dist function int = 1
+
+\begin{equation}
+\frac{d N}{d m} =10^ {A + B m}
+\end{equation}
+
 \begin{figure}[ht]
 \begin{center}
 \includegraphics[width=\textwidth]{source_mag_histogram.png}
@@ -121,8 +127,10 @@ The flux estimates, $s_k$, for each star can be considered individually. At step
 \end{equation}
 
 \begin{equation}
-\Rightarrow s_{kj+1} = {\sum_{i \in \mathcal{O}(k)} \frac{f_{ij} c_i}{{\sigma_i}^2}}/{\sum_{i \in \mathcal{O}(k)} \frac{f_{ij}^2}{{\sigma_i}^2}}
+\Rightarrow s_{kj+1} = {\sum_{i \in \mathcal{O}(k)} \frac{f_{ij} c_i}{{\sigma_i}^2}}/{\sum_{i \in \mathcal{O}(k)} \frac{f_{ij}^2}{{\sigma_i}^2}} \label{eqn:s_step}
 \end{equation}
+
+The standard uncertainty inverse variance on $s_{kj+1}$ is given by the denominator in Eqn \ref{eqn:s_step}.
 
 \subsection{Flat-Field Refinement: \textbf{\textit{p\_step}}}
 The flat-field parameters can now be refined with the latest star flux estimates. To do this we minimize the error function for all measurements with respect to the flat-field parameters.

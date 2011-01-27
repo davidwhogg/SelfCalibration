@@ -22,7 +22,7 @@ def generate_magnitudes(m_min,m_max,powerlaw,size):
   return m
   
   
-def create_catalog(M, m_min, m_max, powerlaw, sky, limits, seed, plots, verbose):
+def create_catalog(M, m_min, m_max, powerlaw, sky, limits, seed, plots=None, verbose=None):
   # M = density of stars 
   # m_min = minimum magnitude (i.e. saturation limit)
   # m_max = maximum magnitude limit per dither (i.e. sensitivity limit 10σ)

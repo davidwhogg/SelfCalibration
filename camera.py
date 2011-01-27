@@ -9,7 +9,7 @@ import parameters
 import functions
 import god
 
-def camera(catalog, pointing, orientation, plots, verbose):
+def camera(catalog, pointing, orientation, plots=None, verbose=None):
   # Measure the sources within the camera's FoV
   # catalog = [Star ID, magnitude, α, β]
   # pointing = [α, β] # telescope's pointing "sky" coordinates

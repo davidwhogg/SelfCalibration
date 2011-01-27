@@ -15,7 +15,7 @@ def m_max():
 
 def density_of_stars():
   # density of stars (all magnitudes)
-  return 1000
+  return 100
 
 def powerlaw():
   #B in log10(dN/dm) = A + B*m

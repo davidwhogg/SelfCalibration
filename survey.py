@@ -3,7 +3,7 @@
 import numpy as np
 import camera
 
-def survey(catalog, survey_file, plots, verbose):
+def survey(catalog, survey_file, plots=None, verbose=None):
   # Routing loads the survey from file and then calls the camera function accordingly.
   
   if verbose != None: print "Loading survey..."
