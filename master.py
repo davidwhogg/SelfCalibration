@@ -54,7 +54,7 @@ observation_catalog = survey.survey(sky_catalog, "A.txt", plots=plots, verbose=v
 
 q = [1,0,0,0,0,0]
 
-s, s_invvar = functions.s_step(observation_catalog,q)
+#s, s_invvar = functions.s_step(observation_catalog,q)
 
 order = 2
 

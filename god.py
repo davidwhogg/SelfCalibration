@@ -58,24 +58,38 @@ def create_catalog(M, m_min, m_max, powerlaw, sky, limits, seed, plots=None, ver
     
   if plots != None:
     # Plot portion of sky
+    fontsize = 25
     if verbose != None: print "Plotting portion of sky..."
     plt.figure()
     plt.plot(catalog[0:1000,2],catalog[0:1000,3],'ko',markersize=2)
-    plt.xlabel(ur'$\alpha$', fontsize=20)
-    plt.ylabel(ur'$\beta$', fontsize=20)
-    plt.title("God's Sky")
-    plt.savefig("Figures/gods_sky.png")
+    plt.xlabel(ur'$\alpha$', fontsize=fontsize)
+    plt.ylabel(ur'$\beta$', fontsize=fontsize)
+    plt.title("God's Sky", fontsize=fontsize)
+    ax = plt.gca()
+    for tick in ax.xaxis.get_major_ticks():
+      tick.label1.set_fontsize(fontsize)
+    for tick in ax.yaxis.get_major_ticks():
+      tick.label1.set_fontsize(fontsize)
+    plt.savefig("Figures/gods_sky.png",bbox_inches='tight',pad_inches=0.)
     if verbose != None: print "...done!"
     
     # Histogram of source magnitude
     plt.figure()
+    fontsize = 25
     bin=np.arange(m_min,m_max,0.05)
     if verbose != None: print "Plotting histogram of source magnitude..."
     plt.hist(catalog[:,1],bins=bin, log=True)
-    plt.title("%i Sources in Sample" % len(catalog[:,0]))
-    plt.xlabel("Source Magnitude")
-    plt.ylabel("log(N)")
-    plt.savefig("Figures/source_mag_histogram.png")
+    plt.title("%i Sources in Sample" % len(catalog[:,0]), fontsize=fontsize)
+    plt.xlabel("Source Magnitude", fontsize=fontsize)
+    plt.ylabel("log(N)", fontsize=fontsize)
+    ax = plt.gca()
+    for tick in ax.xaxis.get_major_ticks():
+      tick.label1.set_fontsize(fontsize)
+    for tick in ax.yaxis.get_major_ticks():
+      tick.label1.set_fontsize(fontsize)
+
+    
+    plt.savefig("Figures/source_mag_histogram.png",bbox_inches='tight',pad_inches=0.)
     if verbose != None: print "...done!"
   
   return catalog

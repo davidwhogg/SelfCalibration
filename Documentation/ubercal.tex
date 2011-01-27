@@ -7,6 +7,7 @@
 \usepackage{listings}
 \usepackage{graphicx}
 \usepackage{upgreek}
+\usepackage{subfigure}
 
 \author{David Hogg, Rory Holmes}
 \title{Ubercalibration Simulations \\(Euclid)}
@@ -37,66 +38,61 @@
 \section{Introduction}
 These simulations... 
 
-\section{General}
-
-\subsection{Parameter File}
-
-Simulation parameters are stored in the parameter.py file.
-
-\subsection{General Functions}
-The functions.py file contains two routine for converting between magnitudes and fluxes. ..
-
 \section{Sky Catalog}
 We create a fake sky, based on realistic star densities, between a magnitude of 19 to 22.5. The upper and lower limits are defined based the saturation and 10$\upsigma$ limits for a single Euclid exposure. Star's are generated with random coordinates (within the sky region being investigated) and with a random magnitude according to the following powerlaw:
 \begin{equation}
-\frac{1}{N} \frac{dN}{dm} = A + B m
+\frac{1}{N} \frac{dN}{dm} = a + b m
 \end{equation}
 
-The \textit{Transformation Method} is used generate random numbers with the appropriate probability density function. 
+The following equation is used to generate random star magnitudes with the appropriate probability density distribution function (see Appendix for derivation):
 
 \begin{equation}
-\log_{10} \frac{\Delta N}{\Delta m} = A + B m
+m = \frac{1}{b} \log{(\left[ 10^{b m_{max}} - 10^{b m_{min}} \right] r + 10^{b m_{min}})}
 \end{equation}
 
-\begin{equation}
-\frac{d N}{d m} =10^ {A + B m}
-\end{equation}
-
-prob dist function int = 1
-
-\begin{equation}
-\frac{d N}{d m} =10^ {A + B m}
-\end{equation}
+\noindent{}where r is a random number in the range [0.0, 1.0). See Fig. \ref{fig:catalog}. 
 
 \begin{figure}[ht]
-\begin{center}
-\includegraphics[width=\textwidth]{source_mag_histogram.png}
-\end{center}
-\caption{A histogram of the generated star magnitudes. The number of stars is given by... XX \label{fig:source_magnitude}}
+\centering
+\subfigure[A histogram of the generated stars' magnitudes.]{
+\includegraphics[width=0.45\textwidth]{source_mag_histogram.png}
+\label{fig:source_magnitude}
+}
+\subfigure[A small subset of the simulated sky catalog shown on the fake sky.]{
+\includegraphics[width=0.45\textwidth]{gods_sky.png}
+\label{fig:gods_sky}
+}
+\label{fig:catalog}
 \end{figure}
 
-\begin{figure}[ht]
-\begin{center}
-\includegraphics[width=\textwidth]{gods_sky.png}
-\end{center}
-\caption{A small subset of the simulated sky catalog produced. \label{fig:gods_sky}}
-\end{figure}
+The random number generator is given the same seed, so that the same simulated sky is produced each time the routine is called.
 
-The random number generate is given the same seed, so that the same simulated sky is produced each time the routine is called.
+\section{Single Exposure}
+With a given pointing and orientation, we transform the sky catalog into focal plane coordinates and find all the stars falling within the field-of-view. We do not simulate images, instead we trivially convert the actual star fluxes into measured fluxes. 
 
+\subsection{Uncertainty Variance}
+We assume that the Euclid exposures will be background limited and that we will hit an upper limit on the signal-to-noise for bright sources. We model the uncertainty on the flux as:
 
-\section{Camera Model}
+\begin{equation}
+\sigma_{\text{f}}^{2} = \alpha^{2} + \eta^{2} f^{2} 
+\end{equation}
 
-\subsection{Sky to Focal Plane Coordinate Transformations}
+\noindent{}where $\alpha$ and $\eta$ are both constants (see Fig. \ref{fig:flux_uncertainty}).
 
-\subsection{Uncertainty Inverse-Variance}
 \begin{figure}[ht]
 \begin{center}
 \includegraphics[width=\textwidth]{flux_uncertainty_variance.png}
 \end{center}
-\caption{XX UPDATE \label{fig:flux_uncertainty}}
+\caption{The flux uncertainty used as a function of star magnitude.\label{fig:flux_uncertainty}}
 \end{figure}
 \subsection{Catalog to Measured Flux Conversion}
+The measured flux from a star depends on its focal plane position ($\vec{x_i}$), God's flat-field (with parameters $\vec{q}$) and the star's true flux ($s$). 
+
+\begin{equation}
+c_i = f(\vec{x_i} | \vec{q}) . s_{k} + e_{i}
+\end{equation}
+
+\noindent{}An error, drawn from the Normal Distribution $e_{ij} = N(e|0,{\sigma_i}^2)$, is also introduced to the measurement.
 
 \section{Ubercalibration}
 The ubercalibration procedure works in two sub-steps: (i) the star fluxes are refined based on the latest flat-field estimate (\textit{s\_step}) and (ii) the flat-field parameters are refined based on the latest star flux estimates (\textit{q\_step}). We iterate these steps until the parameters converge. In our notation $j$ refers to the iteration step. 
@@ -154,5 +150,44 @@ f_{ij} = \sum_{l = 1}^L q_{lj} g_l(\vec{x_i})
 \begin{equation}
 \sum_{i} \frac{g_l(\vec{x_i}) s_{kj+1} c_i}{{\sigma_i}^2} = \sum_{i} \frac{g_l(\vec{x_i}) s_{kj+1}^2 \sum_{l' = 1}^{L'} q_{l'j+1} g_{l'}(\vec{x_i})}{{\sigma_i}^2}
 \end{equation}
+
+\appendix
+\section{Random Magnitude Generation}
+XX DAVID: I have included this so that I remember how the formula was derived...
+
+
+\noindent{}The Transformation Method is used generate random numbers with the appropriate probability density function. 
+
+\begin{equation}
+\frac{1}{N} \frac{dN}{dm} = a + b m
+\end{equation}
+
+\noindent{}The probability a star is generated with a magnitude $m$ in the range [$m_0$,$m_1$) is therefore:
+
+\begin{equation}
+p(m) = \frac{\dfrac{d N}{d m}}{\int_{m_{0}}^{m_{1}}\dfrac{d N}{d m} dm} = A \frac{d N}{d m}
+\end{equation}
+
+\noindent{}Using the Transformation Method, we find:
+
+\begin{eqnarray}
+r (m) & = & \int_{m_{0}}^{m} p(m') dm'\\
+& = & A \int_{m_{0}}^{m} 10^{a+b m'} dm'\\
+& = & B \int_{m_{0}}^{m} e^{b m' \ln{10}} dm'\\
+& = & \frac{B}{b \ln{10}} \left[ 10^{b m} - 10^{b m_{0}} \right] \label{eqn:Bover}
+\end{eqnarray}
+
+\noindent{}Since the probability of generating a magnitude between $m_0$ and $m_1$ is 1:
+
+\begin{equation}
+B = \frac{b \ln{10}}{\left[ 10^{b m_{1}} - 10^{b m_{0}} \right]} \label{eqn:B}
+\end{equation}
+
+\noindent{}Substituting Eqn. \ref{eqn:B} into Eqn. \ref{eqn:Bover} and rearranging we find that stars can be produced according to the appropriate probability density distribution function with the equation:
+
+\begin{equation}
+m = \frac{1}{b} \log{(\left[ 10^{b m_{max}} - 10^{b m_{min}} \right] r + 10^{b m_{min}})}
+\end{equation}
+\noindent{}where r is a random number in the range [0.0, 1.0).
 
 \end{document}
