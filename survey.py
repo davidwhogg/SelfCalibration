@@ -23,5 +23,23 @@ def survey(catalog, survey_file, plots, verbose):
     # data_dic[pointing ID] = [star ID, observed_flux, observed_invvar, focal_position]
   if verbose != None: print "...done!"
   
-  return data_dic
-  # data_dic[pointing ID] = [star ID, observed_flux, observed_invvar, focal_position]
+  # Rearrange observations into an observation_catalog
+  if verbose != None: print "Rearranging observation catalog"
+  array_size = 0
+  for i in range(0,len(data_dic)):
+    array_size = array_size + len(data_dic[i][:,0])
+  
+  if verbose != None: print "Observation catalog requires %d rows)" % array_size
+  
+  # Copying dictionary into array
+  observation_catalog = np.zeros((array_size,6))
+  count = 0
+  for i in range(0,len(data_dic)):
+    single_exposure = data_dic[i]
+    for j in range(0,len(single_exposure[:,0])):
+      observation_catalog[count,0] = i
+      observation_catalog[count,1:6] = single_exposure[j,:]
+      count = count +1
+      
+  return observation_catalog
+  # observed_catalog = [pointing ID, star ID, observed_flux, observed_invvar, focal plane x, focal plane y]

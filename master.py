@@ -21,8 +21,8 @@ import survey
 os.system('rm ./Figures/Camera_Images/*.png')
 os.system('rm ./Figures/*.png')
 
-plots = '' #None
-verbose = '' #None
+plots = None
+verbose = None
 
 #*************************************************************
 #******************* Generate Sky Catalog ********************
@@ -45,8 +45,16 @@ sky_catalog = god.create_catalog(M, m_min, m_max, powerlaw, sky, limits, seed, p
 #************************ Survey Sky *************************
 #*************************************************************
 
-data = survey.survey(sky_catalog, "A.txt", plots=plots, verbose=verbose) 
+observation_catalog = survey.survey(sky_catalog, "A.txt", plots=plots, verbose=verbose) 
+# observed_catalog = [pointing ID, star ID, observed_flux, observed_invvar, focal plane x, focal plane y]
 
+#*************************************************************
+#********************* Ubercalibration ***********************
+#*************************************************************
+
+p = [1,0,0,0,0]
+
+test = functions.s_step(observation_catalog,p,plots=plots, verbose=verbose)
 
 #*************************************************************
 #*********************** Health Checks ***********************
