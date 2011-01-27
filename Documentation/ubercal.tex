@@ -6,6 +6,7 @@
 \usepackage{color}
 \usepackage{listings}
 \usepackage{graphicx}
+\usepackage{upgreek}
 
 \author{David Hogg, Rory Holmes}
 \title{Ubercalibration Simulations \\(Euclid)}
@@ -46,20 +47,37 @@ Simulation parameters are stored in the parameter.py file.
 The functions.py file contains two routine for converting between magnitudes and fluxes. ..
 
 \section{Sky Catalog}
+We create a fake sky, based on realistic star densities, between a magnitude of 19 to 22.5. The upper and lower limits are defined based the saturation and 10$\upsigma$ limits for a single Euclid exposure. Star's are generated with random coordinates (within the sky region being investigated) and with a random magnitude according to the following powerlaw:
+\begin{equation}
+\frac{1}{N} \frac{dN}{dm} = A + B m
+\end{equation}
+
+The \textit{Transformation Method} is used generate random numbers with the appropriate probability density function. 
+
+\begin{equation}
+\log_{10} \frac{\Delta N}{\Delta m} = A + B m
+\end{equation}
+
+\begin{equation}
+\frac{d N}{d m} =10^ {A + B m}
+\end{equation}
 
 \begin{figure}[ht]
 \begin{center}
 \includegraphics[width=\textwidth]{source_mag_histogram.png}
 \end{center}
-\caption{XX UPDATE \label{fig:source_magnitude}}
+\caption{A histogram of the generated star magnitudes. The number of stars is given by... XX \label{fig:source_magnitude}}
 \end{figure}
 
 \begin{figure}[ht]
 \begin{center}
 \includegraphics[width=\textwidth]{gods_sky.png}
 \end{center}
-\caption{XX UPDATE \label{fig:gods_sky}}
+\caption{A small subset of the simulated sky catalog produced. \label{fig:gods_sky}}
 \end{figure}
+
+The random number generate is given the same seed, so that the same simulated sky is produced each time the routine is called.
+
 
 \section{Camera Model}
 
