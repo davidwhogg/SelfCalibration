@@ -68,26 +68,22 @@ def q_step(obs_cat, s, order, iteration_number, plots=None):
   q = np.dot(np.linalg.inv(q_invvar),numerator)
   q = normalize_flat_field(q)
   np.set_printoptions(precision=2) 
-  print q
-  #if plots != None: 
-  plot_flat_fields(q, iteration_number, plots=plots)
   return (q, q_invvar)
   
 def plot_flat_fields(our_q, iteration_number,plots=None):
-  iteration_number += 1
-  FoV = parameters.FoV()
+  FoV = parameters.FoV() 
   
-  plt.figure(3000,figsize=(6, 6))
-  plt.clf()
+  plt.figure(3000,figsize=(13, 6)) # want square figure
+  plt.subplot(121)
+
   plt.title(r"Flat-Fields (God's = Black; Fitted = Red) Iteration: %i" % iteration_number)
   plt.xlabel(r"\alpha")
   plt.ylabel(r"$\beta$")
   x = np.arange(-FoV[0]/2,FoV[0]/2,0.01)
   y = np.arange(-FoV[1]/2,FoV[1]/2,0.01)
   X, Y = np.meshgrid(x, y)
-  # God's flat-field
   
-  # Calculate our flat-field, have to reshape so that evaluate_flat_field() works 
+  # Have to reshape so that evaluate_flat_field() works 
   temp_x = np.reshape(X,-1)
   temp_y = np.reshape(Y,-1)
   temp_z = evaluate_flat_field(temp_x,temp_y,our_q)
@@ -96,23 +92,20 @@ def plot_flat_fields(our_q, iteration_number,plots=None):
   temp_z = evaluate_flat_field(temp_x,temp_y,god_q)
   god_ff = np.reshape(temp_z, (len(X[:,0]),len(X[0,:])))
 
+  # Find parameters for contour plot
   god_ff_max = np.max(god_ff)
   god_ff_min = np.min(god_ff)
   step = (god_ff_max-god_ff_min)/10
   
   
   CS = plt.contour(X,Y,god_ff,np.arange(god_ff_min,god_ff_max,step),colors='k')
-  
   plt.clabel(CS, fontsize=9, inline=1)
-  
   CS2 = plt.contour(X,Y,our_ff,np.arange(god_ff_min,god_ff_max,step),colors='r',alpha=0.5)
 
+  # Write formulas on plot
   our_formula = "$f(x,y) =%.2f%s%.2fx%s%.2fy%s%.2fx^2%s%.2fxy%s%.2fy^2$" % (abs(our_q[0]),  sign(our_q[1]), abs(our_q[1]), sign(our_q[2]), abs(our_q[2]), sign(our_q[3]), abs(our_q[3]), sign(our_q[4]), abs(our_q[4]), sign(our_q[5]), abs(our_q[5]) )
-
   plt.text(-.38,-.35,our_formula, color='r',bbox = dict(boxstyle="square",ec='w',fc='w', alpha=0.9), fontsize=9.5)
-  
   god_formula = "$f(x,y) =%.2f%s%.2fx%s%.2fy%s%.2fx^2%s%.2fxy%s%.2fy^2$" % (abs(god_q[0]),  sign(god_q[1]), abs(god_q[1]), sign(god_q[2]), abs(god_q[2]), sign(god_q[3]), abs(god_q[3]), sign(god_q[4]), abs(god_q[4]), sign(god_q[5]), abs(god_q[5]) )
-
   plt.text(-.38,-.39,god_formula, color='k',bbox = dict(boxstyle="square",ec='w',fc='w', alpha=0.9), fontsize=9.5)
 
   '''
@@ -124,26 +117,24 @@ def plot_flat_fields(our_q, iteration_number,plots=None):
   ax.set_zlim3d(god_ff_min, god_ff_max)
   '''
   
-  filename = 'Figures/Flat_Fields/%d_ff.png' % (iteration_number)
+  
+  # Plot residual in flat-field
+  plt.subplot(122)
+  plt.title(r"Residual Error in Fitted Flat-Field (\%)")
+  a = plt.imshow((100*(our_ff-god_ff)/god_ff),extent=(-FoV[0]/2,FoV[0]/2,-FoV[1]/2,FoV[1]/2), vmin = 0)#,vmax = 5)
+  plt.colorbar(a,shrink=0.7)
+  plt.xlabel(r"\alpha")
+  plt.ylabel(r"$\beta$")
+  
+  # Save figure
+  if iteration_number < 10:
+    filename = 'Figures/Flat_Fields/%s_0%d_ff.png' % (plots,iteration_number)
+  else:
+    filename = 'Figures/Flat_Fields/%s_%d_ff.png' % (plots, iteration_number)
+  
   plt.savefig(filename)
-  
-  '''
-  plt.clabel(CS, fontsize=9, inline=1)
-  plt.axis([-FoV[0]/2,-FoV[0]/2,-FoV[1]/2,-FoV[1]/2])
-  plt.show()
-  
-  
-  # Fitted flat-field
-  god_min = np.min(Z)
-  Z1 = 1/ff(X,Y,parameters)
-  #Z = Z - np.min(Z)+god_min
-  CS2 = plt.contour(X,Y,Z1,np.arange(0,1,0.05),colors='r',alpha=0.5)#
-  #plt.clabel(CS2, fontsize=9, inline=1)
-  plt.axis([-0.5,0.5,-0.5,0.5])
-  plt.savefig("Flat Fields.png")
-  '''
-  return our_ff
-  
+  plt.clf()  
+
 def sign(x):
   if x >= 0:
     x = '+'
