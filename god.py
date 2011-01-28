@@ -6,14 +6,13 @@ import math
 import sys
 import matplotlib.pylab as plt
 
+def flat_field_parameters():
+  return np.array([1, 0, 0, -0.3, 0, -0.5])
+
 def flat_field(x,y):
   # God's flat_field
-  a = 1
-  b = 0
-  c = 0
-  d = 0.5
-  e = -1
-  return a + b*x + c*y + d*x**2 + e*y**2 
+  par = flat_field_parameters()
+  return (par[0] + par[1]*x + par[2]*y + par[3]*x**2 + par[4]*x*y + par[5]*y**2) 
 
 def generate_magnitudes(m_min,m_max,powerlaw,size):
   # Randomly generate source magnitudes according to probability distribution

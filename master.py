@@ -20,6 +20,7 @@ import survey
 # Remove all old plots
 os.system('rm ./Figures/Camera_Images/*.png')
 os.system('rm ./Figures/*.png')
+os.system('rm ./Figures/Flat_Fields/*.png')
 
 plots = None
 verbose = None
@@ -54,9 +55,9 @@ observation_catalog = survey.survey(sky_catalog, "A.txt", plots=plots, verbose=v
 
 q = np.array([1,0,0,0,0,0])
 order = 2
-for i in range(0,100):
+for iteration_number in range(0,50):
   s, s_invvar = functions.s_step(observation_catalog,q)
-  q, q_invvar = functions.q_step(observation_catalog, s, order)
+  q, q_invvar = functions.q_step(observation_catalog, s, order,iteration_number,plots=plots)
 
 #*************************************************************
 #*********************** Health Checks ***********************
