@@ -14,8 +14,8 @@ rc('text', usetex=True)
 import functions
 import god
 import parameters
-import camera
-import survey
+#import camera
+#import survey
 
 # Remove all old plots
 os.system('rm ./Figures/Camera_Images/*.png')
@@ -24,10 +24,10 @@ os.system('rm ./Figures/Flat_Fields/*.png')
 os.system('rm ./Figures/Flat_Fields/*.gif')
 
 if __name__ == "__main__":
-  for strategy in ['A', 'D']:
+  for strategy in ['D', 'A']: #['A', 'D']:
 
     plots = None
-    ff_plots = 'y'
+    ff_plots = None
     verbose = None
 
     #********************************************************
@@ -51,32 +51,38 @@ if __name__ == "__main__":
     #******************** Survey Sky ************************
     #********************************************************
     survey_file = strategy + ".txt"
-    observation_catalog = survey.survey(sky_catalog, survey_file, plots=plots, verbose=verbose) 
+    observation_catalog = functions.survey(sky_catalog, survey_file, plots=plots, verbose=verbose) 
     # observed_catalog = [pointing ID, star ID, observed_flux, observed_invvar, focal plane x, focal plane y]
 
     #********************************************************
     #********************* Ubercalibration ******************
     #********************************************************
 
-    q = np.array([1,0,0,0,0,0])
     order = 2
     if strategy == 'A': 
-      niter = 80
+      niter = 1000
     else:
-      niter = 10
+      niter = 15
+      q = np.array([1,0,0,0,0,0])
+    
     for iteration_number in range(0,niter):
       # Print flat-field parameters
-      print "%i: f(x,y) =%.2f%s%.2fx%s%.2fy%s%.2fxx%s%.2fxy%s%.2fyy" % (iteration_number, abs(q[0]),  functions.sign(q[1]), abs(q[1]), functions.sign(q[2]), abs(q[2]), functions.sign(q[3]), abs(q[3]), functions.sign(q[4]), abs(q[4]), functions.sign(q[5]), abs(q[5]) )
-      
-      #if plots != None: 
-      if ff_plots == 'y': functions.plot_flat_fields(q, iteration_number, plots=strategy)
       
       s, s_invvar = functions.s_step(observation_catalog,q)
-      q, q_invvar = functions.q_step(observation_catalog, s, order,iteration_number,plots=plots)
+      q, q_invvar, chi2 = functions.q_step(observation_catalog, s, order,iteration_number,plots=plots)
       
       # Calculate rms error in stars
-      #measured_index = [s != 0]
-
+      indx = [s != 0]
+      obs_star_actual = sky_catalog[indx]
+      rms = functions.rms_error(s[indx], functions.mag2flux(obs_star_actual[:,1]))
+      
+      print "%i: f(x,y) =%.2f%s%.2fx%s%.2fy%s%.2fxx%s%.2fxy%s%.2fyy   RMS = %.6f %%   chi2 = %0.2f (%i)" % (iteration_number+1, abs(q[0]),  functions.sign(q[1]), abs(q[1]), functions.sign(q[2]), abs(q[2]), functions.sign(q[3]), abs(q[3]), functions.sign(q[4]), abs(q[4]), functions.sign(q[5]), abs(q[5]), rms, chi2, len(observation_catalog[:,0]))
+      
+      #if plots != None: 
+      if (ff_plots == 'y') or (iteration_number+1==niter): functions.plot_flat_fields(q, iteration_number, plots=strategy)
+    
+    
+    
       # Animate flat-field fitting
     if ff_plots == 'y': 
       os.system(("convert -delay 20 -loop 0 ./Figures/Flat_Fields/%s*.png ./Figures/Flat_Fields/%s_00_animation.gif" % (strategy,strategy)))

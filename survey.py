@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-import camera
+
+# Custom Modules
+import functions
 
 def survey(catalog, survey_file, plots=None, verbose=None):
   # Routing loads the survey from file and then calls the camera function accordingly.
@@ -19,7 +21,7 @@ def survey(catalog, survey_file, plots=None, verbose=None):
   # Perform survey
   if verbose != None: print "Surveying sky..."
   for i in range(0, number_pointings):
-    data_dic[i] = camera.camera(catalog, [pointing[i,1],pointing[i,2]], pointing[i,3], plots=plots, verbose = verbose)
+    data_dic[i] = functions.single_image(catalog, [pointing[i,1],pointing[i,2]], pointing[i,3], plots=plots, verbose = verbose)
     # data_dic[pointing ID] = [star ID, observed_flux, observed_invvar, focal_position]
   if verbose != None: print "...done!"
   

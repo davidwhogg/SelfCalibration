@@ -4,15 +4,132 @@
 import numpy as np
 import matplotlib.pylab as plt
 
+# Custom Modules
 import parameters
 import god
 
+#*****************************************************
+#************ Transformation Functions ***************
+#*****************************************************
 def mag2flux(mag):
   return np.power(10,(-0.4*(mag-22.5)))
   
 def flux2mag(flux):
   return 22.5-2.5*np.log10(flux)
+
+def sky2fp(alpha, beta, pointing, orientation): 
+  theta = - orientation*np.pi/180 # telescope rotates NOT sky
+  x = (alpha - pointing[0]) * np.cos(theta) - (beta - pointing[1]) * np.sin(theta)
+  y = (alpha - pointing[0]) * np.sin(theta) + (beta - pointing[1]) * np.cos(theta)
+  return x,y 
+
+def fp2sky(x, y, pointing, orientation):
+  theta = - orientation*np.pi/180 # telescope rotates NOT sky
+  alpha = x * np.cos(theta) + y * np.sin(theta) + pointing[0]
+  beta = -x * np.sin(theta) + y * np.cos(theta) + pointing[1]
+  return alpha, beta
+
+
+#*****************************************************
+#************* Single Image Functions ****************
+#*****************************************************
+
+def single_image(catalog, pointing, orientation, plots=None, verbose=None):
+  # catalog = [Star ID, magnitude, α, β], pointing = [α, β] 
+  theta = orientation*np.pi/180
   
+  if verbose != None: print "Converting sky catalog to focal plane coordinates..."
+  camera_catalog = 0*catalog
+  camera_catalog[:,0] = catalog[:,0]
+  camera_catalog[:,1] = catalog[:,1]  
+  camera_catalog[:,2], camera_catalog[:,3] = sky2fp(catalog[:,2], catalog[:,3], pointing, orientation)
+  if verbose != None: print "...done!"  
+  
+  if verbose != None: print "Finding stars within camera FoV..."
+  FoV = parameters.FoV()
+  x_min = -FoV[0]/2; y_min = -FoV[1]/2
+  x_max = FoV[0]/2; y_max = FoV[1]/2
+  inside_FoV = np.where((x_min<camera_catalog[:,2]) & (camera_catalog[:,2]<x_max) & (y_min<camera_catalog[:,3]) & (camera_catalog[:,3]<y_max))
+  stars_in_FoV = camera_catalog[inside_FoV[0]]
+  if verbose != None: print "...done!"
+
+  if verbose != None: print "Measuring stars within FoV..."
+  # measured_sources = [star ID, observed_flux, observed_invvar, focal_position]
+  measured_sources = np.zeros((len(inside_FoV[0]), 5))
+  measured_sources[:,0] = stars_in_FoV[:,0]
+  measured_sources[:,3] = stars_in_FoV[:,2]
+  measured_sources[:,4] = stars_in_FoV[:,3]  
+  # Calculate inverse variance 1/(σ*σ)
+  measured_sources[:,2] = 1.0/flux_uncertainty_variance (flux2mag(mag2flux(stars_in_FoV[:,1])*god.flat_field(measured_sources[:,3],measured_sources[:,4])), parameters.eta())
+  # Calculate observed flux
+  measured_sources[:,1] = mag2flux(stars_in_FoV[:,1]) * god.flat_field(measured_sources[:,3],measured_sources[:,4]) + np.random.normal(size=len(measured_sources[:,0]))/np.sqrt(measured_sources[:,2])
+  if verbose != None: print "...done!"
+  
+  #***************************************************
+  
+  # Plotting FoV on sky
+  x = np.zeros(5)
+  y = np.zeros(5)
+  x[0] = x_min; y[0] = y_min
+  x[1] = x_min; y[1] = y_max
+  x[2] = x_max; y[2] = y_max
+  x[3] = x_max; y[3] = y_min    
+  x[4] = x_min; y[4] = y_min
+
+  alpha, beta = fp2sky(x,y,pointing, orientation)
+
+
+  #**********************************************************
+  #********************* Plot Output ************************
+  #**********************************************************
+  
+  if plots !=None:
+    
+    # Plot extracted sources over catalog
+    plt.figure(figsize=(6,6))
+    plt.plot(catalog[:,2],catalog[:,3],'o', markersize=2)
+    temp = catalog[inside_FoV]
+    plt.plot(temp[:,2],temp[:,3],'ro',markersize=2)
+    plt.plot(alpha,beta,'k', linewidth=2)
+    title = ur'$\alpha$ = %.1lf, $\beta$ = %.1lf, $\theta$ = %.1lf$^\circ$' % (pointing[0],pointing[1], orientation)
+    plt.title(title, fontsize=20)
+    plt.xlabel(ur'$\alpha$', fontsize=20)
+    plt.ylabel(ur'$\beta$', fontsize=20)
+    filename = "Figures/Camera_Images/%s_full_sky_alpha_%.1lf_beta_%.1lf_rot_%.1lf.png" % (plots, pointing[0],pointing[1], orientation)
+    print filename
+    plt.savefig(filename)
+
+    # Plot sources on focal plane
+    plt.figure(figsize=(6,6))
+    plt.plot(measured_sources[:,3],measured_sources[:,4],'o', markersize=2)
+    title = ur'$\alpha$ = %.1lf, $\beta$ = %.1lf, $\theta$ = %.1lf$^\circ$' % (pointing[0],pointing[1], orientation)
+    plt.title(title, fontsize=20)
+    plt.xlabel(ur'Focal Plane $x$', fontsize=20)
+    plt.ylabel(ur'Focal Plane $y$', fontsize=20)
+    filename = "Figures/Camera_Images/%s_fp_alpha_%.1lf_beta_%.1lf_rot_%.1lf.png" % (plots, pointing[0],pointing[1], orientation)
+    print filename
+    plt.savefig(filename)
+    
+    '''
+    # Plot FoV on Catalog
+    plt.figure(2001, figsize=(6,6))
+    #plt.plot(catalog[:,2],catalog[:,3],'o', markersize=2)
+    sky_limits = parameters.sky_limits()
+    plt.plot(alpha,beta,'k', linewidth=2)
+    plt.xlim(sky_limits[0]-FoV[0],sky_limits[1]+FoV[0])
+    plt.ylim(sky_limits[2]-FoV[1],sky_limits[3]+FoV[1])
+    plt.title('Fields-of-View on Sky', fontsize=20)
+    plt.xlabel(ur'$\alpha$', fontsize=20)
+    plt.ylabel(ur'$\beta$', fontsize=20)
+    filename = './Figures/%s_FoV_on_sky.png' % plots
+    #plt.show()
+    plt.savefig((filename)) 
+    '''
+
+  return measured_sources
+  # measured_sources = [star ID, observed_flux, observed_invvar, focal_position]
+
+
 def flux_uncertainty_variance(mag, eta):
   sky_error= 0.1*mag2flux(parameters.mag_at_ten_sigma())
   return (np.power(sky_error,2) + (eta**2)*np.power(mag2flux(mag),2))
@@ -35,7 +152,58 @@ def evaluate_flat_field(x, y, q):
   assert(len(q) == ((order + 1) * (order + 2) / 2)) # assert to break code if condition not met
   g = evaluate_flat_field_functions(x, y, order)
   return np.dot(g, q)
- 
+
+
+#*****************************************************
+#**************** Survey Functions *******************
+#*****************************************************
+
+def survey(catalog, survey_file, plots=None, verbose=None):
+  # Routing loads the survey from file and then calls the camera function accordingly.
+  
+  if verbose != None: print "Loading survey..."
+  # pointing = [pointing ID, α, β, orientation]
+  pointing = np.loadtxt(survey_file)
+  # Calculate number of pointings
+  number_pointings = len(pointing[:,0])  
+  if verbose != None: print "...done!"
+  
+  # Declare dictionary
+  data_dic = {}
+  
+  # Perform survey
+  if verbose != None: print "Surveying sky..."
+  for i in range(0, number_pointings):
+    data_dic[i] = single_image(catalog, [pointing[i,1],pointing[i,2]], pointing[i,3], plots=plots, verbose = verbose)
+    # data_dic[pointing ID] = [star ID, observed_flux, observed_invvar, focal_position]
+  if verbose != None: print "...done!"
+  
+  # Rearrange observations into an observation_catalog
+  if verbose != None: print "Rearranging observation catalog"
+  array_size = 0
+  for i in range(0,len(data_dic)):
+    array_size = array_size + len(data_dic[i][:,0])
+  
+  if verbose != None: print "Observation catalog requires %d rows)" % array_size
+  
+  # Copying dictionary into array
+  observation_catalog = np.zeros((array_size,6))
+  count = 0
+  for i in range(0,len(data_dic)):
+    single_exposure = data_dic[i]
+    for j in range(0,len(single_exposure[:,0])):
+      observation_catalog[count,0] = i
+      observation_catalog[count,1:6] = single_exposure[j,:]
+      count = count +1
+      
+  return observation_catalog
+  # observed_catalog = [pointing ID, star ID, observed_flux, observed_invvar, focal plane x, focal plane y]
+
+
+#*****************************************************
+#**************** Ubercal Functions ******************
+#*****************************************************
+
 def normalize_flat_field(q):
   return (q / q[0])
 
@@ -68,8 +236,21 @@ def q_step(obs_cat, s, order, iteration_number, plots=None):
   q = np.dot(np.linalg.inv(q_invvar),numerator)
   q = normalize_flat_field(q)
   np.set_printoptions(precision=2) 
-  return (q, q_invvar)
+  chi2 = np.sum((np.dot(g,q) * ss - obs_cat[:,2])**2 * obs_cat[:,3])
+  return (q, q_invvar, chi2)
   
+
+#*****************************************************
+#*************** Analysis Functions ******************
+#*****************************************************
+
+def rms_error(flux_estimate, true_flux):
+  return 100*np.sqrt(np.mean((flux_estimate-true_flux)/true_flux)**2)
+  
+#*****************************************************
+#*************** Plotting Functions ******************
+#*****************************************************
+
 def plot_flat_fields(our_q, iteration_number,plots=None):
   FoV = parameters.FoV() 
   
@@ -121,7 +302,7 @@ def plot_flat_fields(our_q, iteration_number,plots=None):
   # Plot residual in flat-field
   plt.subplot(122)
   plt.title(r"Residual Error in Fitted Flat-Field (\%)")
-  a = plt.imshow((100*(our_ff-god_ff)/god_ff),extent=(-FoV[0]/2,FoV[0]/2,-FoV[1]/2,FoV[1]/2), vmin = 0)#,vmax = 5)
+  a = plt.imshow((100*(our_ff-god_ff)/god_ff),extent=(-FoV[0]/2,FoV[0]/2,-FoV[1]/2,FoV[1]/2), vmin = -1,vmax = 1, cmap='gray')
   plt.colorbar(a,shrink=0.7)
   plt.xlabel(r"\alpha")
   plt.ylabel(r"$\beta$")

@@ -122,6 +122,7 @@ def camera(catalog, pointing, orientation, plots=None, verbose=None):
     plt.xlabel(ur'$\alpha$', fontsize=20)
     plt.ylabel(ur'$\beta$', fontsize=20)
     filename = "Figures/Camera_Images/%s_full_sky_alpha_%.1lf_beta_%.1lf_rot_%.1lf.png" % (plots, pointing[0],pointing[1], orientation)
+    print filename
     plt.savefig(filename)
 
     # Plot sources on focal plane
@@ -132,6 +133,7 @@ def camera(catalog, pointing, orientation, plots=None, verbose=None):
     plt.xlabel(ur'Focal Plane $x$', fontsize=20)
     plt.ylabel(ur'Focal Plane $y$', fontsize=20)
     filename = "Figures/Camera_Images/%s_fp_alpha_%.1lf_beta_%.1lf_rot_%.1lf.png" % (plots, pointing[0],pointing[1], orientation)
+    print filename
     plt.savefig(filename)
     
     # Plot FoV on Catalog

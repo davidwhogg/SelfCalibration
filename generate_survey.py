@@ -8,7 +8,8 @@ import parameters
 FoV = parameters.FoV()
 sky_limits = parameters.sky_limits()
 
-
+#def plot_survey(survey):
+  # Transform focal plane into sky
 
 def generate_uniform_survey(Ncovering):
   nx = np.ceil((sky_limits[1]-sky_limits[0])/(0.975*FoV[0])).astype(int)
