@@ -4,12 +4,30 @@
 import numpy as np
 import random
 import parameters
-
+import functions
+import matplotlib.pylab as plt
 FoV = parameters.FoV()
 sky_limits = parameters.sky_limits()
 
 #def plot_survey(survey):
   # Transform focal plane into sky
+def plot_survey(survey, filename):
+  x_min = -FoV[0]/2; y_min = -FoV[1]/2
+  x_max = FoV[0]/2; y_max = FoV[1]/2
+  x = np.array([x_min, x_min, x_max, x_max, x_min])
+  y = np.array([y_min, y_max, y_max, y_min, y_min])
+  plt.clf()
+  for image in survey:
+    alpha, beta = functions.fp2sky(x,y,image[1:3], image[3])
+    plt.plot(alpha,beta,'k-',alpha=0.25)
+  plt.xlabel(r"$\alpha$")
+  plt.ylabel(r"$\beta$")
+  plt.title(r"%i Pointings" % len(survey[:,0]))
+  plt.xlim(sky_limits[0]-FoV[0], sky_limits[1]+FoV[0])
+  plt.axis('equal')
+  plt.ylim(sky_limits[2]-FoV[1], sky_limits[3]+FoV[1])
+  plt.savefig(filename)
+  return
 
 def generate_uniform_survey(Ncovering):
   nx = np.ceil((sky_limits[1]-sky_limits[0])/(0.975*FoV[0])).astype(int)
@@ -25,6 +43,7 @@ def generate_uniform_survey(Ncovering):
       x[ii:ii+nx,2] = y_center_list[yy]
       x[ii:ii+nx,3] = 0.
       ii += nx
+
   return x
 '''
 def generate_dithered_survey():
@@ -66,6 +85,9 @@ def generate_random_survey(N):
 
 if __name__ == "__main__":
   xA = generate_uniform_survey(9)
+  plot_survey(xA,'Figures/A.pdf')
   np.savetxt('A.txt',xA)
   xD = generate_random_survey(len(xA))
+  plot_survey(xD,'Figures/D.pdf')
   np.savetxt('D.txt',xD)
+  

@@ -79,7 +79,7 @@ if __name__ == "__main__":
       print "%i: f(x,y) =%.2f%s%.2fx%s%.2fy%s%.2fxx%s%.2fxy%s%.2fyy   RMS = %.6f %%   chi2 = %0.2f (%i)" % (iteration_number+1, abs(q[0]),  functions.sign(q[1]), abs(q[1]), functions.sign(q[2]), abs(q[2]), functions.sign(q[3]), abs(q[3]), functions.sign(q[4]), abs(q[4]), functions.sign(q[5]), abs(q[5]), rms, chi2, len(observation_catalog[:,0]))
       
       #if plots != None: 
-      if (ff_plots == 'y') or (iteration_number+1==niter): functions.plot_flat_fields(q, iteration_number, plots=strategy)
+      if (ff_plots == 'y') or (iteration_number+1==niter): functions.plot_flat_fields(q, (iteration_number+1), plots=strategy)
     
     
     

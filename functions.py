@@ -67,15 +67,8 @@ def single_image(catalog, pointing, orientation, plots=None, verbose=None):
   
   #***************************************************
   
-  # Plotting FoV on sky
-  x = np.zeros(5)
-  y = np.zeros(5)
-  x[0] = x_min; y[0] = y_min
-  x[1] = x_min; y[1] = y_max
-  x[2] = x_max; y[2] = y_max
-  x[3] = x_max; y[3] = y_min    
-  x[4] = x_min; y[4] = y_min
-
+  x = np.array([x_min, x_min, x_max, x_max, x_min])
+  y = np.array([y_min, y_max, y_max, y_min, y_min])
   alpha, beta = fp2sky(x,y,pointing, orientation)
 
 
