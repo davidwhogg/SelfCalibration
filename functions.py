@@ -64,60 +64,41 @@ def single_image(catalog, pointing, orientation, plots=None, verbose=None):
   # Calculate observed flux
   measured_sources[:,1] = mag2flux(stars_in_FoV[:,1]) * god.flat_field(measured_sources[:,3],measured_sources[:,4]) + np.random.normal(size=len(measured_sources[:,0]))/np.sqrt(measured_sources[:,2])
   if verbose != None: print "...done!"
-  
-  #***************************************************
-  
-  x = np.array([x_min, x_min, x_max, x_max, x_min])
-  y = np.array([y_min, y_max, y_max, y_min, y_min])
-  alpha, beta = fp2sky(x,y,pointing, orientation)
-
-
+    
   #**********************************************************
   #********************* Plot Output ************************
   #**********************************************************
   
   if plots !=None:
     
-    # Plot extracted sources over catalog
-    plt.figure(figsize=(6,6))
-    plt.plot(catalog[:,2],catalog[:,3],'o', markersize=2)
-    temp = catalog[inside_FoV]
-    plt.plot(temp[:,2],temp[:,3],'ro',markersize=2)
-    plt.plot(alpha,beta,'k', linewidth=2)
+    # Plot sky (highlight extracted sources) and plot image
+    plt.figure(2000, figsize=(13,6))
     title = ur'$\alpha$ = %.1lf, $\beta$ = %.1lf, $\theta$ = %.1lf$^\circ$' % (pointing[0],pointing[1], orientation)
-    plt.title(title, fontsize=20)
+    plt.suptitle(title, fontsize=20)
+    plt.subplot(121)
+    x = np.array([x_min, x_min, x_max, x_max, x_min])
+    y = np.array([y_min, y_max, y_max, y_min, y_min])
+    alpha, beta = fp2sky(x,y,pointing, orientation)
+    plt.plot(catalog[:,2],catalog[:,3],'o', markersize=2)
+    sources_inside_FoV = catalog[inside_FoV]
+    plt.plot(sources_inside_FoV[:,2],sources_inside_FoV[:,3],'ro',markersize=2)
+    plt.plot(alpha,beta,'k', linewidth=2)
     plt.xlabel(ur'$\alpha$', fontsize=20)
     plt.ylabel(ur'$\beta$', fontsize=20)
-    filename = "Figures/Camera_Images/%s_full_sky_alpha_%.1lf_beta_%.1lf_rot_%.1lf.png" % (plots, pointing[0],pointing[1], orientation)
-    print filename
-    plt.savefig(filename)
-
+    plt.axis('equal')
+    
     # Plot sources on focal plane
-    plt.figure(figsize=(6,6))
+    plt.subplot(122)
     plt.plot(measured_sources[:,3],measured_sources[:,4],'o', markersize=2)
-    title = ur'$\alpha$ = %.1lf, $\beta$ = %.1lf, $\theta$ = %.1lf$^\circ$' % (pointing[0],pointing[1], orientation)
-    plt.title(title, fontsize=20)
-    plt.xlabel(ur'Focal Plane $x$', fontsize=20)
-    plt.ylabel(ur'Focal Plane $y$', fontsize=20)
-    filename = "Figures/Camera_Images/%s_fp_alpha_%.1lf_beta_%.1lf_rot_%.1lf.png" % (plots, pointing[0],pointing[1], orientation)
+    plt.xlabel(ur'$x$', fontsize=20)
+    plt.ylabel(ur'$y$', fontsize=20)
+    plt.xlim(x_min,x_max)
+    plt.ylim(y_min,y_max)
+    filename = "Figures/Camera_Images/%s_alpha_%.1lf_beta_%.1lf_rot_%.1lf.png" % (plots, pointing[0],pointing[1], orientation)
     print filename
     plt.savefig(filename)
     
-    '''
-    # Plot FoV on Catalog
-    plt.figure(2001, figsize=(6,6))
-    #plt.plot(catalog[:,2],catalog[:,3],'o', markersize=2)
-    sky_limits = parameters.sky_limits()
-    plt.plot(alpha,beta,'k', linewidth=2)
-    plt.xlim(sky_limits[0]-FoV[0],sky_limits[1]+FoV[0])
-    plt.ylim(sky_limits[2]-FoV[1],sky_limits[3]+FoV[1])
-    plt.title('Fields-of-View on Sky', fontsize=20)
-    plt.xlabel(ur'$\alpha$', fontsize=20)
-    plt.ylabel(ur'$\beta$', fontsize=20)
-    filename = './Figures/%s_FoV_on_sky.png' % plots
-    #plt.show()
-    plt.savefig((filename)) 
-    '''
+    plt.clf()
 
   return measured_sources
   # measured_sources = [star ID, observed_flux, observed_invvar, focal_position]
@@ -281,16 +262,6 @@ def plot_flat_fields(our_q, iteration_number,plots=None):
   plt.text(-.38,-.35,our_formula, color='r',bbox = dict(boxstyle="square",ec='w',fc='w', alpha=0.9), fontsize=9.5)
   god_formula = "$f(x,y) =%.2f%s%.2fx%s%.2fy%s%.2fx^2%s%.2fxy%s%.2fy^2$" % (abs(god_q[0]),  sign(god_q[1]), abs(god_q[1]), sign(god_q[2]), abs(god_q[2]), sign(god_q[3]), abs(god_q[3]), sign(god_q[4]), abs(god_q[4]), sign(god_q[5]), abs(god_q[5]) )
   plt.text(-.38,-.39,god_formula, color='k',bbox = dict(boxstyle="square",ec='w',fc='w', alpha=0.9), fontsize=9.5)
-
-  '''
-  from mpl_toolkits.mplot3d import Axes3D
-  fig = plt.figure()
-  ax = Axes3D(fig)
-  ax.plot_wireframe(X, Y, god_ff,colors='k')
-  ax.plot_wireframe(X, Y, our_ff,colors='r',alpha=0.0)
-  ax.set_zlim3d(god_ff_min, god_ff_max)
-  '''
-  
   
   # Plot residual in flat-field
   plt.subplot(122)
