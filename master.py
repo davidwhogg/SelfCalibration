@@ -20,14 +20,16 @@ import parameters as p
 # Remove all old plots
 os.system('rm ./Figures/Camera_Images/*.png')
 os.system('rm ./Figures/*.png')
+os.system('rm ./Figures/*.pdf')
 os.system('rm ./Figures/Flat_Fields/*.png')
 os.system('rm ./Figures/Flat_Fields/*.gif')
 
 if __name__ == "__main__":
-  for strategy in ['D', 'A']: #['A', 'D']:
+  for strategy in ['D']: #['A', 'D']:
 
-    survey_plots = ''# None
-    ff_plots = None # None, 'all', final = only final ff
+    catalog_plots = None
+    survey_plots = None#strategy
+    ff_plots = 'all'#None # None, 'all'
     verbose = None
     plots = None
 
@@ -35,25 +37,25 @@ if __name__ == "__main__":
     #*************** Generate Sky Catalog *******************
     #********************************************************
     # Creates catalog of stars used for calibration
-    sky_catalog = god.create_catalog(p.density_of_stars(), p.m_min(), p.m_max(), p.powerlaw(), p.sky_limits(), seed = 1, plots = plots, verbose = verbose)
+    sky_catalog = god.create_catalog(p.density_of_stars(), p.m_min(), p.m_max(), p.powerlaw(), p.sky_limits(), seed = 1, plots = catalog_plots, verbose = verbose)
         # powerlaw = B in log10(dN/dm) = A + B*m
         # sky_limits = [α_min, α_max, β_min, β_max]
         # returns sky_catalog = [Star ID, magnitude, α, β]
+        # sky_catalog: *.star_ID, *.mag, *.alpha, *.beta, *.size
 
-
+    
     #********************************************************
     #******************** Survey Sky ************************
     #********************************************************
     survey_file = strategy + ".txt"
-    observation_catalog = f.survey(sky_catalog, survey_file, plots=plots, verbose=verbose) 
-        # observed_catalog = [pointing ID, star ID, observed_flux, observed_invvar, focal plane x, focal plane y]
+    observation_catalog = f.survey(sky_catalog, survey_file, plots=survey_plots, verbose=verbose) 
+        # observation_catalog: *.size, *.pointing_ID, *.star_ID, *.flux, *.invvar, *.x, *.y
 
 
     #********************************************************
     #********************* Ubercalibration ******************
     #********************************************************
-    
-    f.ubercalibration(observation_catalog,sky_catalog,strategy,ff_plots)
+    f.ubercalibration(observation_catalog,sky_catalog,strategy,ff_plots=ff_plots)
     
     #********************************************************
     #*********************** Health Checks ******************
@@ -83,6 +85,3 @@ if __name__ == "__main__":
       plt.annotate(r"$m_{max}$", (m_max-0.1,np.max(temp_uncert)),fontsize=16) 
       plt.savefig('Figures/flux_uncertainty_variance.png',bbox_inches='tight',pad_inches=0.1)
       if verbose != None: print "...done!"
-
-    # Print sum of random numbers to check random seed is working (i.e. )
-    if verbose != None: print "Sum of all numbers in sky_catalog = %0.10lf" % np.sum(sky_catalog)

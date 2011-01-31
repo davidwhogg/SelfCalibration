@@ -11,7 +11,7 @@ def m_min():
   return 19.5
 
 def m_max():
-  return mag_at_ten_sigma()
+  return 22.5
 
 def density_of_stars():
   # density of stars (all magnitudes)

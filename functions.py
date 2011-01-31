@@ -3,6 +3,7 @@
 
 import numpy as np
 import matplotlib.pylab as plt
+import os
 
 # Custom Modules
 import parameters
@@ -34,40 +35,42 @@ def fp2sky(x, y, pointing, orientation):
 #************* Single Image Functions ****************
 #*****************************************************
 
-def single_image(catalog, pointing, orientation, plots=None, verbose=None):
-  # catalog = [Star ID, magnitude, α, β], pointing = [α, β] 
-  theta = orientation*np.pi/180
-  
+class CameraCatalog:
+    def __init__(self, sky_catalog, pointing,orientation): 
+      self.star_ID = sky_catalog.star_ID.astype(int) 
+      self.mag = sky_catalog.mag
+      self.x, self.y = sky2fp(sky_catalog.alpha, sky_catalog.beta, pointing, orientation)
+      self.size = sky_catalog.size
+      self.flux = mag2flux(self.mag)
+
+class MeasuredCatalog:
+    def __init__(self, camera_catalog,inside_FoV): 
+      self.size = len(inside_FoV[0])
+      self.star_ID = camera_catalog.star_ID[inside_FoV] .astype(int)
+      self.x = camera_catalog.x[inside_FoV]
+      self.y = camera_catalog.y[inside_FoV]
+      self.invvar = 1.0/flux_uncertainty_variance (camera_catalog.flux[inside_FoV]*god.flat_field(self.x,self.y), parameters.eta()) #1/(σ*σ)
+      self.flux = camera_catalog.flux[inside_FoV] * god.flat_field(self.x,self.y) + np.random.normal(size=self.size)/np.sqrt(self.invvar)
+      self.mag = flux2mag(self.flux)
+      
+def single_image(sky_catalog, pointing, orientation, plots=None, verbose=None):
   if verbose != None: print "Converting sky catalog to focal plane coordinates..."
-  camera_catalog = 0*catalog
-  camera_catalog[:,0] = catalog[:,0]
-  camera_catalog[:,1] = catalog[:,1]  
-  camera_catalog[:,2], camera_catalog[:,3] = sky2fp(catalog[:,2], catalog[:,3], pointing, orientation)
-  if verbose != None: print "...done!"  
-  
+  camera_catalog = CameraCatalog(sky_catalog, pointing, orientation)
+  if verbose != None: print "...done!"
+
   if verbose != None: print "Finding stars within camera FoV..."
   FoV = parameters.FoV()
   x_min = -FoV[0]/2; y_min = -FoV[1]/2
   x_max = FoV[0]/2; y_max = FoV[1]/2
-  inside_FoV = np.where((x_min<camera_catalog[:,2]) & (camera_catalog[:,2]<x_max) & (y_min<camera_catalog[:,3]) & (camera_catalog[:,3]<y_max))
-  stars_in_FoV = camera_catalog[inside_FoV[0]]
+  inside_FoV = np.where((x_min<camera_catalog.x) & (camera_catalog.x<x_max) & (y_min<camera_catalog.y) & (camera_catalog.y<y_max))
   if verbose != None: print "...done!"
 
   if verbose != None: print "Measuring stars within FoV..."
-  # measured_sources = [star ID, observed_flux, observed_invvar, focal_position]
-  measured_sources = np.zeros((len(inside_FoV[0]), 5))
-  measured_sources[:,0] = stars_in_FoV[:,0]
-  measured_sources[:,3] = stars_in_FoV[:,2]
-  measured_sources[:,4] = stars_in_FoV[:,3]  
-  # Calculate inverse variance 1/(σ*σ)
-  measured_sources[:,2] = 1.0/flux_uncertainty_variance (flux2mag(mag2flux(stars_in_FoV[:,1])*god.flat_field(measured_sources[:,3],measured_sources[:,4])), parameters.eta())
-  # Calculate observed flux
-  measured_sources[:,1] = mag2flux(stars_in_FoV[:,1]) * god.flat_field(measured_sources[:,3],measured_sources[:,4]) + np.random.normal(size=len(measured_sources[:,0]))/np.sqrt(measured_sources[:,2])
+  measured_catalog = MeasuredCatalog(camera_catalog, inside_FoV)
   if verbose != None: print "...done!"
     
-  if plots !=None:
-    
-    # Plot sky (highlight extracted sources) and plot image
+  if plots != None:
+    # Plot sky (highlight extracted sources), with FoV
     plt.figure(2000, figsize=(13,6))
     title = ur'$\alpha$ = %.1lf, $\beta$ = %.1lf, $\theta$ = %.1lf$^\circ$' % (pointing[0],pointing[1], orientation)
     plt.suptitle(title, fontsize=20)
@@ -75,9 +78,8 @@ def single_image(catalog, pointing, orientation, plots=None, verbose=None):
     x = np.array([x_min, x_min, x_max, x_max, x_min])
     y = np.array([y_min, y_max, y_max, y_min, y_min])
     alpha, beta = fp2sky(x,y,pointing, orientation)
-    plt.plot(catalog[:,2],catalog[:,3],'o', markersize=2)
-    sources_inside_FoV = catalog[inside_FoV]
-    plt.plot(sources_inside_FoV[:,2],sources_inside_FoV[:,3],'ro',markersize=2)
+    plt.plot(sky_catalog.alpha,sky_catalog.beta,'o', markersize=2)
+    plt.plot(sky_catalog.alpha[inside_FoV],sky_catalog.beta[inside_FoV],'ro',markersize=2)
     plt.plot(alpha,beta,'k', linewidth=2)
     plt.xlabel(ur'$\alpha$', fontsize=20)
     plt.ylabel(ur'$\beta$', fontsize=20)
@@ -85,10 +87,9 @@ def single_image(catalog, pointing, orientation, plots=None, verbose=None):
     plt.xlim(sky[0],sky[1])
     plt.ylim(sky[2],sky[3])
     plt.axis('equal')
-    
     # Plot sources on focal plane
     plt.subplot(122)
-    plt.plot(measured_sources[:,3],measured_sources[:,4],'o', markersize=2)
+    plt.plot(measured_catalog.x,measured_catalog.y,'o', markersize=2)
     plt.xlabel(ur'$x$', fontsize=20)
     plt.ylabel(ur'$y$', fontsize=20)
     plt.xlim(x_min,x_max)
@@ -96,81 +97,61 @@ def single_image(catalog, pointing, orientation, plots=None, verbose=None):
     filename = "Figures/Camera_Images/%s_alpha_%.1lf_beta_%.1lf_rot_%.1lf.png" % (plots, pointing[0],pointing[1], orientation)
     print filename
     plt.savefig(filename)
-    
     plt.clf()
 
-  return measured_sources
-  # measured_sources = [star ID, observed_flux, observed_invvar, focal_position]
+  return measured_catalog
+  # measured_sources  *.size, *.star_ID, *.flux, *.invvar, *.x, *.y
 
-
-def flux_uncertainty_variance(mag, eta):
+def flux_uncertainty_variance(flux, eta):
   sky_error= 0.1*mag2flux(parameters.mag_at_ten_sigma())
-  return (np.power(sky_error,2) + (eta**2)*np.power(mag2flux(mag),2))
-
-def evaluate_flat_field_functions(x, y, order):
-  L = (order + 1)*(order + 2)/2
-  g = np.zeros((len(x),L))
-  l = 0
-  for n in range(order+1):
-    for m in range(n+1):
-      g[:,l] = (x**(n-m)) * (y**m)
-      l += 1 
-  return g
-
-def evaluate_flat_field(x, y, q):
-  # Function returns flat field at focal plane position specified. The function also calculates the order of the flat field equation from the number of flat field parameters
-  
-  # Calculate required order
-  order = int(np.around(np.sqrt(0.25+2*len(q))-1.5))
-  assert(len(q) == ((order + 1) * (order + 2) / 2)) # assert to break code if condition not met
-  g = evaluate_flat_field_functions(x, y, order)
-  return np.dot(g, q)
-
+  return (np.power(sky_error,2) + (eta**2)*np.power(flux,2))
 
 #*****************************************************
 #**************** Survey Functions *******************
 #*****************************************************
 
-def survey(catalog, survey_file, plots=None, verbose=None):
-  # Routing loads the survey from file and then calls the camera function accordingly.
-  
+class ObservationCatalog:
+    def __init__(self, data_dic):
+      self.size = 0
+      for i in range(0,len(data_dic)):
+          self.size += + data_dic[i].size
+      self.flux = np.array([])
+      self.invvar = np.array([])
+      self.x = np.array([])
+      self.y = np.array([])
+      self.star_ID = np.array([]).astype(int)
+      self.pointing_ID = np.zeros((self.size)).astype(int)
+      count = 0
+      for i in range(len(data_dic)):
+        single_exposure = data_dic[i]
+        for j in range(data_dic[i].size):
+          self.pointing_ID[count] = i
+          count += 1
+        self.star_ID = np.append( self.star_ID,single_exposure.star_ID).astype(int)
+        self.flux = np.append( self.flux,single_exposure.flux)
+        self.invvar = np.append( self.invvar,single_exposure.invvar)
+        self.x = np.append(self.x,single_exposure.x)   
+        self.y = np.append(self.y,single_exposure.y)
+      self.mag = flux2mag(self.flux)
+      
+def survey(sky_catalog, survey_file, plots=None, verbose=None):  
   if verbose != None: print "Loading survey..."
-  # pointing = [pointing ID, α, β, orientation]
   pointing = np.loadtxt(survey_file)
-  # Calculate number of pointings
   number_pointings = len(pointing[:,0])  
   if verbose != None: print "...done!"
   
-  # Declare dictionary
   data_dic = {}
-  
-  # Perform survey
   if verbose != None: print "Surveying sky..."
   for i in range(0, number_pointings):
-    data_dic[i] = single_image(catalog, [pointing[i,1],pointing[i,2]], pointing[i,3], plots=plots, verbose = verbose)
-    # data_dic[pointing ID] = [star ID, observed_flux, observed_invvar, focal_position]
+    data_dic[i] = single_image(sky_catalog, [pointing[i,1],pointing[i,2]], pointing[i,3], plots=plots, verbose = verbose)
+    # data_dic[pointing ID]: *.size, *.star_ID, *.flux, *.invvar, *.x, *.y
   if verbose != None: print "...done!"
   
-  # Rearrange observations into an observation_catalog
-  if verbose != None: print "Rearranging observation catalog"
-  array_size = 0
-  for i in range(0,len(data_dic)):
-    array_size = array_size + len(data_dic[i][:,0])
-  
-  if verbose != None: print "Observation catalog requires %d rows)" % array_size
-  
-  # Copying dictionary into array
-  observation_catalog = np.zeros((array_size,6))
-  count = 0
-  for i in range(0,len(data_dic)):
-    single_exposure = data_dic[i]
-    for j in range(0,len(single_exposure[:,0])):
-      observation_catalog[count,0] = i
-      observation_catalog[count,1:6] = single_exposure[j,:]
-      count = count +1
-      
+  if verbose != None: print "Rearranging observation catalog..."
+  observation_catalog = ObservationCatalog(data_dic)
+  if verbose != None: print "...done!"
   return observation_catalog
-  # observed_catalog = [pointing ID, star ID, observed_flux, observed_invvar, focal plane x, focal plane y]
+  # observation_catalog: *.size, *.pointing_ID, *.star_ID, *.flux, *.invvar, *.x, *.y
 
 
 #*****************************************************
@@ -184,48 +165,53 @@ def ubercalibration(observation_catalog,sky_catalog, strategy,ff_plots = None):
   chi2 = 1e9
   old_chi2 = 1e10
   iteration_number = 1
-  #print (chi2 - old_chi2)
   while (abs(chi2 - old_chi2) > stop_condition):
-    
-    temp = chi2
+    temp_chi2 = chi2
     s, s_invvar = s_step(observation_catalog,q)
     q, q_invvar, chi2 = q_step(observation_catalog, s, order,iteration_number,plots=ff_plots)
-    old_chi2 = temp
+    old_chi2 = temp_chi2
     
      # Calculate rms error in stars
     indx = [s != 0]
-    obs_star_actual = sky_catalog[indx]
-    rms = rms_error(s[indx],mag2flux(obs_star_actual[:,1]))
-    print "%i: f(x,y) =%.2f%s%.2fx%s%.2fy%s%.2fxx%s%.2fxy%s%.2fyy   RMS = %.6f %%   chi2 = %0.2f (%i)" % (iteration_number+1, abs(q[0]),  sign(q[1]), abs(q[1]), sign(q[2]), abs(q[2]), sign(q[3]), abs(q[3]), sign(q[4]), abs(q[4]), sign(q[5]), abs(q[5]), rms, chi2, len(observation_catalog[:,0]))
+    rms = rms_error(s[indx],sky_catalog.flux[indx])
+    print "%i: f(x,y) =%.2f%s%.2fx%s%.2fy%s%.2fxx%s%.2fxy%s%.2fyy   RMS = %.6f %%   chi2 = %0.2f (%i)" % (iteration_number+1, abs(q[0]),  sign(q[1]), abs(q[1]), sign(q[2]), abs(q[2]), sign(q[3]), abs(q[3]), sign(q[4]), abs(q[4]), sign(q[5]), abs(q[5]), rms, chi2, observation_catalog.size)
 
-
-    #if plots != None: 
-    if (ff_plots == 'y') or (abs(chi2 - old_chi2) < stop_condition): plot_flat_fields(q, (iteration_number+1), plots=strategy)
+    if (ff_plots == 'all') or (abs(chi2 - old_chi2) < stop_condition): plot_flat_fields(q, (iteration_number), plots=strategy)
     
-    if ff_plots == 'y' and (abs(chi2 - old_chi2) < stop_condition): 
+    if ff_plots == 'all' and (abs(chi2 - old_chi2) < stop_condition): 
       os.system(("convert -delay 20 -loop 0 ./Figures/Flat_Fields/%s*.png ./Figures/Flat_Fields/%s_00_animation.gif" % (strategy,strategy)))
-    
     iteration_number += 1
-  return 0
-    
+  return 
+
+def evaluate_flat_field_functions(x, y, order):
+  L = (order + 1)*(order + 2)/2
+  g = np.zeros((len(x),L))
+  l = 0
+  for n in range(order+1):
+    for m in range(n+1):
+      g[:,l] = (x**(n-m)) * (y**m)
+      l += 1 
+  return g
+
+def evaluate_flat_field(x, y, q):  
+  # Calculate required order
+  order = int(np.around(np.sqrt(0.25+2*len(q))-1.5))
+  assert(len(q) == ((order + 1) * (order + 2) / 2))
+  g = evaluate_flat_field_functions(x, y, order)
+  return np.dot(g, q)
+
 def normalize_flat_field(q):
   return (q / q[0])
 
 def s_step(obs_cat, q):
-  # First step in ubercalibration. This function calculates the new flux estimates.
-  # obs_cat = observation_catalog = [pointing ID, star ID, observed_flux, observed_invvar, focal plane x, focal plane y]
-  
-  # Calculate flat-field based on source positions and current flat field parameters 
-  
-  ff = evaluate_flat_field(obs_cat[:,4], obs_cat[:,5], q)
-  fcss = ff * obs_cat[:,2] * obs_cat[:,3]  
-  ffss = ff * ff * obs_cat[:,3]
-  star_ID = np.around(obs_cat[:,1]).astype(int)
-  max_star = np.max(star_ID)
+  ff = evaluate_flat_field(obs_cat.x, obs_cat.y, q)
+  fcss = ff * obs_cat.flux * obs_cat.invvar  
+  ffss = ff * ff * obs_cat.invvar
+  max_star = np.max(obs_cat.star_ID)
   s = np.zeros(max_star+1)
   s_invvar = np.zeros(max_star)
   for ID in range(max_star):
-    indx = (star_ID == ID)
+    indx = (obs_cat.star_ID == ID)
     denominator = np.sum(ffss[indx])
     s_invvar[ID] = denominator
     if denominator > 0.:
@@ -233,24 +219,25 @@ def s_step(obs_cat, q):
   return (s, s_invvar)
   
 def q_step(obs_cat, s, order, iteration_number, plots=None):
-  g = evaluate_flat_field_functions(obs_cat[:,4],obs_cat[:,5], order)
-  ss = s[np.around(obs_cat[:,1]).astype(int)]
-  q_invvar = np.dot(np.transpose(g)*ss*ss*obs_cat[:,3],g)
-  numerator = np.sum(np.transpose(g)*ss*obs_cat[:,2]*obs_cat[:,3],axis=1)
+  g = evaluate_flat_field_functions(obs_cat.x,obs_cat.y, order)
+  ss = s[obs_cat.star_ID]
+  q_invvar = np.dot(np.transpose(g)*ss*ss*obs_cat.invvar,g)
+  numerator = np.sum(np.transpose(g)*ss*obs_cat.flux*obs_cat.invvar,axis=1)
   q = np.dot(np.linalg.inv(q_invvar),numerator)
   q = normalize_flat_field(q)
   np.set_printoptions(precision=2) 
-  chi2 = np.sum((np.dot(g,q) * ss - obs_cat[:,2])**2 * obs_cat[:,3])
+  chi2 = np.sum((np.dot(g,q) * ss - obs_cat.flux)**2 * obs_cat.invvar)
   return (q, q_invvar, chi2)
   
-
+  
 #*****************************************************
 #*************** Analysis Functions ******************
 #*****************************************************
 
 def rms_error(flux_estimate, true_flux):
   return 100*np.sqrt(np.mean((flux_estimate-true_flux)/true_flux)**2)
-  
+
+
 #*****************************************************
 #*************** Plotting Functions ******************
 #*****************************************************
@@ -282,11 +269,14 @@ def plot_flat_fields(our_q, iteration_number,plots=None):
   god_ff_min = np.min(god_ff)
   step = (god_ff_max-god_ff_min)/10
   
-  
   CS = plt.contour(X,Y,god_ff,np.arange(god_ff_min,god_ff_max,step),colors='k')
   plt.clabel(CS, fontsize=9, inline=1)
   CS2 = plt.contour(X,Y,our_ff,np.arange(god_ff_min,god_ff_max,step),colors='r',alpha=0.5)
 
+  FoV = parameters.FoV()
+  plt.xlim(-FoV[0]/2, FoV[0]/2)
+  plt.ylim(-FoV[1]/2, FoV[1]/2)
+  
   # Write formulas on plot
   our_formula = "$f(x,y) =%.2f%s%.2fx%s%.2fy%s%.2fx^2%s%.2fxy%s%.2fy^2$" % (abs(our_q[0]),  sign(our_q[1]), abs(our_q[1]), sign(our_q[2]), abs(our_q[2]), sign(our_q[3]), abs(our_q[3]), sign(our_q[4]), abs(our_q[4]), sign(our_q[5]), abs(our_q[5]) )
   plt.text(-.38,-.35,our_formula, color='r',bbox = dict(boxstyle="square",ec='w',fc='w', alpha=0.9), fontsize=9.5)
@@ -306,7 +296,6 @@ def plot_flat_fields(our_q, iteration_number,plots=None):
     filename = 'Figures/Flat_Fields/%s_0%d_ff.png' % (plots,iteration_number)
   else:
     filename = 'Figures/Flat_Fields/%s_%d_ff.png' % (plots, iteration_number)
-  
   plt.savefig(filename)
   plt.clf()  
 
