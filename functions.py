@@ -96,7 +96,7 @@ def single_image(sky_catalog, pointing, orientation, plots=None, verbose=None):
     plt.ylim(y_min,y_max)
     filename = "Figures/Camera_Images/%s_alpha_%.1lf_beta_%.1lf_rot_%.1lf.png" % (plots, pointing[0],pointing[1], orientation)
     print filename
-    plt.savefig(filename)
+    plt.savefig(filename,bbox_inches='tight',pad_inches=0.5)
     plt.clf()
 
   return measured_catalog
@@ -296,7 +296,7 @@ def plot_flat_fields(our_q, iteration_number,plots=None):
     filename = 'Figures/Flat_Fields/%s_0%d_ff.png' % (plots,iteration_number)
   else:
     filename = 'Figures/Flat_Fields/%s_%d_ff.png' % (plots, iteration_number)
-  plt.savefig(filename)
+  plt.savefig(filename,bbox_inches='tight',pad_inches=0.5)
   plt.clf()  
 
 def sign(x):

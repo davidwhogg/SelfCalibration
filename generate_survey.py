@@ -9,8 +9,6 @@ import matplotlib.pylab as plt
 FoV = parameters.FoV()
 sky_limits = parameters.sky_limits()
 
-#def plot_survey(survey):
-  # Transform focal plane into sky
 def plot_survey(survey, filename):
   x_min = -FoV[0]/2; y_min = -FoV[1]/2
   x_max = FoV[0]/2; y_max = FoV[1]/2
@@ -20,13 +18,13 @@ def plot_survey(survey, filename):
   for image in survey:
     alpha, beta = functions.fp2sky(x,y,image[1:3], image[3])
     plt.plot(alpha,beta,'k-',alpha=0.25)
-  plt.xlabel(r"$\alpha$")
-  plt.ylabel(r"$\beta$")
+  plt.xlabel(r"$\alpha$", fontsize=25)
+  plt.ylabel(r"$\beta$", fontsize=25)
   plt.title(r"%i Pointings" % len(survey[:,0]))
   plt.xlim(sky_limits[0]-FoV[0], sky_limits[1]+FoV[0])
   plt.axis('equal')
   plt.ylim(sky_limits[2]-FoV[1], sky_limits[3]+FoV[1])
-  plt.savefig(filename)
+  plt.savefig(filename,bbox_inches='tight',pad_inches=0.)
   return
 
 def generate_uniform_survey(Ncovering):
