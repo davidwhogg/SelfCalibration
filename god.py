@@ -21,7 +21,7 @@ def generate_magnitudes(m_min,m_max,powerlaw,size):
   return m
   
   
-def create_catalog(M, m_min, m_max, powerlaw, sky, limits, seed, plots=None, verbose=None):
+def create_catalog(M, m_min, m_max, powerlaw, limits, seed, plots=None, verbose=None):
   # M = density of stars 
   # m_min = minimum magnitude (i.e. saturation limit)
   # m_max = maximum magnitude limit per dither (i.e. sensitivity limit 10σ)
@@ -30,9 +30,6 @@ def create_catalog(M, m_min, m_max, powerlaw, sky, limits, seed, plots=None, ver
   # seed = seed for random number generation, providing same seed generate the same sky
   # limits = limits of spacial/angular coordinates [α_min, α_max, β_min, β_max]
 
-  if sky != 'sq':
-    print "Exiting - only square sky implemented!"
-    sys.exit() 
   
   # Calculate total number of stars and create catalog
   number_stars = M * (limits[1]-limits[0])*(limits[3]-limits[2])

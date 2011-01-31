@@ -65,10 +65,6 @@ def single_image(catalog, pointing, orientation, plots=None, verbose=None):
   measured_sources[:,1] = mag2flux(stars_in_FoV[:,1]) * god.flat_field(measured_sources[:,3],measured_sources[:,4]) + np.random.normal(size=len(measured_sources[:,0]))/np.sqrt(measured_sources[:,2])
   if verbose != None: print "...done!"
     
-  #**********************************************************
-  #********************* Plot Output ************************
-  #**********************************************************
-  
   if plots !=None:
     
     # Plot sky (highlight extracted sources) and plot image
@@ -85,6 +81,9 @@ def single_image(catalog, pointing, orientation, plots=None, verbose=None):
     plt.plot(alpha,beta,'k', linewidth=2)
     plt.xlabel(ur'$\alpha$', fontsize=20)
     plt.ylabel(ur'$\beta$', fontsize=20)
+    sky = parameters.sky_limits()
+    plt.xlim(sky[0],sky[1])
+    plt.ylim(sky[2],sky[3])
     plt.axis('equal')
     
     # Plot sources on focal plane
@@ -178,6 +177,37 @@ def survey(catalog, survey_file, plots=None, verbose=None):
 #**************** Ubercal Functions ******************
 #*****************************************************
 
+def ubercalibration(observation_catalog,sky_catalog, strategy,ff_plots = None):
+  order = 2
+  q = np.array([1,0,0,0,0,0])
+  stop_condition = 1e-6
+  chi2 = 1e9
+  old_chi2 = 1e10
+  iteration_number = 1
+  #print (chi2 - old_chi2)
+  while (abs(chi2 - old_chi2) > stop_condition):
+    
+    temp = chi2
+    s, s_invvar = s_step(observation_catalog,q)
+    q, q_invvar, chi2 = q_step(observation_catalog, s, order,iteration_number,plots=ff_plots)
+    old_chi2 = temp
+    
+     # Calculate rms error in stars
+    indx = [s != 0]
+    obs_star_actual = sky_catalog[indx]
+    rms = rms_error(s[indx],mag2flux(obs_star_actual[:,1]))
+    print "%i: f(x,y) =%.2f%s%.2fx%s%.2fy%s%.2fxx%s%.2fxy%s%.2fyy   RMS = %.6f %%   chi2 = %0.2f (%i)" % (iteration_number+1, abs(q[0]),  sign(q[1]), abs(q[1]), sign(q[2]), abs(q[2]), sign(q[3]), abs(q[3]), sign(q[4]), abs(q[4]), sign(q[5]), abs(q[5]), rms, chi2, len(observation_catalog[:,0]))
+
+
+    #if plots != None: 
+    if (ff_plots == 'y') or (abs(chi2 - old_chi2) < stop_condition): plot_flat_fields(q, (iteration_number+1), plots=strategy)
+    
+    if ff_plots == 'y' and (abs(chi2 - old_chi2) < stop_condition): 
+      os.system(("convert -delay 20 -loop 0 ./Figures/Flat_Fields/%s*.png ./Figures/Flat_Fields/%s_00_animation.gif" % (strategy,strategy)))
+    
+    iteration_number += 1
+  return 0
+    
 def normalize_flat_field(q):
   return (q / q[0])
 
