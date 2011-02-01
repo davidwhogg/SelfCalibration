@@ -15,7 +15,7 @@ def m_max():
 
 def density_of_stars():
   # density of stars (all magnitudes)
-  return 50
+  return 5
 
 def powerlaw():
   #B in log10(dN/dm) = A + B*m
@@ -28,3 +28,6 @@ def FoV():
 def sky_limits():
   # limits of spacial/angular coordinates 
   return [0.0,10.0,0.0,10.0] #[α_min, α_max, β_min, β_max]
+  
+def ff_samples():
+  return [1000,1000]

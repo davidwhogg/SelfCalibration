@@ -10,8 +10,7 @@ import functions as f
 def flat_field_parameters():
   return np.array([1, 0, 0, -0.2, 0, -0.5])
 
-def flat_field(x,y):
-  par = flat_field_parameters()
+def flat_field(x,y,par = flat_field_parameters()):
   return (par[0] + par[1]*x + par[2]*y + par[3]*x**2 + par[4]*x*y + par[5]*y**2) 
 
 def generate_magnitudes(m_min,m_max,powerlaw,size):

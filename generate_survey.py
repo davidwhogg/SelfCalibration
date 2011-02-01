@@ -9,7 +9,7 @@ import matplotlib.pylab as plt
 FoV = parameters.FoV()
 sky_limits = parameters.sky_limits()
 
-def plot_survey(survey, filename):
+def plot_survey(survey, survey_name):
   x_min = -FoV[0]/2; y_min = -FoV[1]/2
   x_max = FoV[0]/2; y_max = FoV[1]/2
   x = np.array([x_min, x_min, x_max, x_max, x_min])
@@ -20,10 +20,11 @@ def plot_survey(survey, filename):
     plt.plot(alpha,beta,'k-',alpha=0.25)
   plt.xlabel(r"$\alpha$", fontsize=25)
   plt.ylabel(r"$\beta$", fontsize=25)
-  plt.title(r"%i Pointings" % len(survey[:,0]))
+  plt.title(r"Survey %s: %i Pointings" % (survey_name, len(survey[:,0])))
   plt.xlim(sky_limits[0]-FoV[0], sky_limits[1]+FoV[0])
   plt.axis('equal')
   plt.ylim(sky_limits[2]-FoV[1], sky_limits[3]+FoV[1])
+  filename = './Figures/%s.pdf' % survey_name
   plt.savefig(filename,bbox_inches='tight',pad_inches=0.)
   return
 
@@ -83,9 +84,9 @@ def generate_random_survey(N):
 
 if __name__ == "__main__":
   xA = generate_uniform_survey(9)
-  plot_survey(xA,'Figures/A.pdf')
+  plot_survey(xA,'A')
   np.savetxt('A.txt',xA)
   xD = generate_random_survey(len(xA))
-  plot_survey(xD,'Figures/D.pdf')
+  plot_survey(xD,'D')
   np.savetxt('D.txt',xD)
   

@@ -27,11 +27,12 @@ os.system('rm ./Figures/Flat_Fields/*.gif')
 if __name__ == "__main__":
   for strategy in ['D']: #['A', 'D']:
 
-    catalog_plots = ''#None
-    survey_plots = None#strategy
+    catalog_plots = None
+    survey_plots = None # strategy
+    coverage_plots = None # strategy
     ff_plots = None # None, 'all'
     verbose = None
-    plots = None
+    health_plots = None
 
     #********************************************************
     #*************** Generate Sky Catalog *******************
@@ -51,6 +52,7 @@ if __name__ == "__main__":
     observation_catalog = f.survey(sky_catalog, survey_file, plots=survey_plots, verbose=verbose) 
         # observation_catalog: *.size, *.pointing_ID, *.star_ID, *.flux, *.invvar, *.x, *.y
 
+    if coverage_plots != None: f.coverage(observation_catalog, strategy)
 
     #********************************************************
     #********************* Ubercalibration ******************
@@ -61,7 +63,7 @@ if __name__ == "__main__":
     #*********************** Health Checks ******************
     #********************************************************
 
-    if plots != None:
+    if health_plots != None:
       # Flux Uncertainty variance check
       if verbose != None: print "Plotting flux uncertainty variance..."
       eta = p.eta()

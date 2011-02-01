@@ -164,7 +164,7 @@ def ubercalibration(observation_catalog,sky_catalog, strategy,ff_plots = None):
   stop_condition = 1e-6
   chi2 = 1e9
   old_chi2 = 1e10
-  iteration_number = 1
+  iteration_number = 0
   while (abs(chi2 - old_chi2) > stop_condition):
     temp_chi2 = chi2
     s, s_invvar = s_step(observation_catalog,q)
@@ -176,7 +176,7 @@ def ubercalibration(observation_catalog,sky_catalog, strategy,ff_plots = None):
     rms = rms_error(s[indx],sky_catalog.flux[indx])
     print "%i: f(x,y) =%.2f%s%.2fx%s%.2fy%s%.2fxx%s%.2fxy%s%.2fyy   RMS = %.6f %%   chi2 = %0.2f (%i)" % (iteration_number+1, abs(q[0]),  sign(q[1]), abs(q[1]), sign(q[2]), abs(q[2]), sign(q[3]), abs(q[3]), sign(q[4]), abs(q[4]), sign(q[5]), abs(q[5]), rms, chi2, observation_catalog.size)
 
-    if (ff_plots == 'all') or (abs(chi2 - old_chi2) < stop_condition): plot_flat_fields(q, (iteration_number), plots=strategy)
+    if (ff_plots == 'all') or (abs(chi2 - old_chi2) < stop_condition): plot_flat_fields(q, (iteration_number), strategy=strategy)
     
     if ff_plots == 'all' and (abs(chi2 - old_chi2) < stop_condition): 
       os.system(("convert -delay 20 -loop 0 ./Figures/Flat_Fields/%s*.png ./Figures/Flat_Fields/%s_00_animation.gif" % (strategy,strategy)))
@@ -199,7 +199,7 @@ def evaluate_flat_field(x, y, q):
   assert(len(q) == ((order + 1) * (order + 2) / 2))
   g = evaluate_flat_field_functions(x, y, order)
   return np.dot(g, q)
-
+  
 def normalize_flat_field(q):
   return (q / q[0])
 
@@ -237,18 +237,32 @@ def q_step(obs_cat, s, order, iteration_number, plots=None):
 def rms_error(flux_estimate, true_flux):
   return 100*np.sqrt(np.mean((flux_estimate-true_flux)/true_flux)**2)
 
+def average_over_ff(func, q):
+  FoV = parameters.FoV()
+  nalpha, nbeta = parameters.ff_samples()
+  dalpha = FoV[0]/(nalpha-1)
+  dbeta = FoV[1]/(nbeta-1)
+  x = np.arange(-FoV[0]/2+dalpha/2,FoV[0]/2,dalpha)
+  y = np.arange(-FoV[1]/2+dbeta/2,FoV[1]/2,dbeta)
+  X, Y = np.meshgrid(x, y)
+  temp_x = np.reshape(X,-1)
+  temp_y = np.reshape(Y,-1)
+  temp_ff = func(temp_x,temp_y,q)
+  ff = np.reshape(temp_ff, (len(X[:,0]),len(X[0,:])))
+  return np.mean(ff)
 
 #*****************************************************
 #*************** Plotting Functions ******************
 #*****************************************************
 
-def plot_flat_fields(our_q, iteration_number,plots=None):
+def plot_flat_fields(our_q, iteration_number,strategy=None):
   FoV = parameters.FoV() 
   
   plt.figure(3000,figsize=(13, 6)) # want square figure
   plt.subplot(121)
+  plt.suptitle('Survey %s' % strategy, fontsize = 20)
 
-  plt.title(r"Flat-Fields (God's = Black; Fitted = Red) Iteration: %i" % iteration_number)
+  plt.title(r"Flat-Fields (God's = Black; Fitted = Red) Iteration: %i" % (iteration_number+1))
   plt.xlabel(r"\alpha")
   plt.ylabel(r"$\beta$")
   x = np.arange(-FoV[0]/2,FoV[0]/2,0.01)
@@ -279,9 +293,9 @@ def plot_flat_fields(our_q, iteration_number,plots=None):
   
   # Write formulas on plot
   our_formula = "$f(x,y) =%.2f%s%.2fx%s%.2fy%s%.2fx^2%s%.2fxy%s%.2fy^2$" % (abs(our_q[0]),  sign(our_q[1]), abs(our_q[1]), sign(our_q[2]), abs(our_q[2]), sign(our_q[3]), abs(our_q[3]), sign(our_q[4]), abs(our_q[4]), sign(our_q[5]), abs(our_q[5]) )
-  plt.text(-.38,-.35,our_formula, color='r',bbox = dict(boxstyle="square",ec='w',fc='w', alpha=0.9), fontsize=9.5)
+  plt.text(-.33,-.29,our_formula, color='r',bbox = dict(boxstyle="square",ec='w',fc='w', alpha=0.9), fontsize=9.5)
   god_formula = "$f(x,y) =%.2f%s%.2fx%s%.2fy%s%.2fx^2%s%.2fxy%s%.2fy^2$" % (abs(god_q[0]),  sign(god_q[1]), abs(god_q[1]), sign(god_q[2]), abs(god_q[2]), sign(god_q[3]), abs(god_q[3]), sign(god_q[4]), abs(god_q[4]), sign(god_q[5]), abs(god_q[5]) )
-  plt.text(-.38,-.39,god_formula, color='k',bbox = dict(boxstyle="square",ec='w',fc='w', alpha=0.9), fontsize=9.5)
+  plt.text(-.33,-.33,god_formula, color='k',bbox = dict(boxstyle="square",ec='w',fc='w', alpha=0.9), fontsize=9.5)
   
   # Plot residual in flat-field
   plt.subplot(122)
@@ -292,13 +306,39 @@ def plot_flat_fields(our_q, iteration_number,plots=None):
   plt.ylabel(r"$\beta$")
   
   # Save figure
-  if iteration_number < 10:
-    filename = 'Figures/Flat_Fields/%s_0%d_ff.png' % (plots,iteration_number)
+  if iteration_number < 9:
+    filename = 'Figures/Flat_Fields/%s_0%d_ff.png' % (strategy,iteration_number+1)
   else:
-    filename = 'Figures/Flat_Fields/%s_%d_ff.png' % (plots, iteration_number)
+    filename = 'Figures/Flat_Fields/%s_%d_ff.png' % (strategy, iteration_number+1)
   plt.savefig(filename,bbox_inches='tight',pad_inches=0.5)
   plt.clf()  
 
+def coverage(obs_cat, strategy):
+  limits = parameters.sky_limits()
+  num_stars = int(np.around(parameters.density_of_stars()*(limits[1]-limits[0]) * (limits[3]-limits[2])))
+  num_obs = np.zeros((num_stars,2))
+  for i in range(num_stars):
+    num_obs[i,0] = i
+    indx = np.where(obs_cat.star_ID == i)
+    num_obs[i,1] = len(obs_cat.star_ID[indx])
+  max_obs = int(np.around(np.max(num_obs[:,1])))
+  int_obs = np.zeros((max_obs+1,2))
+  
+  for i in range(max_obs+1):
+    int_obs[i,0] = i
+    indx = np.where(num_obs[:,1] <= i)
+    int_obs[i,1] = len(indx[0])
+  plt.plot(int_obs[:,0],int_obs[:,1]/float(num_stars))
+  plt.xlabel(r"Number of Observations")
+  plt.ylabel(r"Fraction of Sources Covered")
+  plt.title('Survey %s Coverage' % strategy)
+  plt.ylim(0.,1.)
+  filename = "./Figures/%s_coverage.png" % strategy
+  plt.savefig(filename,bbox_inches='tight')#,pad_inches=0.5)
+  plt.clf()
+  return num_obs
+
+  
 def sign(x):
   if x >= 0:
     x = '+'
