@@ -14,8 +14,6 @@ rc('text', usetex=True)
 import functions as f
 import god
 import parameters as p
-#import camera
-#import survey
 
 # Remove all old plots
 os.system('rm ./Figures/Camera_Images/*.png')
@@ -24,8 +22,9 @@ os.system('rm ./Figures/*.pdf')
 os.system('rm ./Figures/Flat_Fields/*.png')
 os.system('rm ./Figures/Flat_Fields/*.gif')
 
-if __name__ == "__main__":
-  for strategy in ['A']: #['A', 'D']:
+
+def main():
+  for strategy in ['D','A']: #['A', 'D']:
 
     catalog_plots = ''#None
     survey_plots = None # strategy
@@ -65,13 +64,15 @@ if __name__ == "__main__":
 
     if health_plots != None:
       # Flux Uncertainty variance check
+      m_min = p.m_min()
+      m_max = p.m_max()
       if verbose != None: print "Plotting flux uncertainty variance..."
       eta = p.eta()
       plt.figure(1002)
       # Calculate uncertainty for different magnitudes
-      temp_mag = np.arange(m_min-0.5,m_max+0.5,0.1)
-      temp_uncert = np.log10( (f.flux_uncertainty_variance(temp_mag,eta))/(f.mag2flux(temp_mag)**2))
-      plt.plot(temp_mag,temp_uncert)
+      temp_mag = np.arange(m_min-0.5,m_max+0.5,0.001)
+      temp_uncert = np.log10( (f.flux_uncertainty_variance(f.mag2flux(temp_mag),eta))/(f.mag2flux(temp_mag)**2))
+      plt.plot(temp_mag,temp_uncert,'xk')
       plt.ylim(np.min(temp_uncert)-0.5,np.max(temp_uncert)+0.5)
       # Draw vertical (dashed lines) at the magnitude limits take 
       lower_limit_mag = [m_min, m_min]
@@ -81,9 +82,14 @@ if __name__ == "__main__":
       upper_limit_uncer = [np.min(temp_uncert),np.max(temp_uncert)]
       plt.plot(upper_limit_mag,upper_limit_uncer,'k--')
       plt.xlabel(ur'Source Magnitude', fontsize=16)
-      plt.ylabel(ur'$\log_{10}(\frac{{\sigma_f}^2}{f^2})$',fontsize=25)#, rotation='horizontal')
+      plt.ylabel(ur'$\log_{10}(\frac{{\sigma_c}^2}{c^2})$',fontsize=25)#, rotation='horizontal')
       # Label vertical lines
       plt.annotate(r"$m_{min}$", (m_min-0.1,np.max(temp_uncert)),fontsize=16) 
       plt.annotate(r"$m_{max}$", (m_max-0.1,np.max(temp_uncert)),fontsize=16) 
       plt.savefig('Figures/flux_uncertainty_variance.png',bbox_inches='tight',pad_inches=0.1)
       if verbose != None: print "...done!"
+
+if __name__ == "__main__":
+  #import cProfile
+  #cProfile.run('main()')
+  main()

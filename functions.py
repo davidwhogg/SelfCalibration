@@ -9,6 +9,8 @@ import os
 import parameters
 import god
 
+
+
 #*****************************************************
 #************ Transformation Functions ***************
 #*****************************************************
@@ -30,29 +32,52 @@ def fp2sky(x, y, pointing, orientation):
   beta = -x * np.sin(theta) + y * np.cos(theta) + pointing[1]
   return alpha, beta
 
-
 #*****************************************************
 #************* Single Image Functions ****************
 #*****************************************************
 
 class CameraCatalog:
     def __init__(self, sky_catalog, pointing,orientation): 
-      self.star_ID = sky_catalog.star_ID.astype(int) 
+      self.k = sky_catalog.k.astype(int) 
       self.mag = sky_catalog.mag
       self.x, self.y = sky2fp(sky_catalog.alpha, sky_catalog.beta, pointing, orientation)
       self.size = sky_catalog.size
       self.flux = mag2flux(self.mag)
+      self.epsilon = sky_catalog.epsilon
 
 class MeasuredCatalog:
-    def __init__(self, camera_catalog,inside_FoV): 
+    def __init__(self, camera_catalog, inside_FoV): 
       self.size = len(inside_FoV[0])
-      self.star_ID = camera_catalog.star_ID[inside_FoV] .astype(int)
+      self.k = camera_catalog.k[inside_FoV] .astype(int)
       self.x = camera_catalog.x[inside_FoV]
       self.y = camera_catalog.y[inside_FoV]
-      self.invvar = 1.0/flux_uncertainty_variance (camera_catalog.flux[inside_FoV]*god.flat_field(self.x,self.y), parameters.eta()) #1/(σ*σ)
-      self.flux = camera_catalog.flux[inside_FoV] * god.flat_field(self.x,self.y) + np.random.normal(size=self.size)/np.sqrt(self.invvar)
-      self.mag = flux2mag(self.flux)
+      flat = god.flat_field(self.x,self.y)
+      self.counts = camera_catalog.flux[inside_FoV] * flat + np.random.normal(size=self.size)/np.sqrt(self.true_invvar(camera_catalog, inside_FoV, flat))
+      self.invvar = self.reported_invvar()
+
+    def append(self, other):
+       self.size = self.size + other.size
+       self.k = np.append(self.k, other.k)
+       self.x = np.append(self.x, other.x)
+       self.y = np.append(self.y, other.y)
+       self.counts = np.append(self.counts, other.counts)
+       self.invvar = np.append(self.invvar, other.invvar)
+
+    def mag(self):
+      return flux2mag(self.counts)
       
+    def reported_invvar(self):
+      sky_unc = 0.1*mag2flux(parameters.mag_at_ten_sigma())
+      var = (sky_unc**2 + (parameters.eta()**2) * self.counts**2)
+      return 1. / var
+
+    def true_invvar(self, camera_catalog, inside_FoV, flat):
+      epsilon = camera_catalog.epsilon[inside_FoV]
+      sky_unc = 0.1*mag2flux(parameters.mag_at_ten_sigma())
+      flux = camera_catalog.flux[inside_FoV]
+      var = (sky_unc**2 * (1. + epsilon**2) + (parameters.eta()**2) * flat**2 * flux**2)
+      return 1. / var
+
 def single_image(sky_catalog, pointing, orientation, plots=None, verbose=None):
   if verbose != None: print "Converting sky catalog to focal plane coordinates..."
   camera_catalog = CameraCatalog(sky_catalog, pointing, orientation)
@@ -100,39 +125,11 @@ def single_image(sky_catalog, pointing, orientation, plots=None, verbose=None):
     plt.clf()
 
   return measured_catalog
-  # measured_sources  *.size, *.star_ID, *.flux, *.invvar, *.x, *.y
-
-def flux_uncertainty_variance(flux, eta):
-  sky_error= 0.1*mag2flux(parameters.mag_at_ten_sigma())
-  return (np.power(sky_error,2) + (eta**2)*np.power(flux,2))
+  # measured_sources  *.size, *.k, *.flux, *.invvar, *.x, *.y
 
 #*****************************************************
 #**************** Survey Functions *******************
 #*****************************************************
-
-class ObservationCatalog:
-    def __init__(self, data_dic):
-      self.size = 0
-      for i in range(0,len(data_dic)):
-          self.size += + data_dic[i].size
-      self.flux = np.array([])
-      self.invvar = np.array([])
-      self.x = np.array([])
-      self.y = np.array([])
-      self.star_ID = np.array([]).astype(int)
-      self.pointing_ID = np.zeros((self.size)).astype(int)
-      count = 0
-      for i in range(len(data_dic)):
-        single_exposure = data_dic[i]
-        for j in range(data_dic[i].size):
-          self.pointing_ID[count] = i
-          count += 1
-        self.star_ID = np.append( self.star_ID,single_exposure.star_ID).astype(int)
-        self.flux = np.append( self.flux,single_exposure.flux)
-        self.invvar = np.append( self.invvar,single_exposure.invvar)
-        self.x = np.append(self.x,single_exposure.x)   
-        self.y = np.append(self.y,single_exposure.y)
-      self.mag = flux2mag(self.flux)
       
 def survey(sky_catalog, survey_file, plots=None, verbose=None):  
   if verbose != None: print "Loading survey..."
@@ -140,28 +137,26 @@ def survey(sky_catalog, survey_file, plots=None, verbose=None):
   number_pointings = len(pointing[:,0])  
   if verbose != None: print "...done!"
   
-  data_dic = {}
   if verbose != None: print "Surveying sky..."
-  for i in range(0, number_pointings):
-    data_dic[i] = single_image(sky_catalog, [pointing[i,1],pointing[i,2]], pointing[i,3], plots=plots, verbose = verbose)
-    # data_dic[pointing ID]: *.size, *.star_ID, *.flux, *.invvar, *.x, *.y
-  if verbose != None: print "...done!"
-  
-  if verbose != None: print "Rearranging observation catalog..."
-  observation_catalog = ObservationCatalog(data_dic)
-  if verbose != None: print "...done!"
-  return observation_catalog
-  # observation_catalog: *.size, *.pointing_ID, *.star_ID, *.flux, *.invvar, *.x, *.y
+  obs_cat = None
+  for i in range(number_pointings):
+    si = single_image(sky_catalog, [pointing[i,1],pointing[i,2]], pointing[i,3], plots=plots, verbose = verbose)
+    if obs_cat is None:
+      obs_cat = si
+    else:
+      obs_cat.append(si)
 
+  if verbose != None: print "...done!"
+  return obs_cat
 
 #*****************************************************
 #**************** Ubercal Functions ******************
 #*****************************************************
 
 def ubercalibration(observation_catalog,sky_catalog, strategy,ff_plots = None):
-  order = 2
-  q = np.array([1,0,0,0,0,0])
-  stop_condition = 1e-6
+  order = parameters.flat_field_order
+  q = np.array([1])
+  stop_condition = 1e-4
   chi2 = 1e9
   old_chi2 = 1e10
   iteration_number = 0
@@ -174,7 +169,9 @@ def ubercalibration(observation_catalog,sky_catalog, strategy,ff_plots = None):
      # Calculate rms error in stars
     indx = [s != 0]
     rms = rms_error(s[indx],sky_catalog.flux[indx])
-    print "%i: f(x,y) =%.2f%s%.2fx%s%.2fy%s%.2fxx%s%.2fxy%s%.2fyy   RMS = %.6f %%   chi2 = %0.2f (%i)" % (iteration_number+1, abs(q[0]),  sign(q[1]), abs(q[1]), sign(q[2]), abs(q[2]), sign(q[3]), abs(q[3]), sign(q[4]), abs(q[4]), sign(q[5]), abs(q[5]), rms, chi2, observation_catalog.size)
+    bdness = badness(q)
+    print "%i: RMS = %.6f %%, Badness = %0.6f %%, chi2 = %0.2f (%i)" % (iteration_number+1, rms, 100*bdness,chi2, observation_catalog.size)
+    print q
 
     if (ff_plots == 'all') or (abs(chi2 - old_chi2) < stop_condition): plot_flat_fields(q, (iteration_number), strategy=strategy)
     
@@ -201,19 +198,25 @@ def evaluate_flat_field(x, y, q):
   return np.dot(g, q)
   
 def normalize_flat_field(q):
-  fit_mean = average_over_ff(evaluate_flat_field, q)
-  god_mean = average_over_ff(god.flat_field, god.flat_field_parameters())
-  return (q * god_mean/fit_mean)#(q / q[0])
+  fit_mean = average_over_ff(evaluate_flat_field, (q))
+  return (q * god_mean_flat_field/fit_mean)
+
+def diff_flat_field_squared(x, y, q):
+  q = normalize_flat_field(q)
+  return (evaluate_flat_field(x, y, q) - god.flat_field(x, y))**2
+
+def badness(q):
+  return np.sqrt(average_over_ff(diff_flat_field_squared, (q)))
 
 def s_step(obs_cat, q):
   ff = evaluate_flat_field(obs_cat.x, obs_cat.y, q)
-  fcss = ff * obs_cat.flux * obs_cat.invvar  
+  fcss = ff * obs_cat.counts * obs_cat.invvar  
   ffss = ff * ff * obs_cat.invvar
-  max_star = np.max(obs_cat.star_ID)
+  max_star = np.max(obs_cat.k)
   s = np.zeros(max_star+1)
   s_invvar = np.zeros(max_star)
   for ID in range(max_star):
-    indx = (obs_cat.star_ID == ID)
+    indx = (obs_cat.k == ID)
     denominator = np.sum(ffss[indx])
     s_invvar[ID] = denominator
     if denominator > 0.:
@@ -222,13 +225,13 @@ def s_step(obs_cat, q):
   
 def q_step(obs_cat, s, order, iteration_number, plots=None):
   g = evaluate_flat_field_functions(obs_cat.x,obs_cat.y, order)
-  ss = s[obs_cat.star_ID]
+  ss = s[obs_cat.k]
   q_invvar = np.dot(np.transpose(g)*ss*ss*obs_cat.invvar,g)
-  numerator = np.sum(np.transpose(g)*ss*obs_cat.flux*obs_cat.invvar,axis=1)
+  numerator = np.sum(np.transpose(g)*ss*obs_cat.counts*obs_cat.invvar,axis=1)
   q = np.dot(np.linalg.inv(q_invvar),numerator)
   q = normalize_flat_field(q)
   np.set_printoptions(precision=2) 
-  chi2 = np.sum((np.dot(g,q) * ss - obs_cat.flux)**2 * obs_cat.invvar)
+  chi2 = np.sum((np.dot(g,q) * ss - obs_cat.counts)**2 * obs_cat.invvar)
   return (q, q_invvar, chi2)
   
   
@@ -239,7 +242,7 @@ def q_step(obs_cat, s, order, iteration_number, plots=None):
 def rms_error(flux_estimate, true_flux):
   return 100*np.sqrt(np.mean((flux_estimate-true_flux)/true_flux)**2)
 
-def average_over_ff(func, q):
+def average_over_ff(func, args):
   FoV = parameters.FoV()
   nalpha, nbeta = parameters.ff_samples()
   dalpha = FoV[0]/(nalpha-1)
@@ -249,7 +252,7 @@ def average_over_ff(func, q):
   X, Y = np.meshgrid(x, y)
   temp_x = np.reshape(X,-1)
   temp_y = np.reshape(Y,-1)
-  temp_ff = func(temp_x,temp_y,q)
+  temp_ff = func(temp_x, temp_y, args)
   ff = np.reshape(temp_ff, (len(X[:,0]),len(X[0,:])))
   return np.mean(ff)
 
@@ -277,7 +280,7 @@ def plot_flat_fields(our_q, iteration_number,strategy=None):
   temp_z = evaluate_flat_field(temp_x,temp_y,our_q)
   our_ff = np.reshape(temp_z, (len(X[:,0]),len(X[0,:])))
   god_q = god.flat_field_parameters()
-  temp_z = evaluate_flat_field(temp_x,temp_y,god_q)
+  temp_z = god.flat_field(temp_x,temp_y)
   god_ff = np.reshape(temp_z, (len(X[:,0]),len(X[0,:])))
 
   # Find parameters for contour plot
@@ -294,10 +297,10 @@ def plot_flat_fields(our_q, iteration_number,strategy=None):
   plt.ylim(-FoV[1]/2, FoV[1]/2)
   
   # Write formulas on plot
-  our_formula = "$f(x,y) =%.2f%s%.2fx%s%.2fy%s%.2fx^2%s%.2fxy%s%.2fy^2$" % (abs(our_q[0]),  sign(our_q[1]), abs(our_q[1]), sign(our_q[2]), abs(our_q[2]), sign(our_q[3]), abs(our_q[3]), sign(our_q[4]), abs(our_q[4]), sign(our_q[5]), abs(our_q[5]) )
-  plt.text(-.33,-.29,our_formula, color='r',bbox = dict(boxstyle="square",ec='w',fc='w', alpha=0.9), fontsize=9.5)
-  god_formula = "$f(x,y) =%.2f%s%.2fx%s%.2fy%s%.2fx^2%s%.2fxy%s%.2fy^2$" % (abs(god_q[0]),  sign(god_q[1]), abs(god_q[1]), sign(god_q[2]), abs(god_q[2]), sign(god_q[3]), abs(god_q[3]), sign(god_q[4]), abs(god_q[4]), sign(god_q[5]), abs(god_q[5]) )
-  plt.text(-.33,-.33,god_formula, color='k',bbox = dict(boxstyle="square",ec='w',fc='w', alpha=0.9), fontsize=9.5)
+  #our_formula = r"$f(x,y) =%+.2f%+.2fx%+.2fy%+.2fxx%+.2fxy%+.2fyy$" % (our_q[0], our_q[1], our_q[2], our_q[3], our_q[4], our_q[5])
+  #plt.text(-.33,-.29,our_formula, color='r',bbox = dict(boxstyle="square",ec='w',fc='w', alpha=0.9), fontsize=9.5)
+  #god_formula = r"$f(x,y) =%+.2f%+.2fx%+.2fy%+.2fxx%+.2fxy%+.2fyy$" % (god_q[0], god_q[1], god_q[2], god_q[3], god_q[4], god_q[5])
+  #plt.text(-.33,-.33,god_formula, color='k',bbox = dict(boxstyle="square",ec='w',fc='w', alpha=0.9), fontsize=9.5)
   
   # Plot residual in flat-field
   plt.subplot(122)
@@ -321,8 +324,8 @@ def coverage(obs_cat, strategy):
   num_obs = np.zeros((num_stars,2))
   for i in range(num_stars):
     num_obs[i,0] = i
-    indx = np.where(obs_cat.star_ID == i)
-    num_obs[i,1] = len(obs_cat.star_ID[indx])
+    indx = np.where(obs_cat.k == i)
+    num_obs[i,1] = len(obs_cat.k[indx])
   max_obs = int(np.around(np.max(num_obs[:,1])))
   int_obs = np.zeros((max_obs+1,2))
   
@@ -339,11 +342,6 @@ def coverage(obs_cat, strategy):
   plt.savefig(filename,bbox_inches='tight')#,pad_inches=0.5)
   plt.clf()
   return num_obs
-
   
-def sign(x):
-  if x >= 0:
-    x = '+'
-  else:
-    x = '-'
-  return x
+# constants
+god_mean_flat_field = average_over_ff(god.flat_field,god.flat_field_parameters())
