@@ -201,7 +201,9 @@ def evaluate_flat_field(x, y, q):
   return np.dot(g, q)
   
 def normalize_flat_field(q):
-  return (q / q[0])
+  fit_mean = average_over_ff(evaluate_flat_field, q)
+  god_mean = average_over_ff(god.flat_field, god.flat_field_parameters())
+  return (q * god_mean/fit_mean)#(q / q[0])
 
 def s_step(obs_cat, q):
   ff = evaluate_flat_field(obs_cat.x, obs_cat.y, q)
