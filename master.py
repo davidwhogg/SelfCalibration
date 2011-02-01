@@ -24,12 +24,12 @@ os.system('rm ./Figures/Flat_Fields/*.gif')
 
 
 def main():
-  for strategy in ['D','A']: #['A', 'D']:
+  for strategy in ['D']: #['A', 'D']:
 
     catalog_plots = ''#None
     survey_plots = None # strategy
     coverage_plots = None # strategy
-    ff_plots = None # None, 'all'
+    ff_plots = 'all' # None, 'all'
     verbose = None
     health_plots = None
 

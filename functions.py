@@ -4,6 +4,7 @@
 import numpy as np
 import matplotlib.pylab as plt
 import os
+import pickle
 
 # Custom Modules
 import parameters
@@ -333,6 +334,7 @@ def coverage(obs_cat, strategy):
     int_obs[i,0] = i
     indx = np.where(num_obs[:,1] <= i)
     int_obs[i,1] = len(indx[0])
+  plt.figure()
   plt.plot(int_obs[:,0],int_obs[:,1]/float(num_stars))
   plt.xlabel(r"Number of Observations")
   plt.ylabel(r"Fraction of Sources Covered")
@@ -342,6 +344,8 @@ def coverage(obs_cat, strategy):
   plt.savefig(filename,bbox_inches='tight')#,pad_inches=0.5)
   plt.clf()
   return num_obs
-  
+
+#def invvar_saveout()
+
 # constants
 god_mean_flat_field = average_over_ff(god.flat_field,god.flat_field_parameters())
