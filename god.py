@@ -42,29 +42,29 @@ def create_catalog(M, m_min, m_max, powerlaw, limits, seed, plots=None, verbose=
   #**********************************************************
     
   if plots != None:
+    fontsize = 20
+    plt.figure(figsize=(14,6))
+    st = plt.suptitle("Sky Catalog", fontsize=fontsize)
     # Plot portion of sky
-    fontsize = 25
-    if verbose != None: print "Plotting portion of sky..."
-    plt.figure()
-    plt.plot(catalog.alpha,catalog.beta,'ko',markersize=2)
+    plt.subplot(121)
+    if verbose != None: print "Plotting portion of sky and histogram..."
+    plt.plot(catalog.alpha,catalog.beta,'.k',markersize=1)
     plt.xlabel(ur'$\alpha$', fontsize=fontsize)
     plt.ylabel(ur'$\beta$', fontsize=fontsize)
-    plt.title("God's Sky", fontsize=fontsize)
+    #plt.title("God's Sky", fontsize=fontsize)
+    plt.xlim(limits[0] - (limits[1]-limits[0])*0.1, limits[1] + (limits[1]-limits[0])*0.1)
+    plt.ylim(limits[2] - (limits[3]-limits[2])*0.1, limits[3] + (limits[3]-limits[2])*0.1)
     ax = plt.gca()
     for tick in ax.xaxis.get_major_ticks():
       tick.label1.set_fontsize(fontsize)
     for tick in ax.yaxis.get_major_ticks():
       tick.label1.set_fontsize(fontsize)
-    plt.savefig("Figures/gods_sky.png",bbox_inches='tight',pad_inches=0.)
-    if verbose != None: print "...done!"
-    
     # Histogram of source magnitude
-    plt.figure()
-    fontsize = 25
+    plt.subplot(122)
     bin=np.arange(m_min,m_max,0.05)
     if verbose != None: print "Plotting histogram of source magnitude..."
     plt.hist(catalog.mag,bins=bin, log=True)
-    plt.title("%i Sources in Sample" % catalog.size, fontsize=fontsize)
+    #plt.title("%i Sources in Sample" % catalog.size, fontsize=fontsize)
     plt.xlabel("Source Magnitude", fontsize=fontsize)
     plt.ylabel("log(N)", fontsize=fontsize)
     ax = plt.gca()
@@ -72,7 +72,9 @@ def create_catalog(M, m_min, m_max, powerlaw, limits, seed, plots=None, verbose=
       tick.label1.set_fontsize(fontsize)
     for tick in ax.yaxis.get_major_ticks():
       tick.label1.set_fontsize(fontsize)
-    plt.savefig("Figures/source_mag_histogram.png",bbox_inches='tight',pad_inches=0.)
+      
+    filename = "Figures/Catalog.png"
+    plt.savefig(filename,bbox_inches='tight',pad_inches=0.5)
     if verbose != None: print "...done!"
   
   return catalog

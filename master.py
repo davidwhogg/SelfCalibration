@@ -27,10 +27,10 @@ os.system('rm ./Figures/Flat_Fields/*.gif')
 if __name__ == "__main__":
   for strategy in ['A']: #['A', 'D']:
 
-    catalog_plots = None
+    catalog_plots = ''#None
     survey_plots = None # strategy
     coverage_plots = None # strategy
-    ff_plots = 'all' # None, 'all'
+    ff_plots = None # None, 'all'
     verbose = None
     health_plots = None
 
