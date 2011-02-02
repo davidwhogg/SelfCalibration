@@ -111,7 +111,7 @@ def single_image(sky_catalog, pointing, orientation, plots=None, verbose=None):
     plt.plot(alpha,beta,'k', linewidth=2)
     plt.xlabel(ur'$\alpha$', fontsize=20)
     plt.ylabel(ur'$\beta$', fontsize=20)
-    sky = parameters.sky_limits()
+    sky = parameters.sky_limits
     plt.xlim(sky[0],sky[1])
     plt.ylim(sky[2],sky[3])
     plt.axis('equal')
@@ -322,31 +322,16 @@ def plot_flat_fields(our_q, iteration_number,strategy=None):
   plt.savefig(filename,bbox_inches='tight',pad_inches=0.5)
   plt.clf()  
 
-def coverage(obs_cat, strategy):
-  limits = parameters.sky_limits()
-  num_stars = int(np.around(parameters.density_of_stars()*(limits[1]-limits[0]) * (limits[3]-limits[2])))
-  num_obs = np.zeros((num_stars,2))
-  for i in range(num_stars):
-    num_obs[i,0] = i
-    indx = np.where(obs_cat.k == i)
-    num_obs[i,1] = len(obs_cat.k[indx])
-  max_obs = int(np.around(np.max(num_obs[:,1])))
-  int_obs = np.zeros((max_obs+1,2))
-  
-  for i in range(max_obs+1):
-    int_obs[i,0] = i
-    indx = np.where(num_obs[:,1] <= i)
-    int_obs[i,1] = len(indx[0])
-  plt.figure()
-  plt.plot(int_obs[:,0],int_obs[:,1]/float(num_stars))
-  plt.xlabel(r"Number of Observations")
-  plt.ylabel(r"Fraction of Sources Covered")
-  plt.title('Survey %s Coverage' % strategy)
-  plt.ylim(0.,1.)
-  filename = "./Figures/%s_coverage.png" % strategy
-  plt.savefig(filename,bbox_inches='tight')#,pad_inches=0.5)
-  plt.clf()
-  return num_obs
+def coverage(obs_cat, strategy, verbose=None):
+  if verbose != None: print "Writing out coverage pickle..."
+  dic = {}
+  dic['number_stars'] = int(np.around(parameters.density_of_stars()*(parameters.sky_limits[1]-parameters.sky_limits[0]) * (parameters.sky_limits[3]-parameters.sky_limits[2])))
+  dic['k'] = obs_cat.k 
+  dic['strategy'] = strategy
+  filename = "./Plotting_Data/%s_coverage.p" % strategy
+  pickle.dump(dic, open(filename, "wb" )) 
+  if verbose != None: print "...done!"
+  return 0
 
 def invvar_saveout(obs_cat):
   dic = {}

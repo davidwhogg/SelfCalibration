@@ -25,13 +25,11 @@ def FoV():
   # Camera's field-of-view
   return [0.7,0.7] # [Δα, Δβ]
   
-def sky_limits():
-  # limits of spacial/angular coordinates 
-  return [0.0,10.0,0.0,10.0] #[α_min, α_max, β_min, β_max]
-  
 def ff_samples():
   return [100,100]
   
 flat_field_order = 9
 
 epsilon_max = 1
+
+sky_limits = [0.0,10.0,0.0,10.0] #[α_min, α_max, β_min, β_max]

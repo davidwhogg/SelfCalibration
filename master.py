@@ -6,6 +6,7 @@ import matplotlib.pylab as plt
 import math
 import os
 import glob
+import pickle
 # Set up LaTeX for plots
 from matplotlib import rc
 rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
@@ -16,6 +17,7 @@ import functions as f
 import god
 import parameters as p
 
+os.system('rm ./Plotting_Data/*.p_old')
 os.chdir("./Plotting_Data/")
 # Change all pickles to _old
 for files in glob.glob("*.p"):
@@ -30,9 +32,11 @@ os.system('rm ./Figures/*.pdf')
 os.system('rm ./Figures/Flat_Fields/*.png')
 os.system('rm ./Figures/Flat_Fields/*.gif')
 
+survey_strategies = ['D', 'A'] #['A', 'D']:
+pickle.dump(survey_strategies, open("./Plotting_Data/strategies.p", "wb" ))
 
 if __name__ == "__main__":
-  for strategy in ['D']: #['A', 'D']:
+  for strategy in survey_strategies: 
 
     catalog_plots = ''#None
     survey_plots = None # strategy
@@ -46,7 +50,7 @@ if __name__ == "__main__":
     #*************** Generate Sky Catalog *******************
     #********************************************************
     # Creates catalog of stars used for calibration
-    sky_catalog = god.create_catalog(p.density_of_stars(), p.m_min(), p.m_max(), p.powerlaw(), p.sky_limits(), seed = 1, plots = catalog_plots, verbose = verbose)
+    sky_catalog = god.create_catalog(p.density_of_stars(), p.m_min(), p.m_max(), p.powerlaw(), p.sky_limits, seed = 1, plots = catalog_plots, verbose = verbose)
         # powerlaw = B in log10(dN/dm) = A + B*m
         # sky_limits = [α_min, α_max, β_min, β_max]
         # returns sky_catalog = [Star ID, magnitude, α, β]
@@ -60,7 +64,7 @@ if __name__ == "__main__":
     observation_catalog = f.survey(sky_catalog, survey_file, plots=survey_plots, verbose=verbose) 
         # observation_catalog: *.size, *.pointing_ID, *.star_ID, *.flux, *.invvar, *.x, *.y
 
-    if coverage_plots != None: f.coverage(observation_catalog, strategy)
+    if coverage_plots != None: f.coverage(observation_catalog, strategy, verbose=verbose)
 
     if plot_invvar != None: f.invvar_saveout(observation_catalog)
     #********************************************************
