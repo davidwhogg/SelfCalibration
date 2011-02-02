@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pylab as plt
 import math
 import os
+import glob
 # Set up LaTeX for plots
 from matplotlib import rc
 rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
@@ -14,6 +15,13 @@ rc('text', usetex=True)
 import functions as f
 import god
 import parameters as p
+
+os.chdir("./Plotting_Data/")
+# Change all pickles to _old
+for files in glob.glob("*.p"):
+  newfilename = files+'_old'
+  os.rename(files,newfilename)
+os.chdir("..")
 
 # Remove all old plots
 os.system('rm ./Figures/Camera_Images/*.png')
@@ -28,9 +36,9 @@ if __name__ == "__main__":
 
     catalog_plots = ''#None
     survey_plots = None # strategy
-    coverage_plots = None # strategy
+    coverage_plots = strategy # strategy
     ff_plots = 'all' # None, 'all'
-    plot_invvar = None
+    plot_invvar = ''#None
     verbose = None
     health_plots = None
 

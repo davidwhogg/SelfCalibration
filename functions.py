@@ -163,7 +163,9 @@ def ubercalibration(observation_catalog,sky_catalog, strategy,ff_plots = None):
   chi2 = 1e9
   old_chi2 = 1e10
   iteration_number = 0
+  next_plot_iteration = 1
   while (abs(chi2 - old_chi2) > stop_condition):
+    iteration_number += 1
     temp_chi2 = chi2
     s, s_invvar = s_step(observation_catalog,q)
     q, q_invvar, chi2 = q_step(observation_catalog, s, order,iteration_number,plots=ff_plots)
@@ -173,14 +175,16 @@ def ubercalibration(observation_catalog,sky_catalog, strategy,ff_plots = None):
     indx = [s != 0]
     rms = rms_error(s[indx],sky_catalog.flux[indx])
     bdness = badness(q)
-    print "%i: RMS = %.6f %%, Badness = %0.6f %%, chi2 = %0.2f (%i)" % (iteration_number+1, rms, 100*bdness,chi2, observation_catalog.size)
+    print "%i: RMS = %.6f %%, Badness = %0.6f %%, chi2 = %0.2f (%i)" % (iteration_number, rms, 100*bdness,chi2, observation_catalog.size)
     print q
 
-    if (ff_plots == 'all') or (abs(chi2 - old_chi2) < stop_condition): plot_flat_fields(q, (iteration_number), strategy=strategy)
+    if ((ff_plots == 'all') and (iteration_number == next_plot_iteration)) or (abs(chi2 - old_chi2) < stop_condition): 
+      plot_flat_fields(q, (iteration_number), strategy=strategy)
+      next_plot_iteration *= 2
     
     if ff_plots == 'all' and (abs(chi2 - old_chi2) < stop_condition): 
       os.system(("convert -delay 20 -loop 0 ./Figures/Flat_Fields/%s*.png ./Figures/Flat_Fields/%s_00_animation.gif" % (strategy,strategy)))
-    iteration_number += 1
+    
   return 
 
 def evaluate_flat_field_functions(x, y, order):
@@ -270,7 +274,7 @@ def plot_flat_fields(our_q, iteration_number,strategy=None):
   plt.subplot(121)
   plt.suptitle('Survey %s' % strategy, fontsize = 20)
 
-  plt.title(r"Flat-Fields (God's = Black; Fitted = Red) Iteration: %i" % (iteration_number+1))
+  plt.title(r"Flat-Fields (God's = Black; Fitted = Red) Iteration: %i" % (iteration_number))
   plt.xlabel(r"$\alpha$")
   plt.ylabel(r"$\beta$")
   x = np.arange(-FoV[0]/2,FoV[0]/2,0.01)
@@ -289,11 +293,11 @@ def plot_flat_fields(our_q, iteration_number,strategy=None):
   # Find parameters for contour plot
   god_ff_max = np.max(god_ff)
   god_ff_min = np.min(god_ff)
-  step = (god_ff_max-god_ff_min)/10
-  
-  CS = plt.contour(X,Y,god_ff,np.arange(god_ff_min,god_ff_max,step),colors='k')
+  # XX magic number
+  levels = np.arange(0.5,1.5,0.01)
+  CS = plt.contour(X,Y,god_ff,levels ,colors='k')
   plt.clabel(CS, fontsize=9, inline=1)
-  CS2 = plt.contour(X,Y,our_ff,np.arange(god_ff_min,god_ff_max,step),colors='r',alpha=0.5)
+  CS2 = plt.contour(X,Y,our_ff,levels,colors='r',alpha=0.5)
 
   FoV = parameters.FoV()
   plt.xlim(-FoV[0]/2, FoV[0]/2)
@@ -307,17 +311,14 @@ def plot_flat_fields(our_q, iteration_number,strategy=None):
   
   # Plot residual in flat-field
   plt.subplot(122)
-  plt.title(r"Residual Error in Fitted Flat-Field (\%)")
+  plt.title(r"Residual (Fit - God) in Flat-Field (\%)")
   a = plt.imshow((100*(our_ff-god_ff)/god_ff),extent=(-FoV[0]/2,FoV[0]/2,-FoV[1]/2,FoV[1]/2), vmin = -1,vmax = 1, cmap='gray')
   plt.colorbar(a,shrink=0.7)
   plt.xlabel(r"$\alpha$")
   plt.ylabel(r"$\beta$")
   
-  # Save figure
-  if iteration_number < 9:
-    filename = 'Figures/Flat_Fields/%s_0%d_ff.png' % (strategy,iteration_number+1)
-  else:
-    filename = 'Figures/Flat_Fields/%s_%d_ff.png' % (strategy, iteration_number+1)
+  filename = 'Figures/Flat_Fields/%s_%04d_ff.png' % (strategy, iteration_number)
+  
   plt.savefig(filename,bbox_inches='tight',pad_inches=0.5)
   plt.clf()  
 
@@ -349,13 +350,10 @@ def coverage(obs_cat, strategy):
 
 def invvar_saveout(obs_cat):
   dic = {}
+  dic['counts'] = obs_cat.counts
   dic['true_invvar'] = obs_cat.gods_invvar
   dic['reported_invvar'] = obs_cat.invvar
   pickle.dump(dic, open( "./Plotting_Data/invvar.p", "wb" ) )
-  plt.clf()
-  plt.plot(flux2mag(obs_cat.counts), np.log10((1/obs_cat.gods_invvar)/obs_cat.counts**2),'rx')
-  plt.plot(flux2mag(obs_cat.counts), np.log10((1/obs_cat.invvar)/obs_cat.counts**2),'k.')
-  plt.show()
   return 0
 # constants
 god_mean_flat_field = average_over_ff(god.flat_field,god.flat_field_parameters())
