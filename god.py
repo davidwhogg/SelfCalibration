@@ -6,7 +6,7 @@ import math
 import sys
 import matplotlib.pylab as plt
 import functions as f
-import parameters
+import parameters as p
 
 # magic numbers
 def flat_field_parameters():
@@ -103,7 +103,7 @@ def flat_field(x,y,par = flat_field_parameters()):
   ff = (par[0] + par[1]*x + par[2]*y + par[3]*x**2 + par[4]*x*y + par[5]*y**2)
   # detector part
   k = 6
-  fov = parameters.FoV()
+  fov = p.FoV()
   for nx in range(8):
     kx = nx * np.pi / fov[0]
     ckx = np.cos(kx * x)
@@ -134,7 +134,7 @@ class SourceCatalog:
       self.mag = generate_magnitudes(m_min,m_max,powerlaw,size)
       self.size = size
       self.flux = f.mag2flux(self.mag)
-      self.epsilon = np.random.uniform(0,1, size=size)
+      self.epsilon = np.random.uniform(0,p.epsilon_max, size=size)
       
 def create_catalog(M, m_min, m_max, powerlaw, limits, seed, plots=None, verbose=None):
   if verbose != None: print "Generating God's Catalog..."

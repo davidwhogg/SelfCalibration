@@ -33,3 +33,5 @@ def ff_samples():
   return [100,100]
   
 flat_field_order = 9
+
+epsilon_max = 1
