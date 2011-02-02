@@ -7,39 +7,60 @@ import math
 import os
 import glob
 import pickle
+import sys
 # Set up LaTeX for plots
 from matplotlib import rc
 rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
 rc('text', usetex=True)
 
+import tparameters
+
+def init_func():
+  if len(sys.argv) < 2:
+    pdic = tparameters.dic # parameter database, shared with 
+    mod_dic = None
+    #other modules
+  else:
+    pdic = tparameters.dic
+    pdic[sys.argv[1]] = sys.argv[2]
+    mod_dic = sys.argv[2]
+  return (pdic, mod_dic)
+
 # Custom Modules
 import functions as f
 import god
-import parameters as p
 
-os.system('rm ./Plotting_Data/*.p_old')
-os.chdir("./Plotting_Data/")
-# Change all pickles to _old
-for files in glob.glob("*.p"):
-  newfilename = files+'_old'
-  os.rename(files,newfilename)
-os.chdir("..")
+print len(sys.argv)
 
-# Remove all old plots
-os.system('rm ./Figures/Camera_Images/*.png')
-os.system('rm ./Figures/*.png')
-os.system('rm ./Figures/*.pdf')
-os.system('rm ./Figures/Flat_Fields/*.png')
-os.system('rm ./Figures/Flat_Fields/*.gif')
+def clean_up_old_files():
+  os.system('rm ./Plotting_Data/*.p_old')
+  os.chdir("./Plotting_Data/")
+  # Change all pickles to _old
+  for files in glob.glob("*.p"):
+    newfilename = files+'_old'
+    os.rename(files,newfilename)
+  os.chdir("..")
 
-survey_strategies = ['D', 'A'] #['A', 'D']:
+  # Remove all old plots
+  os.system('rm ./Figures/Camera_Images/*.png')
+  os.system('rm ./Figures/*.png')
+  os.system('rm ./Figures/*.pdf')
+  os.system('rm ./Figures/Flat_Fields/*.png')
+  os.system('rm ./Figures/Flat_Fields/*.gif')
+
+  
+survey_strategies = ['D'] #['A', 'D']:
 pickle.dump(survey_strategies, open("./Plotting_Data/strategies.p", "wb" ))
 
 if __name__ == "__main__":
+  pdic, mod_dic = init_func()
+  clean_up_old_files()
+  
   for strategy in survey_strategies: 
 
     catalog_plots = ''#None
     survey_plots = None # strategy
+    
     coverage_plots = strategy # strategy
     ff_plots = 'all' # None, 'all'
     plot_invvar = ''#None
@@ -50,7 +71,7 @@ if __name__ == "__main__":
     #*************** Generate Sky Catalog *******************
     #********************************************************
     # Creates catalog of stars used for calibration
-    sky_catalog = god.create_catalog(p.density_of_stars(), p.m_min(), p.m_max(), p.powerlaw(), p.sky_limits, seed = 1, plots = catalog_plots, verbose = verbose)
+    sky_catalog = god.create_catalog(seed = 1, plots = catalog_plots, verbose = verbose)
         # powerlaw = B in log10(dN/dm) = A + B*m
         # sky_limits = [α_min, α_max, β_min, β_max]
         # returns sky_catalog = [Star ID, magnitude, α, β]
@@ -70,7 +91,7 @@ if __name__ == "__main__":
     #********************************************************
     #********************* Ubercalibration ******************
     #********************************************************
-    f.ubercalibration(observation_catalog,sky_catalog,strategy,ff_plots=ff_plots)
+    f.ubercalibration(observation_catalog,sky_catalog,strategy,mod_dic,ff_plots=ff_plots)
     
     #********************************************************
     #*********************** Health Checks ******************

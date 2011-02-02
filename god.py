@@ -3,10 +3,12 @@
   
 import numpy as np
 import math
-import sys
+#import sys
 import matplotlib.pylab as plt
 import functions as f
-import parameters as p
+
+from master import init_func 
+pdic, temp = init_func() # import parameter database from main module
 
 # magic numbers
 def flat_field_parameters():
@@ -103,7 +105,7 @@ def flat_field(x,y,par = flat_field_parameters()):
   ff = (par[0] + par[1]*x + par[2]*y + par[3]*x**2 + par[4]*x*y + par[5]*y**2)
   # detector part
   k = 6
-  fov = p.FoV()
+  fov = pdic['FoV']
   for nx in range(8):
     kx = nx * np.pi / fov[0]
     ckx = np.cos(kx * x)
@@ -134,10 +136,16 @@ class SourceCatalog:
       self.mag = generate_magnitudes(m_min,m_max,powerlaw,size)
       self.size = size
       self.flux = f.mag2flux(self.mag)
-      self.epsilon = np.random.uniform(0,p.epsilon_max, size=size)
+      self.epsilon = np.random.uniform(0,pdic['epsilon_max'], size=size)
       
-def create_catalog(M, m_min, m_max, powerlaw, limits, seed, plots=None, verbose=None):
+def create_catalog(seed, plots=None, verbose=None):
   if verbose != None: print "Generating God's Catalog..."
+  M = pdic['density_of_stars']
+  m_min = pdic['m_min']
+  m_max = pdic['m_max']
+  powerlaw = pdic['powerlaw']
+  limits = pdic['sky_limits']
+  
   # Calculate total number of stars in catalog
   number_stars = M * (limits[1]-limits[0])*(limits[3]-limits[2])
   # Create catalog

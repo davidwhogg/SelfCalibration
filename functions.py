@@ -7,10 +7,10 @@ import os
 import pickle
 
 # Custom Modules
-import parameters
 import god
 
-
+from master import init_func
+pdic, temp = init_func() # import parameter database from main module
 
 #*****************************************************
 #************ Transformation Functions ***************
@@ -70,15 +70,15 @@ class MeasuredCatalog:
       return flux2mag(self.counts)
       
     def reported_invvar(self):
-      sky_unc = 0.1*mag2flux(parameters.mag_at_ten_sigma())
-      var = (sky_unc**2 + (parameters.eta()**2) * self.counts**2)
+      sky_unc = 0.1*mag2flux(pdic['mag_at_ten_sigma'])
+      var = (sky_unc**2 + (pdic['eta']**2) * self.counts**2)
       return 1. / var
 
     def true_invvar(self, camera_catalog, inside_FoV, flat):
       epsilon = camera_catalog.epsilon[inside_FoV]
-      sky_unc = 0.1*mag2flux(parameters.mag_at_ten_sigma())
+      sky_unc = 0.1*mag2flux(pdic['mag_at_ten_sigma'])
       flux = camera_catalog.flux[inside_FoV]
-      var = (sky_unc**2 * (1. + epsilon**2) + (parameters.eta()**2) * flat**2 * flux**2)
+      var = (sky_unc**2 * (1. + epsilon**2) + (pdic['eta']**2) * flat**2 * flux**2)
       return 1. / var
 
 def single_image(sky_catalog, pointing, orientation, plots=None, verbose=None):
@@ -87,7 +87,7 @@ def single_image(sky_catalog, pointing, orientation, plots=None, verbose=None):
   if verbose != None: print "...done!"
 
   if verbose != None: print "Finding stars within camera FoV..."
-  FoV = parameters.FoV()
+  FoV = pdic['FoV']
   x_min = -FoV[0]/2; y_min = -FoV[1]/2
   x_max = FoV[0]/2; y_max = FoV[1]/2
   inside_FoV = np.where((x_min<camera_catalog.x) & (camera_catalog.x<x_max) & (y_min<camera_catalog.y) & (camera_catalog.y<y_max))
@@ -111,7 +111,7 @@ def single_image(sky_catalog, pointing, orientation, plots=None, verbose=None):
     plt.plot(alpha,beta,'k', linewidth=2)
     plt.xlabel(ur'$\alpha$', fontsize=20)
     plt.ylabel(ur'$\beta$', fontsize=20)
-    sky = parameters.sky_limits
+    sky = pdic['sky_limits']
     plt.xlim(sky[0],sky[1])
     plt.ylim(sky[2],sky[3])
     plt.axis('equal')
@@ -156,8 +156,8 @@ def survey(sky_catalog, survey_file, plots=None, verbose=None):
 #**************** Ubercal Functions ******************
 #*****************************************************
 
-def ubercalibration(observation_catalog,sky_catalog, strategy,ff_plots = None):
-  order = parameters.flat_field_order
+def ubercalibration(observation_catalog,sky_catalog, strategy,mod_dic, ff_plots = None):
+  order = pdic['flat_field_order']
   q = np.array([1])
   stop_condition = 1e-4
   chi2 = 1e9
@@ -184,6 +184,14 @@ def ubercalibration(observation_catalog,sky_catalog, strategy,ff_plots = None):
     
     if ff_plots == 'all' and (abs(chi2 - old_chi2) < stop_condition): 
       os.system(("convert -delay 20 -loop 0 ./Figures/Flat_Fields/%s*.png ./Figures/Flat_Fields/%s_00_animation.gif" % (strategy,strategy)))
+      if mod_dic != None:
+        mod_dic = float(mod_dic)
+        out = np.zeros((1,2))
+        out[0,0] = mod_dic
+        out[0,1] = bdness
+        f_handle = file('./test.txt', 'a')
+        np.savetxt(f_handle, out)
+        f_handle.close()
     
   return 
 
@@ -250,8 +258,8 @@ def rms_error(flux_estimate, true_flux):
   return 100*np.sqrt(np.mean((flux_estimate-true_flux)/true_flux)**2)
 
 def average_over_ff(func, args):
-  FoV = parameters.FoV()
-  nalpha, nbeta = parameters.ff_samples()
+  FoV = pdic['FoV']
+  nalpha, nbeta = pdic['ff_samples']
   dalpha = FoV[0]/(nalpha-1)
   dbeta = FoV[1]/(nbeta-1)
   x = np.arange(-FoV[0]/2+dalpha/2,FoV[0]/2,dalpha)
@@ -268,7 +276,7 @@ def average_over_ff(func, args):
 #*****************************************************
 
 def plot_flat_fields(our_q, iteration_number,strategy=None):
-  FoV = parameters.FoV() 
+  FoV = pdic['FoV'] 
   
   plt.figure(3000,figsize=(13, 6)) # want square figure
   plt.subplot(121)
@@ -299,7 +307,7 @@ def plot_flat_fields(our_q, iteration_number,strategy=None):
   plt.clabel(CS, fontsize=9, inline=1)
   CS2 = plt.contour(X,Y,our_ff,levels,colors='r',alpha=0.5)
 
-  FoV = parameters.FoV()
+  FoV = pdic['FoV']
   plt.xlim(-FoV[0]/2, FoV[0]/2)
   plt.ylim(-FoV[1]/2, FoV[1]/2)
   
@@ -325,7 +333,8 @@ def plot_flat_fields(our_q, iteration_number,strategy=None):
 def coverage(obs_cat, strategy, verbose=None):
   if verbose != None: print "Writing out coverage pickle..."
   dic = {}
-  dic['number_stars'] = int(np.around(parameters.density_of_stars()*(parameters.sky_limits[1]-parameters.sky_limits[0]) * (parameters.sky_limits[3]-parameters.sky_limits[2])))
+  sky_limits = pdic['sky_limits']
+  dic['number_stars'] = int(np.around(pdic['density_of_stars']*(sky_limits[1]-sky_limits[0]) * (sky_limits[3]-sky_limits[2])))
   dic['k'] = obs_cat.k 
   dic['strategy'] = strategy
   filename = "./Plotting_Data/%s_coverage.p" % strategy
