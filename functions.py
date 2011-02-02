@@ -53,7 +53,8 @@ class MeasuredCatalog:
       self.x = camera_catalog.x[inside_FoV]
       self.y = camera_catalog.y[inside_FoV]
       flat = god.flat_field(self.x,self.y)
-      self.counts = camera_catalog.flux[inside_FoV] * flat + np.random.normal(size=self.size)/np.sqrt(self.true_invvar(camera_catalog, inside_FoV, flat))
+      self.gods_invvar = self.true_invvar(camera_catalog, inside_FoV, flat)
+      self.counts = camera_catalog.flux[inside_FoV] * flat + np.random.normal(size=self.size)/np.sqrt(self.gods_invvar)
       self.invvar = self.reported_invvar()
 
     def append(self, other):
@@ -63,6 +64,7 @@ class MeasuredCatalog:
        self.y = np.append(self.y, other.y)
        self.counts = np.append(self.counts, other.counts)
        self.invvar = np.append(self.invvar, other.invvar)
+       self.gods_invvar = np.append(self.gods_invvar, other.gods_invvar)
 
     def mag(self):
       return flux2mag(self.counts)
@@ -269,7 +271,7 @@ def plot_flat_fields(our_q, iteration_number,strategy=None):
   plt.suptitle('Survey %s' % strategy, fontsize = 20)
 
   plt.title(r"Flat-Fields (God's = Black; Fitted = Red) Iteration: %i" % (iteration_number+1))
-  plt.xlabel(r"\alpha")
+  plt.xlabel(r"$\alpha$")
   plt.ylabel(r"$\beta$")
   x = np.arange(-FoV[0]/2,FoV[0]/2,0.01)
   y = np.arange(-FoV[1]/2,FoV[1]/2,0.01)
@@ -308,7 +310,7 @@ def plot_flat_fields(our_q, iteration_number,strategy=None):
   plt.title(r"Residual Error in Fitted Flat-Field (\%)")
   a = plt.imshow((100*(our_ff-god_ff)/god_ff),extent=(-FoV[0]/2,FoV[0]/2,-FoV[1]/2,FoV[1]/2), vmin = -1,vmax = 1, cmap='gray')
   plt.colorbar(a,shrink=0.7)
-  plt.xlabel(r"\alpha")
+  plt.xlabel(r"$\alpha$")
   plt.ylabel(r"$\beta$")
   
   # Save figure
@@ -345,7 +347,15 @@ def coverage(obs_cat, strategy):
   plt.clf()
   return num_obs
 
-#def invvar_saveout()
-
+def invvar_saveout(obs_cat):
+  dic = {}
+  dic['true_invvar'] = obs_cat.gods_invvar
+  dic['reported_invvar'] = obs_cat.invvar
+  pickle.dump(dic, open( "./Plotting_Data/invvar.p", "wb" ) )
+  plt.clf()
+  plt.plot(flux2mag(obs_cat.counts), np.log10((1/obs_cat.gods_invvar)/obs_cat.counts**2),'rx')
+  plt.plot(flux2mag(obs_cat.counts), np.log10((1/obs_cat.invvar)/obs_cat.counts**2),'k.')
+  plt.show()
+  return 0
 # constants
 god_mean_flat_field = average_over_ff(god.flat_field,god.flat_field_parameters())

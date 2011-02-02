@@ -23,13 +23,14 @@ os.system('rm ./Figures/Flat_Fields/*.png')
 os.system('rm ./Figures/Flat_Fields/*.gif')
 
 
-def main():
+if __name__ == "__main__":
   for strategy in ['D']: #['A', 'D']:
 
     catalog_plots = ''#None
     survey_plots = None # strategy
     coverage_plots = None # strategy
     ff_plots = 'all' # None, 'all'
+    plot_invvar = None
     verbose = None
     health_plots = None
 
@@ -53,6 +54,7 @@ def main():
 
     if coverage_plots != None: f.coverage(observation_catalog, strategy)
 
+    if plot_invvar != None: f.invvar_saveout(observation_catalog)
     #********************************************************
     #********************* Ubercalibration ******************
     #********************************************************
@@ -89,7 +91,7 @@ def main():
       plt.savefig('Figures/flux_uncertainty_variance.png',bbox_inches='tight',pad_inches=0.1)
       if verbose != None: print "...done!"
 
-if __name__ == "__main__":
+#if __name__ == "__main__":
   #import cProfile
   #cProfile.run('main()')
-  main()
+  #main()
