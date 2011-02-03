@@ -32,7 +32,7 @@ sort_reported_invvar = sort[:,1]
 sort_counts = sort[:,0]
 
 plt.plot(counts, np.log10((1/true_invvar)/counts**2),'r.', markersize = 1., label = "Actual Variance")
-plt.plot(sort_counts, np.log10((1/sort_reported_invvar)/sort_counts**2),'k', label = "Reported Variance")
+plt.plot(sort_counts, np.log10((1/sort_reported_invvar)/sort_counts**2),'k', label = "Assumed Variance")
 plt.xlabel(r'$c_i$', fontsize=fontsize)
 plt.ylabel(ur'$\log_{10}(\frac{{\sigma_i}^2}{c_i^2})$',fontsize=fontsize)#, rotation='horizontal')
 plt.legend()

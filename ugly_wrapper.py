@@ -9,7 +9,7 @@ import matplotlib.pylab as plt
 os.system('rm ./test.txt')
 
 parameter = 'epsilon_max'
-par_range = np.arange(0,1,0.1)
+par_range = np.arange(0,1,0.2)
 
 for i in range(len(par_range)):
   command = './master.py %s %s' % (parameter, par_range[i])

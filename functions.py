@@ -96,37 +96,7 @@ def single_image(sky_catalog, pointing, orientation, plots=None, verbose=None):
   if verbose != None: print "Measuring stars within FoV..."
   measured_catalog = MeasuredCatalog(camera_catalog, inside_FoV)
   if verbose != None: print "...done!"
-    
-  if plots != None:
-    # Plot sky (highlight extracted sources), with FoV
-    plt.figure(2000, figsize=(13,6))
-    title = ur'$\alpha$ = %.1lf, $\beta$ = %.1lf, $\theta$ = %.1lf$^\circ$' % (pointing[0],pointing[1], orientation)
-    plt.suptitle(title, fontsize=20)
-    plt.subplot(121)
-    x = np.array([x_min, x_min, x_max, x_max, x_min])
-    y = np.array([y_min, y_max, y_max, y_min, y_min])
-    alpha, beta = fp2sky(x,y,pointing, orientation)
-    plt.plot(sky_catalog.alpha,sky_catalog.beta,'o', markersize=2)
-    plt.plot(sky_catalog.alpha[inside_FoV],sky_catalog.beta[inside_FoV],'ro',markersize=2)
-    plt.plot(alpha,beta,'k', linewidth=2)
-    plt.xlabel(ur'$\alpha$', fontsize=20)
-    plt.ylabel(ur'$\beta$', fontsize=20)
-    sky = pdic['sky_limits']
-    plt.xlim(sky[0],sky[1])
-    plt.ylim(sky[2],sky[3])
-    plt.axis('equal')
-    # Plot sources on focal plane
-    plt.subplot(122)
-    plt.plot(measured_catalog.x,measured_catalog.y,'o', markersize=2)
-    plt.xlabel(ur'$x$', fontsize=20)
-    plt.ylabel(ur'$y$', fontsize=20)
-    plt.xlim(x_min,x_max)
-    plt.ylim(y_min,y_max)
-    filename = "Figures/Camera_Images/%s_alpha_%.1lf_beta_%.1lf_rot_%.1lf.png" % (plots, pointing[0],pointing[1], orientation)
-    print filename
-    plt.savefig(filename,bbox_inches='tight',pad_inches=0.5)
-    plt.clf()
-
+  if plots != None: save_camera(sky_catalog, measured_catalog, inside_FoV, pointing, orientation, verbose = verbose)
   return measured_catalog
   # measured_sources  *.size, *.k, *.flux, *.invvar, *.x, *.y
 
@@ -330,6 +300,10 @@ def plot_flat_fields(our_q, iteration_number,strategy=None):
   plt.savefig(filename,bbox_inches='tight',pad_inches=0.5)
   plt.clf()  
 
+#*****************************************************
+#********** Saving pickles for plotting **************
+#*****************************************************
+
 def coverage(obs_cat, strategy, verbose=None):
   if verbose != None: print "Writing out coverage pickle..."
   dic = {}
@@ -342,12 +316,37 @@ def coverage(obs_cat, strategy, verbose=None):
   if verbose != None: print "...done!"
   return 0
 
+def save_camera(sky_catalog, measured_catalog, inside_FoV, pointing, orientation, verbose=None):
+  if os.path.exists("./Plotting_Data/camera_image.p") != True:
+    if (verbose != None): print "Writing out camera pickle..."
+    FoV = pdic['FoV']
+    x_min = -FoV[0]/2; y_min = -FoV[1]/2
+    x_max = FoV[0]/2; y_max = FoV[1]/2
+    x = np.array([x_min, x_min, x_max, x_max, x_min])
+    y = np.array([y_min, y_max, y_max, y_min, y_min])
+    alpha, beta = fp2sky(x,y,pointing, orientation)    
+    dic = {}
+    dic['measured_catalog.x'] = measured_catalog.x
+    dic['measured_catalog.y'] = measured_catalog.y
+    dic['sky_catalog.alpha'] = sky_catalog.alpha
+    dic['sky_catalog.beta'] = sky_catalog.beta
+    dic['pointing'] = pointing
+    dic['orientation'] = orientation
+    dic['sky'] = pdic['sky_limits']
+    dic['fp_x'] = x
+    dic['fp_y'] = y
+    dic['fp_alpha'] = alpha
+    dic['fp_beta'] = beta
+    dic['inside_FoV'] = inside_FoV
+    pickle.dump(dic, open("./Plotting_Data/camera_image.p", "wb"))
+  if verbose != None: print "...done!"
+
 def invvar_saveout(obs_cat):
   dic = {}
   dic['counts'] = obs_cat.counts
   dic['true_invvar'] = obs_cat.gods_invvar
   dic['reported_invvar'] = obs_cat.invvar
-  pickle.dump(dic, open( "./Plotting_Data/invvar.p", "wb" ) )
+  pickle.dump(dic, open("./Plotting_Data/invvar.p", "wb"))
   return 0
 # constants
 god_mean_flat_field = average_over_ff(god.flat_field,god.flat_field_parameters())

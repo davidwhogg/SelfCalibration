@@ -16,7 +16,7 @@ filename = "coverage.p"
 strategies_filename = "./strategies.p"
 if os.path.exists(strategies_filename) != True:
   filename += '_old'
-  strategies_filename += 'old'
+  strategies_filename += '_old'
   plt.title('(Old Data)')
 
 sky_surveys = pickle.load(open(strategies_filename))
@@ -35,11 +35,11 @@ for surveys in sky_surveys:
     
   fraction = (1.*num_star_with_N_obs)/number_stars
 
-  plt.plot(fraction, label = ('Survey '+strategy))
+  plt.plot(fraction, label = ('Strategy '+strategy))
   gt90 = np.where (fraction > guide_frac)
   print gt90[0][0]
   guide_line = np.array([[0,float(gt90[0][0]), float(gt90[0][0])], [fraction[gt90[0][0]], fraction[gt90[0][0]],0.]])
-  plt.plot(guide_line[0], guide_line[1],'k--', alpha = 0.25)
+  #plt.plot(guide_line[0], guide_line[1],'k--', alpha = 0.25)
   
 plt.xlabel(r"Number of Observations")
 plt.ylabel(r"Fraction of Sources Covered")

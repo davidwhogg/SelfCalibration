@@ -40,29 +40,29 @@ def clean_up_old_files():
     newfilename = files+'_old'
     os.rename(files,newfilename)
   os.chdir("..")
-
+  
   # Remove all old plots
   os.system('rm ./Figures/Camera_Images/*.png')
   os.system('rm ./Figures/*.png')
   os.system('rm ./Figures/*.pdf')
   os.system('rm ./Figures/Flat_Fields/*.png')
   os.system('rm ./Figures/Flat_Fields/*.gif')
-
   
-survey_strategies = ['D'] #['A', 'D']:
-pickle.dump(survey_strategies, open("./Plotting_Data/strategies.p", "wb" ))
 
 if __name__ == "__main__":
-  os.system('mkdir -p ./Plotting_Data/')
   os.system('mkdir -p ./Figures/Camera_Images/')
   os.system('mkdir -p ./Figures/Flat_Fields/')
-  pdic, mod_dic = init_func()
-  clean_up_old_files()
   
+  clean_up_old_files()
+  pdic, mod_dic = init_func()
+
+  survey_strategies = ['D','A'] #['A', 'D']:
+  pickle.dump(survey_strategies, open("./Plotting_Data/strategies.p", "wb" ))
+
   for strategy in survey_strategies: 
 
     catalog_plots = ''#None
-    survey_plots = None # strategy
+    survey_plots = ''#None # strategy
     
     coverage_plots = strategy # strategy
     ff_plots = 'all' # None, 'all'
@@ -74,7 +74,7 @@ if __name__ == "__main__":
     #*************** Generate Sky Catalog *******************
     #********************************************************
     # Creates catalog of stars used for calibration
-    sky_catalog = god.create_catalog(seed = 1, plots = catalog_plots, verbose = verbose)
+    sky_catalog = god.create_catalog(seed = 2, plots = catalog_plots, verbose = verbose)
         # powerlaw = B in log10(dN/dm) = A + B*m
         # sky_limits = [α_min, α_max, β_min, β_max]
         # returns sky_catalog = [Star ID, magnitude, α, β]
