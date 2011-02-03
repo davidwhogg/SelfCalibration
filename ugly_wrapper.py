@@ -8,6 +8,8 @@ import matplotlib.pylab as plt
 import glob
 import pickle
 
+os.system('mkdir -p ./Plotting_Data/Wrapped/')
+
 def clean_up_old_files(parameter):
   existing_file = "./Plotting_Data/Wrapped/*%s.txt_old" % parameter
   os.system(('rm -f '+existing_file))
