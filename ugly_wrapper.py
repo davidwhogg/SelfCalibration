@@ -25,7 +25,7 @@ par_range = np.arange(0,1,1)
 clean_up_old_files(parameter)
 
 for i in range(len(par_range)):
-  command = './master.py %s %s' % (parameter, par_range[i])
+  command = './master.py %s %s &' % (parameter, par_range[i])
   print command
   os.system(command)
   time.sleep(1)
