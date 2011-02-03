@@ -53,6 +53,9 @@ survey_strategies = ['D'] #['A', 'D']:
 pickle.dump(survey_strategies, open("./Plotting_Data/strategies.p", "wb" ))
 
 if __name__ == "__main__":
+  os.system('mkdir -p ./Plotting_Data/')
+  os.system('mkdir -p ./Figures/Camera_Images/')
+  os.system('mkdir -p ./Figures/Flat_Fields/')
   pdic, mod_dic = init_func()
   clean_up_old_files()
   
