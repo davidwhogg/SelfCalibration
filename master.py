@@ -32,8 +32,6 @@ def init_func():
 import functions as f
 import god
 
-print len(sys.argv)
-
 def clean_up_old_files():
   os.system('rm ./Plotting_Data/*.p_old')
   os.chdir("./Plotting_Data/")
@@ -59,17 +57,17 @@ if __name__ == "__main__":
   clean_up_old_files()
   pdic, modified_parameter, modified_value = init_func()
 
-  survey_strategies = ['D','A'] #['A', 'D']:
+  survey_strategies = ['D', 'C', 'B', 'A'] #['A', 'D']:
   pickle.dump(survey_strategies, open("./Plotting_Data/strategies.p", "wb" ))
 
   for strategy in survey_strategies: 
 
-    catalog_plots = ''#None
-    survey_plots = ''#None # strategy
+    catalog_plots = None#None
+    survey_plots = None#None # strategy
     
     coverage_plots = strategy # strategy
-    ff_plots = 'all' # None, 'all'
-    plot_invvar = ''#None
+    ff_plots = None # None, 'all'
+    plot_invvar = None#None
     verbose = None
     health_plots = None
 
