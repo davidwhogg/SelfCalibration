@@ -23,10 +23,12 @@ def init_func():
     #other modules
   else:
     pdic = tparameters.dic
-    pdic[sys.argv[1]] = sys.argv[2]
+    pdic[sys.argv[1]] = float(sys.argv[2])
     modified_parameter = sys.argv[1] 
     modified_value = sys.argv[2]
   return (pdic, modified_parameter, modified_value)
+
+pdic, modified_parameter, modified_value = init_func()
 
 # Custom Modules
 import functions as f
@@ -55,9 +57,9 @@ if __name__ == "__main__":
   os.system('mkdir -p ./Plotting_Data/Wrapped/')
   
   clean_up_old_files()
-  pdic, modified_parameter, modified_value = init_func()
+  
 
-  survey_strategies = ['D', 'C', 'B', 'A'] #['A', 'D']:
+  survey_strategies = ['D'] #['A', 'D']:
   pickle.dump(survey_strategies, open("./Plotting_Data/strategies.p", "wb" ))
 
   for strategy in survey_strategies: 
@@ -66,7 +68,7 @@ if __name__ == "__main__":
     survey_plots = None#None # strategy
     
     coverage_plots = strategy # strategy
-    ff_plots = None # None, 'all'
+    ff_plots = 'all' # None, 'all'
     plot_invvar = None#None
     verbose = None
     health_plots = None

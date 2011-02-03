@@ -160,6 +160,7 @@ def ubercalibration(observation_catalog,sky_catalog, strategy,modified_parameter
         out[0,0] = modified_value
         out[0,1] = bdness
         filename = './Plotting_Data/Wrapped/%s_%s.txt' % (strategy, modified_parameter)
+        print filename
         f_handle = file(filename, 'a')
         np.savetxt(f_handle, out)
         f_handle.close()

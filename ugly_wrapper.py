@@ -21,13 +21,13 @@ def clean_up_old_files(parameter):
   os.chdir("..")
   os.chdir("..")
 
-parameter = 'epsilon_max'
-par_range = np.arange(0,1,1)
+parameter = 'density_of_stars'
+par_range = np.array([3,10,20,30,40,50])#np.arange(10,30,)
 
 clean_up_old_files(parameter)
 
 for i in range(len(par_range)):
-  command = './master.py %s %s &' % (parameter, par_range[i])
+  command = './master.py %s %s' % (parameter, par_range[i])
   print command
   os.system(command)
   time.sleep(1)

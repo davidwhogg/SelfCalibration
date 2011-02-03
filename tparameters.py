@@ -10,7 +10,7 @@ dic = {
   
   'm_max'               :     22.5,
   
-  'density_of_stars'    :     50, # all magnitudes
+  'density_of_stars'    :     10, # all magnitudes
   
   'powerlaw'            :     0.25, # B in log10(dN/dm) = A + B*m
   
