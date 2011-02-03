@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 dic = {
+  'survey_strategies'     :     ['D', 'C'], #['D', 'C', 'B', 'A']
+  
   'mag_at_ten_sigma'    :     22.5,
 
   'eta'                 :     0.01,
@@ -10,7 +12,7 @@ dic = {
   
   'm_max'               :     22.5,
   
-  'density_of_stars'    :     10, # all magnitudes
+  'density_of_stars'    :     5, # all magnitudes
   
   'powerlaw'            :     0.25, # B in log10(dN/dm) = A + B*m
   
@@ -18,7 +20,7 @@ dic = {
   
   'ff_samples'          :     [100, 100],
   
-  'flat_field_order'    :     2,
+  'flat_field_order'    :     9,
   
   'epsilon_max'         :     1,
   

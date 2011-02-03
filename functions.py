@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-import matplotlib.pylab as plt
 import os
 import pickle
 
@@ -10,7 +9,7 @@ import pickle
 import god
 
 from master import init_func
-pdic, temp1, temp2 = init_func() # import parameter database from main module
+pdic, directory_path, temp1, temp2 = init_func() # import parameter database from main module
 
 #*****************************************************
 #************ Transformation Functions ***************
@@ -82,21 +81,23 @@ class MeasuredCatalog:
       return 1. / var
 
 def single_image(sky_catalog, pointing, orientation, plots=None, verbose=None):
-  if verbose != None: print "Converting sky catalog to focal plane coordinates..."
+  if verbose: print "Converting sky catalog to focal plane coordinates..."
   camera_catalog = CameraCatalog(sky_catalog, pointing, orientation)
-  if verbose != None: print "...done!"
+  if verbose: print "...done!"
 
-  if verbose != None: print "Finding stars within camera FoV..."
+  if verbose: print "Finding stars within camera FoV..."
   FoV = pdic['FoV']
   x_min = -FoV[0]/2; y_min = -FoV[1]/2
   x_max = FoV[0]/2; y_max = FoV[1]/2
   inside_FoV = np.where((x_min<camera_catalog.x) & (camera_catalog.x<x_max) & (y_min<camera_catalog.y) & (camera_catalog.y<y_max))
-  if verbose != None: print "...done!"
+  if verbose: print "...done!"
 
-  if verbose != None: print "Measuring stars within FoV..."
+  if verbose: print "Measuring stars within FoV..."
   measured_catalog = MeasuredCatalog(camera_catalog, inside_FoV)
-  if verbose != None: print "...done!"
-  if plots != None: save_camera(sky_catalog, measured_catalog, inside_FoV, pointing, orientation, verbose = verbose)
+  if verbose: print "...done!"
+  temp_filename = directory_path + '/camera_image.p'
+  one_camera_file = os.path.exists(temp_filename)
+  if plots and (one_camera_file != True) and (len(inside_FoV[0]) >= 5): save_camera(sky_catalog, measured_catalog, inside_FoV, pointing, orientation, verbose = verbose)
   return measured_catalog
   # measured_sources  *.size, *.k, *.flux, *.invvar, *.x, *.y
 
@@ -105,12 +106,12 @@ def single_image(sky_catalog, pointing, orientation, plots=None, verbose=None):
 #*****************************************************
       
 def survey(sky_catalog, survey_file, plots=None, verbose=None):  
-  if verbose != None: print "Loading survey..."
+  if verbose: print "Loading survey..."
   pointing = np.loadtxt(survey_file)
   number_pointings = len(pointing[:,0])  
-  if verbose != None: print "...done!"
+  if verbose: print "...done!"
   
-  if verbose != None: print "Surveying sky..."
+  if verbose: print "Surveying sky..."
   obs_cat = None
   for i in range(number_pointings):
     si = single_image(sky_catalog, [pointing[i,1],pointing[i,2]], pointing[i,3], plots=plots, verbose = verbose)
@@ -119,7 +120,7 @@ def survey(sky_catalog, survey_file, plots=None, verbose=None):
     else:
       obs_cat.append(si)
 
-  if verbose != None: print "...done!"
+  if verbose: print "...done!"
   return obs_cat
 
 #*****************************************************
@@ -134,7 +135,7 @@ def ubercalibration(observation_catalog,sky_catalog, strategy,modified_parameter
   old_chi2 = 1e10
   iteration_number = 0
   next_plot_iteration = 1
-  while (abs(chi2 - old_chi2) > stop_condition):
+  while ((abs(chi2 - old_chi2) > stop_condition) and (iteration_number < 258)):
     iteration_number += 1
     temp_chi2 = chi2
     s, s_invvar = s_step(observation_catalog,q)
@@ -148,12 +149,12 @@ def ubercalibration(observation_catalog,sky_catalog, strategy,modified_parameter
     print "%i: RMS = %.6f %%, Badness = %0.6f %%, chi2 = %0.2f (%i)" % (iteration_number, rms, 100*bdness,chi2, observation_catalog.size)
     print q
 
-    if ((ff_plots == 'all') and (iteration_number == next_plot_iteration)) or (abs(chi2 - old_chi2) < stop_condition): 
-      plot_flat_fields(q, (iteration_number), strategy=strategy)
+    if (ff_plots and (iteration_number == next_plot_iteration)) or (abs(chi2 - old_chi2) < stop_condition): 
+      saveout_flat_fields(q, iteration_number, strategy=strategy)
       next_plot_iteration *= 2
-    
-    if ff_plots == 'all' and (abs(chi2 - old_chi2) < stop_condition): 
-      os.system(("convert -delay 20 -loop 0 ./Figures/Flat_Fields/%s*.png ./Figures/Flat_Fields/%s_00_animation.gif" % (strategy,strategy)))
+    '''
+    if (ff_plots and (abs(chi2 - old_chi2) < stop_condition)): 
+      saveout_bdness(modified_value, bdness)
       if modified_value != None:
         modified_value = float(modified_value)
         out = np.zeros((1,2))
@@ -164,7 +165,7 @@ def ubercalibration(observation_catalog,sky_catalog, strategy,modified_parameter
         f_handle = file(filename, 'a')
         np.savetxt(f_handle, out)
         f_handle.close()
-    
+    '''
   return 
 
 def evaluate_flat_field_functions(x, y, order):
@@ -244,111 +245,74 @@ def average_over_ff(func, args):
   return np.mean(ff)
 
 #*****************************************************
-#*************** Plotting Functions ******************
+#********** Saving pickles for plotting **************
 #*****************************************************
 
-def plot_flat_fields(our_q, iteration_number,strategy=None):
-  FoV = pdic['FoV'] 
-  
-  plt.figure(3000,figsize=(13, 6)) # want square figure
-  plt.subplot(121)
-  plt.suptitle('Survey %s' % strategy, fontsize = 20)
-
-  plt.title(r"Flat-Fields (God's = Black; Fitted = Red) Iteration: %i" % (iteration_number))
-  plt.xlabel(r"$\alpha$")
-  plt.ylabel(r"$\beta$")
+def saveout_flat_fields(q, iteration_number, strategy):
+  FoV = pdic['FoV']
   x = np.arange(-FoV[0]/2,FoV[0]/2,0.01)
   y = np.arange(-FoV[1]/2,FoV[1]/2,0.01)
   X, Y = np.meshgrid(x, y)
-  
   # Have to reshape so that evaluate_flat_field() works 
   temp_x = np.reshape(X,-1)
   temp_y = np.reshape(Y,-1)
-  temp_z = evaluate_flat_field(temp_x,temp_y,our_q)
+  temp_z = evaluate_flat_field(temp_x,temp_y,q)
   our_ff = np.reshape(temp_z, (len(X[:,0]),len(X[0,:])))
   god_q = god.flat_field_parameters()
   temp_z = god.flat_field(temp_x,temp_y)
   god_ff = np.reshape(temp_z, (len(X[:,0]),len(X[0,:])))
+  dic = {}
+  dic['x'] = X
+  dic['y'] = Y
+  dic['god_ff'] = god_ff
+  dic['our_ff'] = our_ff
+  dic['iteration_number'] = iteration_number
+  filename = '%s/%s/%04d_ff.p' % (directory_path, strategy, iteration_number)
+  pickle.dump(dic, open(filename, "wb"))
 
-  # Find parameters for contour plot
-  god_ff_max = np.max(god_ff)
-  god_ff_min = np.min(god_ff)
-  # XX magic number
-  levels = np.arange(0.5,1.5,0.01)
-  CS = plt.contour(X,Y,god_ff,levels ,colors='k')
-  plt.clabel(CS, fontsize=9, inline=1)
-  CS2 = plt.contour(X,Y,our_ff,levels,colors='r',alpha=0.5)
-
-  FoV = pdic['FoV']
-  plt.xlim(-FoV[0]/2, FoV[0]/2)
-  plt.ylim(-FoV[1]/2, FoV[1]/2)
-  
-  # Write formulas on plot
-  #our_formula = r"$f(x,y) =%+.2f%+.2fx%+.2fy%+.2fxx%+.2fxy%+.2fyy$" % (our_q[0], our_q[1], our_q[2], our_q[3], our_q[4], our_q[5])
-  #plt.text(-.33,-.29,our_formula, color='r',bbox = dict(boxstyle="square",ec='w',fc='w', alpha=0.9), fontsize=9.5)
-  #god_formula = r"$f(x,y) =%+.2f%+.2fx%+.2fy%+.2fxx%+.2fxy%+.2fyy$" % (god_q[0], god_q[1], god_q[2], god_q[3], god_q[4], god_q[5])
-  #plt.text(-.33,-.33,god_formula, color='k',bbox = dict(boxstyle="square",ec='w',fc='w', alpha=0.9), fontsize=9.5)
-  
-  # Plot residual in flat-field
-  plt.subplot(122)
-  plt.title(r"Residual (Fit - God) in Flat-Field (\%)")
-  a = plt.imshow((100*(our_ff-god_ff)/god_ff),extent=(-FoV[0]/2,FoV[0]/2,-FoV[1]/2,FoV[1]/2), vmin = -1,vmax = 1, cmap='gray')
-  plt.colorbar(a,shrink=0.7)
-  plt.xlabel(r"$\alpha$")
-  plt.ylabel(r"$\beta$")
-  
-  filename = 'Figures/Flat_Fields/%s_%04d_ff.png' % (strategy, iteration_number)
-  
-  plt.savefig(filename,bbox_inches='tight',pad_inches=0.5)
-  plt.clf()  
-
-#*****************************************************
-#********** Saving pickles for plotting **************
-#*****************************************************
-
-def coverage(obs_cat, strategy, verbose=None):
-  if verbose != None: print "Writing out coverage pickle..."
+def coverage(obs_cat, strategy):
   dic = {}
   sky_limits = pdic['sky_limits']
   dic['number_stars'] = int(np.around(pdic['density_of_stars']*(sky_limits[1]-sky_limits[0]) * (sky_limits[3]-sky_limits[2])))
   dic['k'] = obs_cat.k 
   dic['strategy'] = strategy
-  filename = "./Plotting_Data/%s_coverage.p" % strategy
+  filename = "%s/%s_coverage.p" % (directory_path, strategy)
   pickle.dump(dic, open(filename, "wb" )) 
-  if verbose != None: print "...done!"
   return 0
 
 def save_camera(sky_catalog, measured_catalog, inside_FoV, pointing, orientation, verbose=None):
-  if os.path.exists("./Plotting_Data/camera_image.p") != True:
-    if (verbose != None): print "Writing out camera pickle..."
-    FoV = pdic['FoV']
-    x_min = -FoV[0]/2; y_min = -FoV[1]/2
-    x_max = FoV[0]/2; y_max = FoV[1]/2
-    x = np.array([x_min, x_min, x_max, x_max, x_min])
-    y = np.array([y_min, y_max, y_max, y_min, y_min])
-    alpha, beta = fp2sky(x,y,pointing, orientation)    
-    dic = {}
-    dic['measured_catalog.x'] = measured_catalog.x
-    dic['measured_catalog.y'] = measured_catalog.y
-    dic['sky_catalog.alpha'] = sky_catalog.alpha
-    dic['sky_catalog.beta'] = sky_catalog.beta
-    dic['pointing'] = pointing
-    dic['orientation'] = orientation
-    dic['sky'] = pdic['sky_limits']
-    dic['fp_x'] = x
-    dic['fp_y'] = y
-    dic['fp_alpha'] = alpha
-    dic['fp_beta'] = beta
-    dic['inside_FoV'] = inside_FoV
-    pickle.dump(dic, open("./Plotting_Data/camera_image.p", "wb"))
-  if verbose != None: print "...done!"
+  if verbose: print "Writing out camera pickle..."
+  FoV = pdic['FoV']
+  x_min = -FoV[0]/2; y_min = -FoV[1]/2
+  x_max = FoV[0]/2; y_max = FoV[1]/2
+  x = np.array([x_min, x_min, x_max, x_max, x_min])
+  y = np.array([y_min, y_max, y_max, y_min, y_min])
+  alpha, beta = fp2sky(x,y,pointing, orientation)    
+  dic = {}
+  dic['measured_catalog.x'] = measured_catalog.x
+  dic['measured_catalog.y'] = measured_catalog.y
+  dic['sky_catalog.alpha'] = sky_catalog.alpha
+  dic['sky_catalog.beta'] = sky_catalog.beta
+  dic['pointing'] = pointing
+  dic['orientation'] = orientation
+  dic['sky'] = pdic['sky_limits']
+  dic['fp_x'] = x
+  dic['fp_y'] = y
+  dic['fp_alpha'] = alpha
+  dic['fp_beta'] = beta
+  dic['inside_FoV'] = inside_FoV
+  filename = directory_path + '/camera_image.p'
+  pickle.dump(dic, open(filename, "wb"))
+  if verbose: print "...done!"
 
 def invvar_saveout(obs_cat):
   dic = {}
   dic['counts'] = obs_cat.counts
   dic['true_invvar'] = obs_cat.gods_invvar
   dic['reported_invvar'] = obs_cat.invvar
-  pickle.dump(dic, open("./Plotting_Data/invvar.p", "wb"))
+  filename = directory_path + '/invvar.p'  
+  print filename
+  pickle.dump(dic, open(filename, "wb"))
   return 0
 # constants
 god_mean_flat_field = average_over_ff(god.flat_field,god.flat_field_parameters())

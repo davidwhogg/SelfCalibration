@@ -3,12 +3,12 @@
   
 import numpy as np
 import math
-#import sys
 import matplotlib.pylab as plt
-import functions as f
+import pickle
 
+import functions as f
 from master import init_func 
-pdic, temp1, temp2 = init_func() # import parameter database from main module
+pdic, directory_path, temp1, temp2 = init_func() # import parameter database from main module
 
 # magic numbers
 def flat_field_parameters():
@@ -100,6 +100,7 @@ def flat_field_parameters():
         -6.13243663e-01,  -5.12256121e-01,  -1.65605714e-01,
          7.52010421e-01]))
 
+
 def flat_field(x,y,par = flat_field_parameters()):
   # illumination part
   ff = (par[0] + par[1]*x + par[2]*y + par[3]*x**2 + par[4]*x*y + par[5]*y**2)
@@ -138,8 +139,8 @@ class SourceCatalog:
       self.flux = f.mag2flux(self.mag)
       self.epsilon = np.random.uniform(0,pdic['epsilon_max'], size=size)
       
-def create_catalog(seed, plots=None, verbose=None):
-  if verbose != None: print "Generating God's Catalog..."
+def create_catalog(seed, plots=None, verbose=False):
+  if verbose: print "Generating God's Catalog..."
   M = pdic['density_of_stars']
   m_min = pdic['m_min']
   m_max = pdic['m_max']
@@ -150,47 +151,22 @@ def create_catalog(seed, plots=None, verbose=None):
   number_stars = M * (limits[1]-limits[0])*(limits[3]-limits[2])
   # Create catalog
   catalog = SourceCatalog(number_stars, m_min, m_max,powerlaw, limits, seed)
-  if verbose != None: print "...done!"
+  if verbose: print "...done!"
 
   #**********************************************************
   #********************* Plot Catalog ***********************
   #**********************************************************
     
-  if plots != None:
-    fontsize = 20
-    plt.figure(figsize=(14,6))
-    st = plt.suptitle("Sky Catalog", fontsize=fontsize)
-    # Plot portion of sky
-    plt.subplot(121)
-    if verbose != None: print "Plotting portion of sky and histogram..."
-    plt.plot(catalog.alpha,catalog.beta,'.k',markersize=1)
-    plt.xlabel(ur'$\alpha$', fontsize=fontsize)
-    plt.ylabel(ur'$\beta$', fontsize=fontsize)
-    #plt.title("God's Sky", fontsize=fontsize)
-    plt.xlim(limits[0] - (limits[1]-limits[0])*0.1, limits[1] + (limits[1]-limits[0])*0.1)
-    plt.ylim(limits[2] - (limits[3]-limits[2])*0.1, limits[3] + (limits[3]-limits[2])*0.1)
-    ax = plt.gca()
-    for tick in ax.xaxis.get_major_ticks():
-      tick.label1.set_fontsize(fontsize)
-    for tick in ax.yaxis.get_major_ticks():
-      tick.label1.set_fontsize(fontsize)
-    # Histogram of source magnitude
-    plt.subplot(122)
-    bin=np.arange(m_min,m_max,0.05)
-    if verbose != None: print "Plotting histogram of source magnitude..."
-    plt.hist(catalog.mag,bins=bin, log=True)
-    #plt.title("%i Sources in Sample" % catalog.size, fontsize=fontsize)
-    plt.xlabel("Source Magnitude", fontsize=fontsize)
-    plt.ylabel("log(N)", fontsize=fontsize)
-    ax = plt.gca()
-    for tick in ax.xaxis.get_major_ticks():
-      tick.label1.set_fontsize(fontsize)
-    for tick in ax.yaxis.get_major_ticks():
-      tick.label1.set_fontsize(fontsize)
-      
-    filename = "Figures/Catalog.png"
-    plt.savefig(filename,bbox_inches='tight',pad_inches=0.5)
-    if verbose != None: print "...done!"
+  if plots:
+    if verbose: print "Saving source catalog data..."
+    pickle_dic = {}
+    pickle_dic['alpha'] = catalog.alpha
+    pickle_dic['beta'] = catalog.beta
+    pickle_dic['mag'] = catalog.mag
+    pickle_path = directory_path+'/source_catalog.p'
+    pickle.dump(pickle_dic, open(pickle_path, "wb"))
+    if verbose: print "...done!"
   
   return catalog
   # catalog.ID, catalog.mag, catalog.alpha, catalog.beta, catalog.size
+  
