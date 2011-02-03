@@ -10,7 +10,7 @@ import pickle
 import god
 
 from master import init_func
-pdic, temp = init_func() # import parameter database from main module
+pdic, temp1, temp2 = init_func() # import parameter database from main module
 
 #*****************************************************
 #************ Transformation Functions ***************
@@ -126,7 +126,7 @@ def survey(sky_catalog, survey_file, plots=None, verbose=None):
 #**************** Ubercal Functions ******************
 #*****************************************************
 
-def ubercalibration(observation_catalog,sky_catalog, strategy,mod_dic, ff_plots = None):
+def ubercalibration(observation_catalog,sky_catalog, strategy,modified_parameter, modified_value, ff_plots = None):
   order = pdic['flat_field_order']
   q = np.array([1])
   stop_condition = 1e-4
@@ -154,12 +154,13 @@ def ubercalibration(observation_catalog,sky_catalog, strategy,mod_dic, ff_plots 
     
     if ff_plots == 'all' and (abs(chi2 - old_chi2) < stop_condition): 
       os.system(("convert -delay 20 -loop 0 ./Figures/Flat_Fields/%s*.png ./Figures/Flat_Fields/%s_00_animation.gif" % (strategy,strategy)))
-      if mod_dic != None:
-        mod_dic = float(mod_dic)
+      if modified_value != None:
+        modified_value = float(modified_value)
         out = np.zeros((1,2))
-        out[0,0] = mod_dic
+        out[0,0] = modified_value
         out[0,1] = bdness
-        f_handle = file('./test.txt', 'a')
+        filename = './Plotting_Data/Wrapped/%s_%s.txt' % (strategy, modified_parameter)
+        f_handle = file(filename, 'a')
         np.savetxt(f_handle, out)
         f_handle.close()
     

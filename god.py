@@ -8,7 +8,7 @@ import matplotlib.pylab as plt
 import functions as f
 
 from master import init_func 
-pdic, temp = init_func() # import parameter database from main module
+pdic, temp1, temp2 = init_func() # import parameter database from main module
 
 # magic numbers
 def flat_field_parameters():

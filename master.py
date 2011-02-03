@@ -18,13 +18,15 @@ import tparameters
 def init_func():
   if len(sys.argv) < 2:
     pdic = tparameters.dic # parameter database, shared with 
-    mod_dic = None
+    modified_value = None
+    modified_parameter = None
     #other modules
   else:
     pdic = tparameters.dic
     pdic[sys.argv[1]] = sys.argv[2]
-    mod_dic = sys.argv[2]
-  return (pdic, mod_dic)
+    modified_parameter = sys.argv[1] 
+    modified_value = sys.argv[2]
+  return (pdic, modified_parameter, modified_value)
 
 # Custom Modules
 import functions as f
@@ -52,9 +54,10 @@ def clean_up_old_files():
 if __name__ == "__main__":
   os.system('mkdir -p ./Figures/Camera_Images/')
   os.system('mkdir -p ./Figures/Flat_Fields/')
+  os.system('mkdir -p ./Plotting_Data/Wrapped/')
   
   clean_up_old_files()
-  pdic, mod_dic = init_func()
+  pdic, modified_parameter, modified_value = init_func()
 
   survey_strategies = ['D','A'] #['A', 'D']:
   pickle.dump(survey_strategies, open("./Plotting_Data/strategies.p", "wb" ))
@@ -94,7 +97,7 @@ if __name__ == "__main__":
     #********************************************************
     #********************* Ubercalibration ******************
     #********************************************************
-    f.ubercalibration(observation_catalog,sky_catalog,strategy,mod_dic,ff_plots=ff_plots)
+    f.ubercalibration(observation_catalog,sky_catalog,strategy,modified_parameter, modified_value,ff_plots=ff_plots)
     
     #********************************************************
     #*********************** Health Checks ******************
