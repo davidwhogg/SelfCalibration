@@ -21,4 +21,6 @@ for i in range(len(par_range)):
 data = np.loadtxt('test.txt')
 
 plt.plot(data[:,0], data[:,1])
+plt.xlabel('Epsilon')
+plt.ylabel('Badness')
 plt.show()
