@@ -4,7 +4,7 @@
 import numpy as np
 import os
 import pickle
-
+import string
 # Custom Modules
 import god
 
@@ -152,20 +152,21 @@ def ubercalibration(observation_catalog,sky_catalog, strategy,modified_parameter
     if (ff_plots and (iteration_number == next_plot_iteration)) or (abs(chi2 - old_chi2) < stop_condition): 
       saveout_flat_fields(q, iteration_number, strategy=strategy)
       next_plot_iteration *= 2
-    '''
-    if (ff_plots and (abs(chi2 - old_chi2) < stop_condition)): 
-      saveout_bdness(modified_value, bdness)
+    
+    if (ff_plots and (abs(chi2 - old_chi2) < stop_condition)):
       if modified_value != None:
         modified_value = float(modified_value)
-        out = np.zeros((1,2))
+        out = np.zeros((1,4))
         out[0,0] = modified_value
-        out[0,1] = bdness
-        filename = './Plotting_Data/Wrapped/%s_%s.txt' % (strategy, modified_parameter)
-        print filename
+        out[0,1] = 100*bdness
+        out[0,2] = rms
+        out[0,3] = chi2
+        filename = '%s/%s_%s.txt' % (string.rstrip(directory_path, ('/'+str(modified_value))),  strategy, modified_parameter)
+        #print filename
         f_handle = file(filename, 'a')
         np.savetxt(f_handle, out)
         f_handle.close()
-    '''
+    
   return 
 
 def evaluate_flat_field_functions(x, y, order):

@@ -18,28 +18,31 @@ if os.path.exists(directory_path):
   os.system(('rm -r %s' % directory_path))
 os.system(('mkdir -p %s' % directory_path))
 ff_directory = directory_path+'/Flat_Fields/'
-os.system(('mkdir -p %s' % directory_path))
+#os.system(('mkdir -p %s' % directory_path))
 
 # Single run, or many runs?
-modify_parameter = False
+modify_parameter = True
 if modify_parameter:
   parameter = 'density_of_stars'
-  parameter_values = [5,10,20]
+  parameter_values = [5,10]
   simulation_parameters[parameter] = parameter_values
 else:
   parameter = None
   parameter_values = None
 
-pickle.dump(simulation_parameters, open(("%s/simulation_parameters.p" % directory_path), "wb" ))
+#pickle.dump(simulation_parameters, open(("%s/simulation_parameters.p" % directory_path), "wb" ))
 
 # Call master program
 if modify_parameter:
   for i in range(len(parameter_values)):
-    os.system(('./master.py %s %s %s' % (directory_path, parameter, parameter_values[i])))
+    new_directory_path = '%s/%s/%s' % (directory_path, parameter, str(parameter_values[i]))
+    os.system(('./master.py %s %s %s' % (new_directory_path, parameter, parameter_values[i])))
     time.sleep(1)
     i+=1
+  pickle.dump(simulation_parameters, open(("%s/%s/simulation_parameters.p" % (directory_path, str(parameter))), "wb" ))
 else:
   os.system(('./master.py %s' % directory_path))
+  pickle.dump(simulation_parameters, open(("%s/simulation_parameters.p" % directory_path), "wb" ))
   
 
 

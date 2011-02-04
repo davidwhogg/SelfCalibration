@@ -14,7 +14,10 @@ rc('text', usetex=True)
 
 
 # Data directory
-dir_path = 'temp'
+dir_path = 'temp/density_of_stars/'
+parameter_values = os.listdir(dir_path)
+if 'simulation_parameters.p' in parameter_values:
+  parameter_values.remove('simulation_parameters.p')
 
 # General Plotting Parameters
 fontsize = 20
@@ -63,7 +66,7 @@ def plot_sky_catalog(sky_catalog_filename):
   for tick in ax.yaxis.get_major_ticks():
     tick.label1.set_fontsize(fontsize)
     
-  filename = dir_path + '/sky_catalog.png'
+  filename = string.replace(sky_catalog_filename, '.p', '.png')
   plt.savefig(filename,bbox_inches='tight',pad_inches=0.)
   plt.clf()
 
@@ -93,14 +96,14 @@ def plot_invvar(invvar_filename):
     tick.label1.set_fontsize(tick_fontsize)
 
 
-  filename = dir_path + '/invvar.png'
+  filename = string.replace(invvar_filename, '.p', '.png')
   plt.savefig(filename,bbox_inches='tight',pad_inches=0.)
   plt.clf()
 
-def plot_coverage():  
+def plot_coverage(new_dir_path):  
   plt.figure(figsize=(single_fig_width, single_fig_height))
   for j in range(len(survey_strategies)):
-    coverage_filename =('%s/%s_coverage.p' % (dir_path, survey_strategies[j])) 
+    coverage_filename =('%s/%s_coverage.p' % (new_dir_path, survey_strategies[j])) 
     if os.path.exists(coverage_filename):
       print ("Plotting sky coverage for Strategy %s..." % survey_strategies[j])
       pickle_dic = pickle.load(open((coverage_filename)))
@@ -129,9 +132,10 @@ def plot_coverage():
   for tick in ax.yaxis.get_major_ticks():
     tick.label1.set_fontsize(tick_fontsize)
   plt.ylim(0.,1.1)
-  filename = dir_path + '/coverage.png'
+  filename = new_dir_path + '/coverage.png'
   plt.savefig(filename,bbox_inches='tight',pad_inches=0.)
   plt.clf()
+  return 0
 
 def camera_image(camera_filename):
   plt.figure(figsize=(double_fig_width, single_fig_height))
@@ -180,7 +184,7 @@ def camera_image(camera_filename):
   dy = np.max(fp_y) - np.min(fp_y)
   plt.xlim(np.min(fp_x) - dx*fp_buffer, np.max(fp_x) + dx*fp_buffer)
   plt.ylim(np.min(fp_y) - dy*fp_buffer, np.max(fp_y) + dy*fp_buffer)
-  filename = dir_path + '/camera.png'
+  filename = string.replace(camera_filename, '.p', '.png')
   plt.savefig(filename,bbox_inches='tight',pad_inches=0.5)
   plt.clf()
 
@@ -224,50 +228,53 @@ def plot_flat_fields(ff_filename, strategy):
   plt.clf()  
 
 if __name__ == "__main__":
-  os.system(('rm %s/*.png' % dir_path))
-  os.system(('rm %s/*.gif' % dir_path))
-  for ii in range(len(survey_strategies)):
-    os.system(('rm %s/%s/*.png' % (dir_path, survey_strategies[ii])))
-  # Plot survey catalog
-  sky_catalog_filename = dir_path + '/source_catalog.p'
-  if os.path.exists(sky_catalog_filename) == True:
-    print "Plotting sky catalog..."
-    plot_sky_catalog(sky_catalog_filename)
-    print "...done!"
-  else: print "No file for sky plots..."
-  
-  # Plot invvar
-  invvar_filename = dir_path + '/invvar.p'
-  if os.path.exists(invvar_filename) == True:
-    print "Plotting invvar..."
-    plot_invvar(invvar_filename)
-    print "...done!"
-  else: print "No file for invvar plots..."
-
-  # Plot camera image
-  camera_filename = dir_path + '/camera_image.p'
-  if os.path.exists(camera_filename) == True:
-    print "Plotting camera image..."
-    camera_image(camera_filename)
-    print "...done!"
-  else: print "No file for camera image..."
-  
-  # Plot Flat Fields
-  for ii in range(len(survey_strategies)):
-    print ("Plotting Survey %s flat fields..." % survey_strategies[ii])
-    number_ff = os.listdir(('%s/%s/' % (dir_path, survey_strategies[ii])))
-    for jj in range(len(number_ff)):
-      ff_filename = '%s/%s/%s' % (dir_path, survey_strategies[ii], number_ff[jj])
-      plot_flat_fields(ff_filename, survey_strategies[ii])
+  for i in range(0,len(parameter_values)):
+    new_dir_path = dir_path +  parameter_values[i]
+    os.system(('rm %s/*.png' % new_dir_path))
+    os.system(('rm %s/*.gif' % new_dir_path))
+    for ii in range(len(survey_strategies)):
+      os.system(('rm %s/%s/*.png' % (new_dir_path, survey_strategies[ii])))
+      
+    # Plot survey catalog
+    sky_catalog_filename = new_dir_path + '/source_catalog.p'
+    if os.path.exists(sky_catalog_filename) == True:
+      print "Plotting sky catalog..."
+      plot_sky_catalog(sky_catalog_filename)
+      print "...done!"
+    else: print "No file for sky plots..."
     
-    # Create Animations
-    png_dir = ('%s/%s/' % (dir_path, survey_strategies[ii]))
-    out_dir = ('%s/' % (dir_path))
-    print "...animating..."
-    command = ('convert -delay 20 -loop 0 %s*.png %s%s_animation.gif' % (png_dir, out_dir, 
-    survey_strategies[ii]))
-    os.system(command)
-    print "...done!"
-  
-  # Plotting Coverage
-  plot_coverage()
+    # Plot invvar
+    invvar_filename = new_dir_path + '/invvar.p'
+    if os.path.exists(invvar_filename) == True:
+      print "Plotting invvar..."
+      plot_invvar(invvar_filename)
+      print "...done!"
+    else: print "No file for invvar plots..."
+
+    # Plot camera image
+    camera_filename = new_dir_path + '/camera_image.p'
+    if os.path.exists(camera_filename) == True:
+      print "Plotting camera image..."
+      camera_image(camera_filename)
+      print "...done!"
+    else: print "No file for camera image..."
+    
+    # Plot Flat Fields
+    for ii in range(len(survey_strategies)):
+      print ("Plotting Survey %s flat fields..." % survey_strategies[ii])
+      number_ff = os.listdir(('%s/%s/' % (new_dir_path, survey_strategies[ii])))
+      for jj in range(len(number_ff)):
+        ff_filename = '%s/%s/%s' % (new_dir_path, survey_strategies[ii], number_ff[jj])
+        plot_flat_fields(ff_filename, survey_strategies[ii])
+      
+      # Create Animations
+      png_dir = ('%s/%s/' % (new_dir_path, survey_strategies[ii]))
+      out_dir = ('%s/' % (new_dir_path))
+      print "...animating..."
+      command = ('convert -delay 20 -loop 0 %s*.png %s%s_animation.gif' % (png_dir, out_dir, 
+      survey_strategies[ii]))
+      os.system(command)
+      print "...done!"
+    
+    # Plotting Coverage
+    plot_coverage(new_dir_path)
