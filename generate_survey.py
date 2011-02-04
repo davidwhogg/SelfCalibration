@@ -4,7 +4,6 @@
 import numpy as np
 import random
 import tparameters as p
-import functions
 import matplotlib.pylab as plt
 
 # XX Dangerous hack!!
@@ -12,13 +11,19 @@ pdic = p.dic
 FoV = pdic['FoV']
 sky_limits = pdic['sky_limits']
 
+def fp2sky(x, y, pointing, orientation):
+  theta = - orientation*np.pi/180 # telescope rotates NOT sky
+  alpha = x * np.cos(theta) + y * np.sin(theta) + pointing[0]
+  beta = -x * np.sin(theta) + y * np.cos(theta) + pointing[1]
+  return alpha, beta
+
 def plot_survey(survey, survey_name):
   x_min = -FoV[0]/2; y_min = -FoV[1]/2
   x_max = FoV[0]/2; y_max = FoV[1]/2
   x = np.array([x_min, x_min, x_max, x_max, x_min])
   y = np.array([y_min, y_max, y_max, y_min, y_min])
   for image in survey:
-    alpha, beta = functions.fp2sky(x,y,image[1:3], image[3])
+    alpha, beta = fp2sky(x,y,image[1:3], image[3])
     plt.plot(alpha,beta,'k-',alpha=0.25)
   plt.xlabel(r"$\alpha$", fontsize=25)
   plt.ylabel(r"$\beta$", fontsize=25)
@@ -118,5 +123,5 @@ if __name__ == "__main__":
   plt.subplot(224)
   plot_survey(xD,'D')
   np.savetxt('D.txt',xD)
-  plt.savefig("./Plotting_Data/surveys.png",bbox_inches='tight',pad_inches=0.)
+  plt.savefig("./surveys.png",bbox_inches='tight',pad_inches=0.)
   

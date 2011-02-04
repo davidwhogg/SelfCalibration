@@ -72,7 +72,7 @@ XX
 \keywords{XX, XX, XX}
 
 \section{Introduction}
-XX
+The big picture, for me, is this: Astronomers think in terms of taking science data and separately calibration data. The former is used for science and the latter is used to set instrument parameters like flat-field and bias and so-on. But typically you have far more photons in your science data; aren't they incredibly constraining on calibration themselves? Indeed, in the SDSS, we got much more calibration information out of the science data than the calibration data. But, of course, we had to adjust the SDSS imaging strategy to make it work: You need to have good redundancy in the data stream, and redundancy of a very specific kind.
 
 \section{Sky Catalog}
 We create a catalog of fake stars, based on realistic star densities, in the magnitude range $m_{min} < m < m_{max}$. We choose these limits based on the properties of single exposure of the current configuration of Euclid NISP instrument: $m_{min} = 19$, the approximate saturation limit, and $m_{max} = 22.5$, the 10$\sigma$ limit. Stars are generated with random coordinates (uniformly distributed within the sky region being investigated) and with random magnitudes distributed according to the following powerlaw:
@@ -243,4 +243,11 @@ The difference in ubercalibration method's ability to fit the flat field and the
 \caption{The coverage of both of the surveys investigated. \label{fig:coverage}}
 \end{figure}
 
+\section{Discussion}
+small changes to survey that greatly improve coverage plots
+random strategy can be defined so that the telescope does not make large steps in pointing, orientation
+have't addressed time dependence, how do these surveys with time will be different for different assumptions on temporal variability. 
+is the small scale power we put in realistic?
+- survey D is much better than survey C for astrometric self calibration 
+we haven't thought about gaps
 \end{document}
