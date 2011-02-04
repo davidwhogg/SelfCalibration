@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pylab as plt
 import pickle
 import os
+import sys
 import string
 from matplotlib import rc
 rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
@@ -16,8 +17,11 @@ rc('text', usetex=True)
 # Data directory
 dir_path = 'temp/density_of_stars/'
 parameter_values = os.listdir(dir_path)
-if 'simulation_parameters.p' in parameter_values:
-  parameter_values.remove('simulation_parameters.p')
+temp = 1*parameter_values
+for isfile in temp:
+  if os.path.isfile(dir_path + isfile):
+    parameter_values.remove(isfile)
+
 
 # General Plotting Parameters
 fontsize = 20
