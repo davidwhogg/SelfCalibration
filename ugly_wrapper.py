@@ -24,7 +24,7 @@ ff_directory = directory_path+'/Flat_Fields/'
 modify_parameter = True
 if modify_parameter:
   parameter = 'density_of_stars'
-  parameter_values = [5,10]
+  parameter_values = [5,10,15]
   simulation_parameters[parameter] = parameter_values
 else:
   parameter = None
@@ -41,9 +41,9 @@ if modify_parameter:
     i+=1
   pickle.dump(simulation_parameters, open(("%s/%s/simulation_parameters.p" % (directory_path, str(parameter))), "wb" ))
 else:
-  os.system(('./master.py %s' % directory_path))
-  pickle.dump(simulation_parameters, open(("%s/simulation_parameters.p" % directory_path), "wb" ))
-  
+  new_directory_path = '%s/%s/%s' % (directory_path, 'None', '0')
+  os.system(('./master.py %s' % new_directory_path))
+  pickle.dump(simulation_parameters, open(("%s/%s/simulation_parameters.p" % (directory_path, 'None')), "wb" ))
 
 
     

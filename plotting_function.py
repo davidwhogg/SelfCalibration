@@ -15,7 +15,14 @@ rc('text', usetex=True)
 
 
 # Data directory
-dir_path = 'temp/density_of_stars/'
+direc_path = 'temp/'
+plot_bdness = True
+varying_parameter = 'density_of_stars' # name or 'None' - with ''
+bdness_plot_xlabel = 'Density of Stars'
+
+dir_path = direc_path+varying_parameter+'/'
+
+
 parameter_values = os.listdir(dir_path)
 temp = 1*parameter_values
 for isfile in temp:
@@ -229,15 +236,16 @@ def plot_flat_fields(ff_filename, strategy):
   
   filename = string.replace(ff_filename, '.p', '.png')  
   plt.savefig(filename,bbox_inches='tight',pad_inches=0.5)
-  plt.clf()  
+  plt.clf() 
 
 if __name__ == "__main__":
   for i in range(0,len(parameter_values)):
     new_dir_path = dir_path +  parameter_values[i]
-    os.system(('rm %s/*.png' % new_dir_path))
-    os.system(('rm %s/*.gif' % new_dir_path))
+    os.system(('rm %s/*.png &>/dev/null' % new_dir_path))
+    os.system(('rm %s/*.png &>/dev/null' % dir_path))
+    os.system(('rm %s/*.gif &>/dev/null' % new_dir_path))
     for ii in range(len(survey_strategies)):
-      os.system(('rm %s/%s/*.png' % (new_dir_path, survey_strategies[ii])))
+      os.system(('rm %s/%s/*.png &>/dev/null' % (new_dir_path, survey_strategies[ii])))
       
     # Plot survey catalog
     sky_catalog_filename = new_dir_path + '/source_catalog.p'
@@ -282,3 +290,23 @@ if __name__ == "__main__":
     
     # Plotting Coverage
     plot_coverage(new_dir_path)
+  
+  if plot_bdness:
+    # Plot badness against parameter
+    select_files = os.listdir(dir_path)
+    temp = 1*select_files
+    for isfile in temp:
+      if os.path.isfile(dir_path + isfile) != True:
+        select_files.remove(isfile)
+    select_files.remove('simulation_parameters.p')
+    for data_files in select_files:
+      data = np.loadtxt((dir_path+data_files))
+      xdata = data[:,0]
+      badness = data[:,1]
+      plt.plot((xdata), (badness), label = data_files[0])
+      plt.xlabel(("log ("+bdness_plot_xlabel+")"))
+      plt.ylabel("log (Badness)")
+    plt.legend()
+    filename = dir_path+'/Badness.png'
+    plt.savefig(filename,bbox_inches='tight',pad_inches=0.5)
+    plt.clf() 

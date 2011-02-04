@@ -145,7 +145,7 @@ def ubercalibration(observation_catalog,sky_catalog, strategy,modified_parameter
      # Calculate rms error in stars
     indx = [s != 0]
     rms = rms_error(s[indx],sky_catalog.flux[indx])
-    bdness = badness(q)
+    bdness = badness(s[indx],sky_catalog.flux[indx])
     print "%i: RMS = %.6f %%, Badness = %0.6f %%, chi2 = %0.2f (%i)" % (iteration_number, rms, 100*bdness,chi2, observation_catalog.size)
     print q
 
@@ -194,8 +194,16 @@ def diff_flat_field_squared(x, y, q):
   q = normalize_flat_field(q)
   return (evaluate_flat_field(x, y, q) - god.flat_field(x, y))**2
 
-def badness(q):
-  return np.sqrt(average_over_ff(diff_flat_field_squared, (q)))
+def badness(s, s_true):
+  f0 = 1.0
+  df = 0.01
+  x = np.array([-1.,0.,1.])
+  f = f0 + df * x
+  b = [np.mean(((f1*s - s_true)/s_true)**2) for f1 in f]
+  # second-order polynomial fit a0 + a1 x + a2 xx
+  a = [b[1], 0.5*(b[2]-b[0]), 0.5*(b[2]-2.*b[1]+b[0])]
+  xmin = - 0.5 * a[1] / a[2]
+  return np.sqrt(a[0] + a[1] * xmin + a[2] * xmin * xmin)
 
 def s_step(obs_cat, q):
   ff = evaluate_flat_field(obs_cat.x, obs_cat.y, q)

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 dic = {
-  'survey_strategies'     :     ['D', 'C'], #['D', 'C', 'B', 'A']
+  'survey_strategies'     :     ['D'], #['D', 'C', 'B', 'A']
   
   'mag_at_ten_sigma'    :     22.5,
 
