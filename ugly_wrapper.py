@@ -24,7 +24,7 @@ ff_directory = directory_path+'/Flat_Fields/'
 modify_parameter = True
 if modify_parameter:
   parameter = 'density_of_stars'
-  parameter_values = [5,10]
+  parameter_values = [5,10,20,30, 40, 50]
   simulation_parameters[parameter] = parameter_values
 else:
   parameter = None
