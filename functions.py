@@ -22,13 +22,13 @@ def flux2mag(flux):
   return 22.5-2.5*np.log10(flux)
 
 def sky2fp(alpha, beta, pointing, orientation): 
-  theta = - orientation*np.pi/180 # telescope rotates NOT sky
+  theta = - orientation*np.pi/180. # telescope rotates NOT sky
   x = (alpha - pointing[0]) * np.cos(theta) - (beta - pointing[1]) * np.sin(theta)
   y = (alpha - pointing[0]) * np.sin(theta) + (beta - pointing[1]) * np.cos(theta)
   return x,y 
 
 def fp2sky(x, y, pointing, orientation):
-  theta = - orientation*np.pi/180 # telescope rotates NOT sky
+  theta = - orientation*np.pi/180. # telescope rotates NOT sky
   alpha = x * np.cos(theta) + y * np.sin(theta) + pointing[0]
   beta = -x * np.sin(theta) + y * np.cos(theta) + pointing[1]
   return alpha, beta
@@ -88,8 +88,8 @@ def single_image(sky_catalog, pointing, orientation, plots=None, verbose=None):
 
   if verbose: print "Finding stars within camera FoV..."
   FoV = pdic['FoV']
-  x_min = -FoV[0]/2; y_min = -FoV[1]/2
-  x_max = FoV[0]/2; y_max = FoV[1]/2
+  x_min = -0.5*FoV[0]; y_min = -0.5*FoV[1]
+  x_max = 0.5*FoV[0]; y_max = 0.5*FoV[1]
   inside_FoV = np.where((x_min<camera_catalog.x) & (camera_catalog.x<x_max) & (y_min<camera_catalog.y) & (camera_catalog.y<y_max))
   if verbose: print "...done!"
 
@@ -159,7 +159,7 @@ def ubercalibration(observation_catalog,sky_catalog, strategy,modified_parameter
         modified_value = float(modified_value)
         out = np.zeros((1,4))
         out[0,0] = modified_value
-        out[0,1] = 100*bdness
+        out[0,1] = bdness
         out[0,2] = rms
         out[0,3] = chi2
         filename = '%s/%s_%s.txt' % (string.rstrip(directory_path, ('/'+str(modified_value))),  strategy, modified_parameter)
@@ -243,7 +243,7 @@ def func(f,s,s_true):
 
 def badness(s, s_true):
   scale = scipy.optimize.fmin(func,0,args=(s,s_true))
-  bdness = np.mean(((scale*s - s_true)/s_true)**2)
+  bdness = np.sqrt(np.mean(((scale*s - s_true)/s_true)**2))
 #  print bdness
 #  print badness_old(s,s_true)
   
