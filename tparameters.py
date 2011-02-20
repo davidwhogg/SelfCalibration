@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 dic = {
-  'survey_strategies'     :     ['D'], #['D', 'C', 'B', 'A']
+  'survey_strategies'     :     ['C','D'], #['D', 'C', 'B', 'A']
   
   'mag_at_ten_sigma'    :     22.5,
 
@@ -26,4 +26,4 @@ dic = {
   
   'sky_limits'          :     [0.0, 10.0, 0.0, 10.0], #[α_min, α_max, β_min, β_max]
   
-  }
+  } 

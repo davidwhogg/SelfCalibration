@@ -131,7 +131,7 @@ def survey(sky_catalog, survey_file, plots=None, verbose=None):
 def ubercalibration(observation_catalog,sky_catalog, strategy,modified_parameter, modified_value, ff_plots = None):
   order = pdic['flat_field_order']
   q = np.array([1])
-  stop_condition = 1e-4
+  stop_condition = 1e-10
   chi2 = 1e9
   old_chi2 = 1e10
   iteration_number = 0
@@ -146,7 +146,7 @@ def ubercalibration(observation_catalog,sky_catalog, strategy,modified_parameter
      # Calculate rms error in stars
     indx = [s != 0]
     rms = rms_error(s[indx],sky_catalog.flux[indx])
-    bdness = badness(s[indx],sky_catalog.flux[indx])
+    bdness = badness(q)
     print "%i: RMS = %.6f %%, Badness = %0.6f %%, chi2 = %0.2f (%i)" % (iteration_number, rms, bdness,chi2, observation_catalog.size)
     print q
 
@@ -191,10 +191,6 @@ def normalize_flat_field(q):
   fit_mean = average_over_ff(evaluate_flat_field, (q))
   return (q * god_mean_flat_field/fit_mean)
 
-def diff_flat_field_squared(x, y, q):
-  q = normalize_flat_field(q)
-  return (evaluate_flat_field(x, y, q) - god.flat_field(x, y))**2
-
 def s_step(obs_cat, q):
   ff = evaluate_flat_field(obs_cat.x, obs_cat.y, q)
   fcss = ff * obs_cat.counts * obs_cat.invvar  
@@ -238,19 +234,22 @@ def badness_old(s, s_true):
   xmin = - 0.5 * a[1] / a[2]
   return np.sqrt(a[0] + a[1] * xmin + a[2] * xmin * xmin)
 
-def ff_opt_func(f,s,s_true):
-    return np.mean(((f*s - s_true)/s_true)**2)
+def badness(q):
+  FoV = pdic['FoV']
+  nalpha, nbeta = pdic['ff_samples']
+  dalpha = FoV[0]/(nalpha-1)
+  dbeta = FoV[1]/(nbeta-1)
+  x = np.arange(-FoV[0]/2+dalpha/2,FoV[0]/2,dalpha)
+  y = np.arange(-FoV[1]/2+dbeta/2,FoV[1]/2,dbeta)
+  X, Y = np.meshgrid(x, y)
+  temp_x = np.reshape(X,-1)
+  temp_y = np.reshape(Y,-1)
+  our_ff = evaluate_flat_field(temp_x, temp_y, q)
+  god_ff = god.flat_field(temp_x, temp_y, god.flat_field_parameters())
+  return 100*np.sqrt(np.mean(((our_ff-god_ff)/god_ff)**2))
 
-def badness(s, s_true):
-  scale = scipy.optimize.fmin(ff_opt_func,0,args=(s,s_true))
-  bdness = np.sqrt(np.mean(((scale*s - s_true)/s_true)**2))
-#  print bdness
-#  print badness_old(s,s_true)
-  
-  return 100*bdness
-  
 def rms_error(flux_estimate, true_flux):
-  return 100*np.sqrt(np.mean((flux_estimate-true_flux)/true_flux)**2)
+  return 100*np.sqrt(np.mean(((flux_estimate-true_flux)/true_flux)**2))
 
 def average_over_ff(func, args):
   FoV = pdic['FoV']
