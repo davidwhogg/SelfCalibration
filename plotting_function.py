@@ -17,6 +17,8 @@ rc('text', usetex=True)
 # Data directory
 direc_path = 'temp/'
 plot_bdness = True
+plot_rms = True
+
 varying_parameter = 'density_of_stars' # name or 'None' - with ''
 bdness_plot_xlabel = 'Density of Stars'
 
@@ -304,9 +306,30 @@ if __name__ == "__main__":
       xdata = data[:,0]
       badness = data[:,1]
       plt.plot((xdata), (badness), label = data_files[0])
-      plt.xlabel(("log ("+bdness_plot_xlabel+")"))
-      plt.ylabel("log (Badness)")
+      plt.xlabel((bdness_plot_xlabel))
+      plt.ylabel("Badness")
     plt.legend()
     filename = dir_path+'/Badness.png'
+    plt.savefig(filename,bbox_inches='tight',pad_inches=0.5)
+    plt.clf() 
+    
+  if plot_rms:
+    # Plot badness against parameter
+    select_files = os.listdir(dir_path)
+    temp = 1*select_files
+    for isfile in temp:
+      if os.path.isfile(dir_path + isfile) != True:
+        select_files.remove(isfile)
+    select_files.remove('simulation_parameters.p')
+    select_files.remove('Badness.png')
+    for data_files in select_files:
+      data = np.loadtxt((dir_path+data_files))
+      xdata = data[:,0]
+      rms = data[:,2]
+      plt.plot((xdata), (rms), label = data_files[0])
+      plt.xlabel((bdness_plot_xlabel))
+      plt.ylabel("rms")      
+    plt.legend()
+    filename = dir_path+'/rms.png'
     plt.savefig(filename,bbox_inches='tight',pad_inches=0.5)
     plt.clf() 
