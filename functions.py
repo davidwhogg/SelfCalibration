@@ -131,7 +131,7 @@ def survey(sky_catalog, survey_file, plots=None, verbose=None):
 def ubercalibration(observation_catalog,sky_catalog, strategy,modified_parameter, modified_value, ff_plots = None):
   order = pdic['flat_field_order']
   q = np.array([1])
-  stop_condition = 1e-10
+  stop_condition = 1e-8
   chi2 = 1e9
   old_chi2 = 1e10
   iteration_number = 0

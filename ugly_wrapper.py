@@ -6,6 +6,7 @@ import time
 import string
 import datetime
 import pickle
+import numpy as np
 
 from tparameters import dic as simulation_parameters
 
@@ -24,7 +25,10 @@ ff_directory = directory_path+'/Flat_Fields/'
 modify_parameter = True
 if modify_parameter:
   parameter = 'density_of_stars'
-  parameter_values = [5,10,20,30, 40, 50]
+  par_low = 1.
+  par_high = 50.
+  steps = 5
+  parameter_values = np.round((np.linspace(par_low**0.5,par_high**0.5, num=steps))**2).astype(int)
   simulation_parameters[parameter] = parameter_values
 else:
   parameter = None
