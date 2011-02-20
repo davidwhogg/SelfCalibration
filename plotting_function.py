@@ -40,7 +40,7 @@ single_fig_width = 6
 single_fig_height = 6
 
 # Import general parameters
-simulation_parameters = pickle.load(open(('./%s/simulation_parameters.p' % dir_path)))
+simulation_parameters = pickle.load(open(('./%ssimulation_parameters.p' % dir_path)))
 sky_limits = simulation_parameters['sky_limits']
 m_min = simulation_parameters['m_min']
 m_max = simulation_parameters['m_max']
@@ -138,7 +138,7 @@ def plot_coverage(new_dir_path):
   plt.ylabel(r"Fraction of Sources Covered")
   plt.title('Survey Coverage')
   plt.legend(loc=4)
-  filename = "%s/coverage.png" % dir_path
+  filename = "%scoverage.png" % dir_path
   ax = plt.gca()
   for tick in ax.xaxis.get_major_ticks():
     tick.label1.set_fontsize(tick_fontsize)
@@ -244,7 +244,7 @@ if __name__ == "__main__":
   for i in range(0,len(parameter_values)):
     new_dir_path = dir_path +  parameter_values[i]
     os.system(('rm %s/*.png &>/dev/null' % new_dir_path))
-    os.system(('rm %s/*.png &>/dev/null' % dir_path))
+    os.system(('rm %s*.png &>/dev/null' % dir_path))
     os.system(('rm %s/*.gif &>/dev/null' % new_dir_path))
     for ii in range(len(survey_strategies)):
       os.system(('rm %s/%s/*.png &>/dev/null' % (new_dir_path, survey_strategies[ii])))
@@ -309,7 +309,7 @@ if __name__ == "__main__":
       plt.xlabel((bdness_plot_xlabel))
       plt.ylabel("Badness")
     plt.legend()
-    filename = dir_path+'/Badness.png'
+    filename = dir_path+'Badness.png'
     plt.savefig(filename,bbox_inches='tight',pad_inches=0.5)
     plt.clf() 
     

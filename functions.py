@@ -238,11 +238,11 @@ def badness_old(s, s_true):
   xmin = - 0.5 * a[1] / a[2]
   return np.sqrt(a[0] + a[1] * xmin + a[2] * xmin * xmin)
 
-def func(f,s,s_true):
+def ff_opt_func(f,s,s_true):
     return np.mean(((f*s - s_true)/s_true)**2)
 
 def badness(s, s_true):
-  scale = scipy.optimize.fmin(func,0,args=(s,s_true))
+  scale = scipy.optimize.fmin(ff_opt_func,0,args=(s,s_true))
   bdness = np.sqrt(np.mean(((scale*s - s_true)/s_true)**2))
 #  print bdness
 #  print badness_old(s,s_true)
