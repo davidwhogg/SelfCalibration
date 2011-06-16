@@ -102,7 +102,7 @@ def generate_random_survey(N):
   return x
 
 if __name__ == "__main__":
-  number_passes = 3
+  number_passes = 20
   plt.figure(figsize=(15,15))
   plt.subplot(221)
   xA = generate_uniform_survey(number_passes)

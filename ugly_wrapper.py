@@ -24,10 +24,10 @@ ff_directory = directory_path+'/Flat_Fields/'
 # Single run, or many runs?
 modify_parameter = True
 if modify_parameter:
-  parameter = 'eta'
-  par_low = 0.
-  par_high = 1.
-  steps = 5
+  parameter = 'density_of_stars'
+  par_low = 100
+  par_high = 110.
+  steps = 1
   parameter_values = np.around(np.linspace(par_low, par_high, num=steps),decimals=1)
   simulation_parameters[parameter] = parameter_values
 else:

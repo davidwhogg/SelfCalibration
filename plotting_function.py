@@ -214,7 +214,7 @@ def plot_flat_fields(ff_filename, strategy):
   
   plt.subplot(121)
   plt.suptitle('Survey %s' % strategy, fontsize = fontsize)
-  plt.title(r"Flat-Fields (God's = Black; Fitted = Red) Iteration: %i" % (iteration_number))
+  plt.title(r"Flat-Fields (True = Black; Fitted = Red) Iteration: %i" % (iteration_number))
   plt.xlabel(r"$\alpha$")
   plt.ylabel(r"$\beta$")
 
@@ -232,8 +232,8 @@ def plot_flat_fields(ff_filename, strategy):
   
   # Plot residual in flat-field
   plt.subplot(122)
-  plt.title(r"Residual (Fit - God) in Flat-Field (\%)")
-  a = plt.imshow((100*(our_ff-god_ff)/god_ff),extent=(-FoV[0]/2,FoV[0]/2,-FoV[1]/2,FoV[1]/2), vmin = -1,vmax = 1, cmap='gray')
+  plt.title(r"Residual (Fit - True) in Flat-Field (\%)")
+  a = plt.imshow((100*(our_ff-god_ff)/god_ff),extent=(-FoV[0]/2,FoV[0]/2,-FoV[1]/2,FoV[1]/2), vmin = -0.5,vmax = 0.5, cmap='gray')
   plt.colorbar(a,shrink=0.7)
   plt.xlabel(r"$\alpha$")
   plt.ylabel(r"$\beta$")
@@ -287,7 +287,7 @@ if __name__ == "__main__":
       png_dir = ('%s/%s/' % (new_dir_path, survey_strategies[ii]))
       out_dir = ('%s/' % (new_dir_path))
       print "...animating..."
-      command = ('convert -delay 20 -loop 0 %s*.png %s%s_animation.gif' % (png_dir, out_dir, 
+      command = ('convert -delay 50 -loop 0 %s*.png %s%s_animation.gif' % (png_dir, out_dir, 
       survey_strategies[ii]))
       os.system(command)
       print "...done!"

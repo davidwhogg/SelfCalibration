@@ -43,7 +43,7 @@ if __name__ == "__main__":
     os.system(('mkdir -p %s/%s' % (directory_path, survey_strategies[ii])))
     
     # Creates catalog of stars used for calibration
-    sky_catalog = god.create_catalog(seed = 103, plots = sky_catalog_plots, verbose = verbose)
+    sky_catalog = god.create_catalog(plots = sky_catalog_plots, verbose = verbose)
         # sky_catalog: *.star_ID, *.mag, *.alpha, *.beta, *.size
 
     # Survey sky

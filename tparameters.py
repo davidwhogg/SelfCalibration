@@ -2,15 +2,15 @@
 # -*- coding: utf-8 -*-
 
 dic = {
-  'survey_strategies'     :     ['C','D'], #['D', 'C', 'B', 'A']
+  'survey_strategies'     :     ['deep'], #['D', 'C', 'B', 'A']
   
   'mag_at_ten_sigma'    :     22.5,
 
   'eta'                 :     0.01,
   
-  'm_min'               :     19.5,
+  'm_min'               :     17, #19.5,
   
-  'm_max'               :     22.5,
+  'm_max'               :     19, #22.5,
   
   'density_of_stars'    :     5, # all magnitudes
   
@@ -20,10 +20,12 @@ dic = {
   
   'ff_samples'          :     [100, 100],
   
-  'flat_field_order'    :     9,
+  'flat_field_order'    :     15,
   
   'epsilon_max'         :     1,
   
-  'sky_limits'          :     [0.0, 10.0, 0.0, 10.0], #[α_min, α_max, β_min, β_max]
+  'sky_limits'          :     [-5.0, 5.0, -5.0, 5.0], #[α_min, α_max, β_min, β_max]
+  
+  'seed'                :     1 # Random number seed
   
   } 

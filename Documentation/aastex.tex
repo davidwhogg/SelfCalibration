@@ -79,14 +79,14 @@ We create a catalog of fake stars, based on realistic star densities, in the mag
 \begin{displaymath}
 \log_{10} \frac{dN}{d\Omega\,dm} = a + b\,m
 \end{displaymath}
-We choose $b = 0.25$ for no reason (yet).
+Where $a$ sets the total stellar density and we choose $b = 0.25$ for no reason (yet).
 The following displaymath is used to generate random star magnitudes with the appropriate probability density distribution function:
 
 \begin{displaymath}
-m = \frac{1}{b} \log{(\left[ 10^{b m_{max}} - 10^{b m_{min}} \right] r + 10^{b m_{min}})}
+m = \frac{1}{b} \log_{10}{(\left[ 10^{b m_{max}} - 10^{b m_{min}} \right] r + 10^{b m_{min}})}
 \end{displaymath}
 
-\noindent{}where r is a random number in the range [0.0, 1.0). The catalog is shown in Fig. \ref{fig:sky}. The random number generator is given the same seed, so that the same simulated sky is produced each time the simulation is run.
+\noindent{}where $r$ is a random number in the range [0.0, 1.0). The catalog is shown in Fig. \ref{fig:sky}. The random number generator is given the same seed, so that the same simulated sky is produced each time the simulation is run.
 
 \begin{figure}[ht]
 \begin{center}
@@ -176,6 +176,10 @@ The standard uncertainty variance on the new star flux estimate, $s'_{k}$, is gi
 
 \subsection{Flat-Field Refinement: \textbf{\textit{p\_step}}}
 The flat-field parameters can now be refined with the latest star flux estimates. To do this we minimize the error function for all measurements with respect to the flat-field parameters.
+
+\begin{displaymath}
+\chi^2 = \sum_{k}^{K} \chi^2_k
+\end{displaymath}
 
 \begin{displaymath}
 \chi^2 = \sum_{i} \frac{(c_i-f_{i}s'_{k})^2}{{\sigma_i}^2}

@@ -135,7 +135,8 @@ def ubercalibration(observation_catalog,sky_catalog, strategy,modified_parameter
   chi2 = 1e9
   old_chi2 = 1e10
   iteration_number = 0
-  next_plot_iteration = 1
+  next_plot_iteration = 1 
+  saveout_flat_fields(q, iteration_number, strategy=strategy)
   while ((abs(chi2 - old_chi2) > stop_condition) and (iteration_number < 258)):
     iteration_number += 1
     temp_chi2 = chi2

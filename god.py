@@ -139,13 +139,14 @@ class SourceCatalog:
       self.flux = f.mag2flux(self.mag)
       self.epsilon = np.random.uniform(0,pdic['epsilon_max'], size=size)
       
-def create_catalog(seed, plots=None, verbose=False):
+def create_catalog(plots=None, verbose=False):
   if verbose: print "Generating God's Catalog..."
   M = pdic['density_of_stars']
   m_min = pdic['m_min']
   m_max = pdic['m_max']
   powerlaw = pdic['powerlaw']
   limits = pdic['sky_limits']
+  seed = pdic['seed']
   
   # Calculate total number of stars in catalog
   number_stars = M * (limits[1]-limits[0])*(limits[3]-limits[2])
