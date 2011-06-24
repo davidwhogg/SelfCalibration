@@ -15,24 +15,12 @@ rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
 #rc('font',**{'family':'serif','serif':['Palatino']))
 rc('text', usetex=True)
 
-
-# Data directory
-direc_path = 'dir/'
-plot_bdness = True
-plot_rms = True
-
-varying_parameter = 'density_of_stars' # name or 'None' - with ''
-bdness_plot_xlabel = 'Density of Stars'
-
-dir_path = direc_path+varying_parameter+'/'
-
-
-parameter_values = os.listdir(dir_path)
-temp = 1*parameter_values
-for isfile in temp:
-  if os.path.isfile(dir_path + isfile):
-    parameter_values.remove(isfile)
-
+if len(sys.argv) == 2:
+  print "Running plotting routine..."
+  out_dir = sys.argv[1]
+else:
+  print "Error - no plotting directory given!"
+  sys.exit()
 
 # General Plotting Parameters
 fontsize = 20
@@ -41,118 +29,48 @@ double_fig_width = 14
 single_fig_width = 6
 single_fig_height = 6
 
-# Import general parameters
-simulation_parameters = pickle.load(open(('./%ssimulation_parameters.p' % dir_path)))
-sky_limits = simulation_parameters['sky_limits']
-m_min = simulation_parameters['m_min']
-m_max = simulation_parameters['m_max']
-survey_strategies = simulation_parameters['survey_strategies']
-FoV = simulation_parameters['FoV'] 
 
-def plot_sky_catalog(sky_catalog_filename):
-  pickle_dic = pickle.load(open((sky_catalog_filename)))
-  alpha = pickle_dic['alpha'] 
-  beta = pickle_dic['beta'] 
-  mag = pickle_dic['mag']
-
+def plot_flat_fields(params, ff_filename, strategy):
+  print ff_filename
+  FoV = params['FoV']
   plt.figure(figsize=(double_fig_width, single_fig_height))
-  st = plt.suptitle("Sky Catalog", fontsize=fontsize)
-  # Plot portion of sky
+  dic = pickle.load(open(ff_filename))
+  X = dic['x']
+  Y = dic['y']
+  our_ff = dic['our_ff']
+  god_ff = dic['god_ff']
+  iteration_number = dic['iteration_number']
   plt.subplot(121)
-  plt.plot(alpha,beta,'.k',markersize=1)
-  plt.xlabel(ur'$\alpha$', fontsize=fontsize)
-  plt.ylabel(ur'$\beta$', fontsize=fontsize)
-  plt.xlim(sky_limits[0] - (sky_limits[1]-sky_limits[0])*0.1, sky_limits[1] + (sky_limits[1]-sky_limits[0])*0.1)
-  plt.ylim(sky_limits[2] - (sky_limits[3]-sky_limits[2])*0.1, sky_limits[3] + (sky_limits[3]-sky_limits[2])*0.1)
-  ax = plt.gca()
-  for tick in ax.xaxis.get_major_ticks():
-    tick.label1.set_fontsize(fontsize)
-  for tick in ax.yaxis.get_major_ticks():
-    tick.label1.set_fontsize(fontsize)
-  # Histogram of source magnitude
+  plt.suptitle('Survey %s' % strategy, fontsize = fontsize)
+  plt.title(r"Flat-Fields (True = Black; Fitted = Red) Iteration: %i" % (iteration_number))
+  plt.xlabel(r"$\alpha$")
+  plt.ylabel(r"$\beta$")
+  # Find parameters for contour plot
+  god_ff_max = np.max(god_ff)
+  god_ff_min = np.min(god_ff)
+  # XX magic number
+  levels = np.arange(0.5,1.5,0.01)
+  CS = plt.contour(X,Y,god_ff,levels ,colors='k')
+  plt.clabel(CS, fontsize=9, inline=1)
+  CS2 = plt.contour(X,Y,our_ff,levels,colors='r',alpha=0.5)
+
+  plt.xlim(-FoV[0]/2, FoV[0]/2)
+  plt.ylim(-FoV[1]/2, FoV[1]/2)
+  
+  # Plot residual in flat-field
   plt.subplot(122)
-  bins=np.arange(m_min,m_max,0.05)
-  plt.hist(mag,bins=bins, log=True)
-  plt.xlabel("Source Magnitude", fontsize=fontsize)
-  plt.ylabel("log(N)", fontsize=fontsize)
-  ax = plt.gca()
-  for tick in ax.xaxis.get_major_ticks():
-    tick.label1.set_fontsize(fontsize)
-  for tick in ax.yaxis.get_major_ticks():
-    tick.label1.set_fontsize(fontsize)
-    
-  filename = string.replace(sky_catalog_filename, '.p', '.png')
-  plt.savefig(filename,bbox_inches='tight',pad_inches=0.)
-  plt.clf()
-
-def plot_invvar(invvar_filename):
-  plt.figure(figsize=(single_fig_width, single_fig_height))
+  plt.title(r"Residual (Fit - True) in Flat-Field (\%)")
+  a = plt.imshow((100*(our_ff-god_ff)/god_ff),extent=(-FoV[0]/2,FoV[0]/2,-FoV[1]/2,FoV[1]/2), vmin = -0.5,vmax = 0.5, cmap='gray')
+  plt.colorbar(a,shrink=0.7)
+  plt.xlabel(r"$\alpha$")
+  plt.ylabel(r"$\beta$")
   
-  pickle_dic = pickle.load(open(invvar_filename))
-  counts = pickle_dic['counts']
-  true_invvar = pickle_dic['true_invvar']
-  reported_invvar = pickle_dic['reported_invvar']  
-  # Sort true invvar by counts so we can plot as a line
-  sort = np.zeros((len(counts), 2))
-  sort[:,0] = counts[:]
-  sort[:,1] = reported_invvar[:]
-  sort = sort[sort[:,0].argsort(),:]
-  sort_reported_invvar = sort[:,1]
-  sort_counts = sort[:,0]
-  plt.plot(counts, np.log10((1/true_invvar)/counts**2),'r.', markersize = 1., label = "Actual Variance")
-  plt.plot(sort_counts, np.log10((1/sort_reported_invvar)/sort_counts**2),'k', label = "Assumed Variance")
-  plt.xlabel(r'$c_i$', fontsize=fontsize)
-  plt.ylabel(ur'$\log_{10}(\frac{{\sigma_i}^2}{c_i^2})$',fontsize=fontsize)#, rotation='horizontal')
-  plt.legend()
-  ax = plt.gca()
-  for tick in ax.xaxis.get_major_ticks():
-    tick.label1.set_fontsize(tick_fontsize)
-  for tick in ax.yaxis.get_major_ticks():
-    tick.label1.set_fontsize(tick_fontsize)
-
-
-  filename = string.replace(invvar_filename, '.p', '.png')
-  plt.savefig(filename,bbox_inches='tight',pad_inches=0.)
-  plt.clf()
-
-def plot_coverage(new_dir_path):  
-  plt.figure(figsize=(single_fig_width, single_fig_height))
-  for j in range(len(survey_strategies)):
-    coverage_filename =('%s/%s_coverage.p' % (new_dir_path, survey_strategies[j])) 
-    if os.path.exists(coverage_filename):
-      print ("Plotting sky coverage for Strategy %s..." % survey_strategies[j])
-      pickle_dic = pickle.load(open((coverage_filename)))
-      number_stars = pickle_dic['number_stars']
-      k = pickle_dic['k']
-      strategy = pickle_dic['strategy']
-      num_obs_of_star = np.bincount(k)
-      num_star_with_N_obs = np.bincount(num_obs_of_star)
-      # "Integrate" 
-      for i in range(1,len(num_star_with_N_obs)):
-        num_star_with_N_obs[i] += num_star_with_N_obs[i-1]
-      fraction = (1.*num_star_with_N_obs)/number_stars
-      plt.plot(fraction, label = ('Strategy '+survey_strategies[j]))  
-      print "...done!"
+  filename = string.replace(ff_filename, '.p', '.png')  
+  plt.savefig(filename,bbox_inches='tight',pad_inches=0.5)
+  plt.clf() 
   
-    else: print ('... no file for Strategy %s!' % survey_strategies[j])
-  
-  plt.xlabel(r"Number of Observations")
-  plt.ylabel(r"Fraction of Sources Covered")
-  plt.title('Survey Coverage')
-  plt.legend(loc=4)
-  filename = "%scoverage.png" % dir_path
-  ax = plt.gca()
-  for tick in ax.xaxis.get_major_ticks():
-    tick.label1.set_fontsize(tick_fontsize)
-  for tick in ax.yaxis.get_major_ticks():
-    tick.label1.set_fontsize(tick_fontsize)
-  plt.ylim(0.,1.1)
-  filename = new_dir_path + '/coverage.png'
-  plt.savefig(filename,bbox_inches='tight',pad_inches=0.)
-  plt.clf()
-  return 0
-
-def camera_image(camera_filename):
+def camera_image(params, camera_filename):
+  print camera_filename
   plt.figure(figsize=(double_fig_width, single_fig_height))
   dic = pickle.load(open(camera_filename))
   x = dic['measured_catalog.x'] 
@@ -203,98 +121,109 @@ def camera_image(camera_filename):
   plt.savefig(filename,bbox_inches='tight',pad_inches=0.5)
   plt.clf()
 
-def plot_flat_fields(ff_filename, strategy):
-  plt.figure(figsize=(double_fig_width, single_fig_height))
-  dic = pickle.load(open(ff_filename))
-  X = dic['x']
-  Y = dic['y']
-  our_ff = dic['our_ff']
-  god_ff = dic['god_ff']
-  iteration_number = dic['iteration_number']
-  
-  plt.subplot(121)
-  plt.suptitle('Survey %s' % strategy, fontsize = fontsize)
-  plt.title(r"Flat-Fields (True = Black; Fitted = Red) Iteration: %i" % (iteration_number))
-  plt.xlabel(r"$\alpha$")
-  plt.ylabel(r"$\beta$")
+def plot_invvar(params, invvar_filename):
+  plt.figure(figsize=(single_fig_width, single_fig_height))
+  pickle_dic = pickle.load(open(invvar_filename))
+  counts = pickle_dic['counts']
+  true_invvar = pickle_dic['true_invvar']
+  reported_invvar = pickle_dic['reported_invvar']  
+  # Sort true invvar by counts so we can plot as a line
+  sort = np.zeros((len(counts), 2))
+  sort[:,0] = counts[:]
+  sort[:,1] = reported_invvar[:]
+  sort = sort[sort[:,0].argsort(),:]
+  sort_reported_invvar = sort[:,1]
+  sort_counts = sort[:,0]
+  plt.plot(counts, np.log10((1/true_invvar)/counts**2),'r.', markersize = 1., label = "Actual Variance")
+  plt.plot(sort_counts, np.log10((1/sort_reported_invvar)/sort_counts**2),'k', label = "Assumed Variance")
+  plt.xlabel(r'$c_i$', fontsize=fontsize)
+  plt.ylabel(ur'$\log_{10}(\frac{{\sigma_i}^2}{c_i^2})$',fontsize=fontsize)#, rotation='horizontal')
+  plt.legend()
+  ax = plt.gca()
+  for tick in ax.xaxis.get_major_ticks():
+    tick.label1.set_fontsize(tick_fontsize)
+  for tick in ax.yaxis.get_major_ticks():
+    tick.label1.set_fontsize(tick_fontsize)
+  filename = string.replace(invvar_filename, '.p', '.png')
+  plt.savefig(filename,bbox_inches='tight',pad_inches=0.1)
+  plt.clf()
 
-  # Find parameters for contour plot
-  god_ff_max = np.max(god_ff)
-  god_ff_min = np.min(god_ff)
-  # XX magic number
-  levels = np.arange(0.5,1.5,0.01)
-  CS = plt.contour(X,Y,god_ff,levels ,colors='k')
-  plt.clabel(CS, fontsize=9, inline=1)
-  CS2 = plt.contour(X,Y,our_ff,levels,colors='r',alpha=0.5)
-
-  plt.xlim(-FoV[0]/2, FoV[0]/2)
-  plt.ylim(-FoV[1]/2, FoV[1]/2)
-  
-  # Plot residual in flat-field
-  plt.subplot(122)
-  plt.title(r"Residual (Fit - True) in Flat-Field (\%)")
-  a = plt.imshow((100*(our_ff-god_ff)/god_ff),extent=(-FoV[0]/2,FoV[0]/2,-FoV[1]/2,FoV[1]/2), vmin = -0.5,vmax = 0.5, cmap='gray')
-  plt.colorbar(a,shrink=0.7)
-  plt.xlabel(r"$\alpha$")
-  plt.ylabel(r"$\beta$")
-  
-  filename = string.replace(ff_filename, '.p', '.png')  
-  plt.savefig(filename,bbox_inches='tight',pad_inches=0.5)
-  plt.clf() 
+def plot_solution(solution_path):
+  print solution_path
+  plt.figure()
+  pickle_dic = pickle.load(open(solution_path)) # [modified_param, iteration number, rms, badness, chi2]
+  param_range = pickle_dic['parameter_range']
+  mod_param = "Density of Stars"
+  rms = pickle_dic['rms']
+  bdnss = pickle_dic['bdnss']
+  it_num = pickle_dic['it_num']
+  chi2 = pickle_dic['chi2']
+  plt.subplot(221)
+  plt.plot(param_range, it_num)
+  plt.ylabel("Number of Iterations to Converge")
+  plt.xlabel(mod_param)
+  plt.subplot(222)
+  plt.plot(param_range, rms)
+  plt.ylabel("rms")
+  plt.xlabel(mod_param)
+  plt.subplot(223)
+  plt.plot(param_range, bdnss)
+  plt.ylabel("Badness")
+  plt.xlabel(mod_param)
+  plt.subplot(224)
+  plt.plot(param_range, chi2)
+  plt.ylabel("Chi2")
+  plt.xlabel(mod_param)
+  filename = string.replace(solution_path, '.p', '.png')
+  plt.savefig(filename,bbox_inches='tight',pad_inches=0.1)
+  plt.clf()
 
 if __name__ == "__main__":
-  for i in range(0,len(parameter_values)):
-    new_dir_path = dir_path +  parameter_values[i]
-    os.system(('rm %s/*.png &>/dev/null' % new_dir_path))
-    os.system(('rm %s*.png &>/dev/null' % dir_path))
-    os.system(('rm %s/*.gif &>/dev/null' % new_dir_path))
-    for ii in range(len(survey_strategies)):
-      os.system(('rm %s/%s/*.png &>/dev/null' % (new_dir_path, survey_strategies[ii])))
-      
-    # Plot survey catalog
-    sky_catalog_filename = new_dir_path + '/source_catalog.p'
-    if os.path.exists(sky_catalog_filename) == True:
-      print "Plotting sky catalog..."
-      plot_sky_catalog(sky_catalog_filename)
-      print "...done!"
-    else: print "No file for sky plots..."
-    
-    # Plot invvar
-    invvar_filename = new_dir_path + '/invvar.p'
-    if os.path.exists(invvar_filename) == True:
-      print "Plotting invvar..."
-      plot_invvar(invvar_filename)
-      print "...done!"
-    else: print "No file for invvar plots..."
-
-    # Plot camera image
-    camera_filename = new_dir_path + '/camera_image.p'
-    if os.path.exists(camera_filename) == True:
-      print "Plotting camera image..."
-      camera_image(camera_filename)
-      print "...done!"
-    else: print "No file for camera image..."
-    
-    # Plot Flat Fields
-    for ii in range(len(survey_strategies)):
-      print ("Plotting Survey %s flat fields..." % survey_strategies[ii])
-      number_ff = os.listdir(('%s/%s/' % (new_dir_path, survey_strategies[ii])))
-      for jj in range(len(number_ff)):
-        ff_filename = '%s/%s/%s' % (new_dir_path, survey_strategies[ii], number_ff[jj])
-        plot_flat_fields(ff_filename, survey_strategies[ii])
-      
+  # Find the surveys done
+  surveys = os.listdir(out_dir)
+  temp = 1*surveys
+  for isfile in temp:
+    if os.path.isfile(out_dir+ '/' + isfile):
+      surveys.remove(isfile)
+  for srvy in surveys:
+    # Find Modified Parameter Directories
+    modified_value_dir = os.listdir(out_dir + '/' + srvy)
+    temp = 1*modified_value_dir
+    for isfile in temp:
+      if os.path.isfile(out_dir+ '/' + srvy + '/' + isfile):
+	modified_value_dir.remove(isfile)
+    for mod_val_dir in modified_value_dir:
+      dir_path = out_dir + '/' + srvy + '/' + mod_val_dir
+      # Import Simulation Parameters
+      params = pickle.load(open(('./%s/parameters.p' % dir_path)))
+      # Plot Flat-Fields
+      ff_path = dir_path + '/FF'
+      os.system("rm -r %s/*.png" % ff_path)
+      FFs = os.listdir(ff_path)
+      for ff in FFs:
+	plot_flat_fields(params, (ff_path + '/' + ff), srvy)
       # Create Animations
-      png_dir = ('%s/%s/' % (new_dir_path, survey_strategies[ii]))
-      out_dir = ('%s/' % (new_dir_path))
-      print "...animating..."
-      command = ('convert -delay 50 -loop 0 %s*.png %s%s_animation.gif' % (png_dir, out_dir, 
-      survey_strategies[ii]))
+      png_dir = ff_path
+      command = ('convert -delay 50 -loop 0 %s/*.png %s/ff_animation.gif' % (png_dir, dir_path))
       os.system(command)
-      print "...done!"
+      # Plot Camera Image
+      camera_image(params, (dir_path + '/camera_image.p'))
+      # Plot Inverse Invariance 
+      plot_invvar(params, (dir_path + '/invvar.p'))
     
-    # Plotting Coverage
-    plot_coverage(new_dir_path)
-  
+    # plot iteration number, badness, rms, chi2 
+    solution_path = out_dir + '/' + srvy + '/solution.p'
+    if os.path.isfile(solution_path): plot_solution(solution_path)
+
+# Import general parameters
+'''
+simulation_parameters = pickle.load(open(('./%ssimulation_parameters.p' % dir_path)))
+sky_limits = simulation_parameters['sky_limits']
+m_min = simulation_parameters['m_min']
+m_max = simulation_parameters['m_max']
+survey_strategies = simulation_parameters['survey_strategies']
+FoV = simulation_parameters['FoV'] 
+
   if plot_bdness:
     # Plot badness against parameter
     select_files = os.listdir(dir_path)
@@ -335,3 +264,5 @@ if __name__ == "__main__":
     filename = dir_path+'/rms.png'
     plt.savefig(filename,bbox_inches='tight',pad_inches=0.5)
     plt.clf() 
+    
+'''

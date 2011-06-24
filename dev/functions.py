@@ -77,7 +77,7 @@ class MeasuredCatalog:
       var = (sky_unc**2 * (1. + epsilon**2) + (params['eta']**2) * flat**2 * flux**2)
       return 1. / var
 
-def single_image(params, sky_catalog, pointing, orientation, out_dir, plots=None, verbose=None):
+def single_image(params, sky_catalog, pointing, orientation, data_dir, plots=None, verbose=None):
   if verbose: print "Converting sky catalog to focal plane coordinates..."
   camera_catalog = CameraCatalog(sky_catalog, pointing, orientation)
   if verbose: print "...done!"
@@ -91,8 +91,8 @@ def single_image(params, sky_catalog, pointing, orientation, out_dir, plots=None
   if verbose: print "Measuring stars within FoV..."
   measured_catalog = MeasuredCatalog(params, camera_catalog, inside_FoV)
   if verbose: print "...done!"
-  one_camera_file = os.path.exists((out_dir + '/camera_image.p'))
-  if plots and (one_camera_file != True) and (len(inside_FoV[0]) >= 5): save_camera(params, sky_catalog, measured_catalog, inside_FoV, pointing, orientation, out_dir, verbose = verbose)
+  one_camera_file = os.path.exists((data_dir + '/camera_image.p'))
+  if plots and (one_camera_file != True) and (len(inside_FoV[0]) >= 5): save_camera(params, sky_catalog, measured_catalog, inside_FoV, pointing, orientation, data_dir, verbose = verbose)
   return measured_catalog
   # measured_sources  *.size, *.k, *.flux, *.invvar, *.x, *.y
 
@@ -100,7 +100,7 @@ def single_image(params, sky_catalog, pointing, orientation, out_dir, plots=None
 #**************** Survey Functions *******************
 #*****************************************************
 
-def survey(params, sky_catalog, survey_file, out_dir, plots=None, verbose=None):  
+def survey(params, sky_catalog, survey_file, data_dir, plots=None, verbose=None):  
   if verbose: print "Loading survey..."
   pointing = np.loadtxt(survey_file)
   number_pointings = len(pointing[:,0])  
@@ -108,7 +108,7 @@ def survey(params, sky_catalog, survey_file, out_dir, plots=None, verbose=None):
   if verbose: print "Surveying sky..."
   obs_cat = None
   for i in range(number_pointings):
-    si = single_image(params, sky_catalog, [pointing[i,1],pointing[i,2]], pointing[i,3], out_dir, plots=plots, verbose = verbose)
+    si = single_image(params, sky_catalog, [pointing[i,1],pointing[i,2]], pointing[i,3], data_dir, plots=plots, verbose = verbose)
     if obs_cat is None:
       obs_cat = si
     else:
@@ -120,7 +120,7 @@ def survey(params, sky_catalog, survey_file, out_dir, plots=None, verbose=None):
 #**************** Ubercal Functions ******************
 #*****************************************************
 
-def ubercalibration(params, observation_catalog, sky_catalog, strategy, out_dir, plots = None):
+def ubercalibration(params, observation_catalog, sky_catalog, strategy, data_dir, plots = None):
   order = params['flat_field_order']
   q = np.array([1])
   stop_condition = 1e-6
@@ -128,7 +128,7 @@ def ubercalibration(params, observation_catalog, sky_catalog, strategy, out_dir,
   old_chi2 = 1e10
   iteration_number = 0
   next_plot_iteration = 1 
-  if plots: saveout_flat_fields(params, q, iteration_number, strategy, out_dir)
+  if plots: saveout_flat_fields(params, q, iteration_number, data_dir)
   while ((abs(chi2 - old_chi2) > stop_condition) and (iteration_number < 258)):
     iteration_number += 1
     temp_chi2 = chi2
@@ -141,11 +141,10 @@ def ubercalibration(params, observation_catalog, sky_catalog, strategy, out_dir,
     bdness = badness(params, q)
     print "%i: RMS = %.6f %%, Badness = %0.6f %%, chi2 = %0.2f (%i)" % (iteration_number, rms, bdness,chi2, observation_catalog.size)
     print q
-
     if (plots and (iteration_number == next_plot_iteration)) or (abs(chi2 - old_chi2) < stop_condition): 
-      saveout_flat_fields(params, q, iteration_number, strategy, out_dir)
+      saveout_flat_fields(params, q, iteration_number, data_dir)
       next_plot_iteration *= 2
-  return 
+  return np.array([iteration_number, rms, bdness, chi2])
 
 def evaluate_flat_field_functions(x, y, order):
   L = (order + 1)*(order + 2)/2
@@ -231,12 +230,11 @@ def rms_error(flux_estimate, true_flux):
   return 100*np.sqrt(np.mean(((flux_estimate-true_flux)/true_flux)**2))
 
 
-
 #*****************************************************
 #********** Saving pickles for plotting **************
 #*****************************************************
 
-def saveout_flat_fields(params, q, iteration_number, strategy, out_dir):
+def saveout_flat_fields(params, q, iteration_number, data_dir):
   FoV = params['FoV']
   x = np.arange(-FoV[0]/2,FoV[0]/2,0.01)
   y = np.arange(-FoV[1]/2,FoV[1]/2,0.01)
@@ -255,20 +253,20 @@ def saveout_flat_fields(params, q, iteration_number, strategy, out_dir):
   dic['god_ff'] = god_ff
   dic['our_ff'] = our_ff
   dic['iteration_number'] = iteration_number
-  filename = '%s/%s/%04d_ff.p' % (out_dir, strategy, iteration_number)
+  filename = '%s/FF/%d_ff.p' % (data_dir, iteration_number)
   pickle.dump(dic, open(filename, "wb"))
 
-def coverage(params, obs_cat, strategy, out_dir):
+def coverage(params, obs_cat, strategy, data_dir):
   dic = {}
   sky_limits = params['sky_limits']
   dic['number_stars'] = int(np.around(params['density_of_stars']*(sky_limits[1]-sky_limits[0]) * (sky_limits[3]-sky_limits[2])))
   dic['k'] = obs_cat.k 
   dic['strategy'] = strategy
-  filename = "%s/%s_coverage.p" % (out_dir, strategy)
+  filename = data_dir + "/coverage.p"
   pickle.dump(dic, open(filename, "wb" )) 
   return 0
 
-def save_camera(params, sky_catalog, measured_catalog, inside_FoV, pointing, orientation, out_dir, verbose=None):
+def save_camera(params, sky_catalog, measured_catalog, inside_FoV, pointing, orientation, data_dir, verbose=None):
   if verbose: print "Writing out camera pickle..."
   FoV = params['FoV']
   x_min = -FoV[0]/2; y_min = -FoV[1]/2
@@ -289,16 +287,16 @@ def save_camera(params, sky_catalog, measured_catalog, inside_FoV, pointing, ori
   dic['fp_alpha'] = alpha
   dic['fp_beta'] = beta
   dic['inside_FoV'] = inside_FoV
-  filename = out_dir + '/camera_image.p'
+  filename = data_dir + '/camera_image.p'
   pickle.dump(dic, open(filename, "wb"))
   if verbose: print "...done!"
 
-def invvar_saveout(obs_cat, out_dir):
+def invvar_saveout(obs_cat, data_dir):
   dic = {}
   dic['counts'] = obs_cat.counts
   dic['true_invvar'] = obs_cat.gods_invvar
   dic['reported_invvar'] = obs_cat.invvar
-  filename = out_dir + '/invvar.p'  
+  filename = data_dir + '/invvar.p'  
   print filename
   pickle.dump(dic, open(filename, "wb"))
   return 0
