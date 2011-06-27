@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# Rory Holmes 2011
+# Script to plot all the output generated in the cross-calibration simulation
+# Must call with the output directory from cross-cal, e.g: "./plot.py dir"
+
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
@@ -153,7 +157,8 @@ def plot_solution(solution_path):
   plt.figure()
   pickle_dic = pickle.load(open(solution_path)) # [modified_param, iteration number, rms, badness, chi2]
   param_range = pickle_dic['parameter_range']
-  mod_param = "Density of Stars"
+  mod_param = pickle_dic['modified_parameter']
+  mod_param = string.replace(mod_param, '_', ' ') 
   rms = pickle_dic['rms']
   bdnss = pickle_dic['bdnss']
   it_num = pickle_dic['it_num']
@@ -164,16 +169,18 @@ def plot_solution(solution_path):
   plt.xlabel(mod_param)
   plt.subplot(222)
   plt.plot(param_range, rms)
-  plt.ylabel("rms")
+  plt.ylabel(u"RMS Source Error (\%)")
   plt.xlabel(mod_param)
   plt.subplot(223)
   plt.plot(param_range, bdnss)
-  plt.ylabel("Badness")
+  plt.ylabel(u"Badness of Flat-Field (\%)")
   plt.xlabel(mod_param)
   plt.subplot(224)
   plt.plot(param_range, chi2)
-  plt.ylabel("Chi2")
+  plt.ylabel("$\chi^2$")
   plt.xlabel(mod_param)
+  ax = plt.gca()
+  ax.yaxis.major.formatter.set_powerlimits((0,0))
   filename = string.replace(solution_path, '.p', '.png')
   plt.savefig(filename,bbox_inches='tight',pad_inches=0.1)
   plt.clf()

@@ -3,14 +3,17 @@
 
 # Rory Holmes 2011
 # Master script to control cross-calibration simulation
+# Requires default_parameters.py, functions.py and plot.py
 
-# XXXXXX more
+# Can call from the command line in 3 ways:
+#	1. ./cross_cal [output_dir]
+#	2. ./cross_cal [output_dir] [default_parameter_to_modify] [new_value]
+#	3. ./cross_cal [output_dir] [default_parameter_to_modify] [low_range_value] [high_range_value] [number_of_samples_within_range]
 
 import numpy as np
 import os
 import pickle
 import sys
-
 # Custom Modules
 import default_parameters
 import functions as f
@@ -111,7 +114,6 @@ if __name__ == '__main__':
       sln_dic['rms'] = sln_rms
       sln_dic['bdnss'] = sln_bdnss
       sln_dic['chi2'] = sln_chi2
-      print sln_dic
       pickle.dump(sln_dic, open((out_dir + '/' + strategy +'/solution.p'), "wb"))
   else:
     print "Error - no operating mode defined!"
