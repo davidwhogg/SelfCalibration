@@ -1,8 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# Rory Holmes 2011
+# script to generate deeep field survey strategy for ./cross_cal.py simulation 
+# Requires: default_parameters.py
+
 import numpy as np
-import tparameters as p
+import default_parameters as p
 import matplotlib.pylab as plt
 
 # XX Dangerous hack!!
@@ -55,8 +59,6 @@ X = np.zeros((0,3))
 for ii in range(passes):
   offset = np.random.uniform(FoV[0]*0.25, FoV[0]*0.75, size = 2)
   temp_X = single_pass(offset, ii*angle_between_passes)
-  print temp_X.shape
-  print X.shape
   X = np.append(X, temp_X, axis = 0)
   
 final_X = np.zeros((len(X[:,0]),4))
@@ -84,6 +86,7 @@ def plot_survey(survey, survey_name):
   plt.axis('equal')
   plt.xlim(sky_limits[0]-FoV[0], sky_limits[1]+FoV[0])
   plt.ylim(sky_limits[2]-FoV[1], sky_limits[3]+FoV[1])
+  plt.savefig("deep.png")
   return
 
 plot_survey(final_X, "Deep")
