@@ -1,16 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# Rory Holmes 2011
+# Contains all the functions used in the cross-calibration simulation [./cross_cal.py]
+
 import numpy as np
 import os
 import pickle
 import string
-import scipy.optimize
 # Custom Modules
 import god
-
-from master import init_func
-pdic, directory_path, temp1, temp2 = init_func() # import parameter database from main module
 
 #*****************************************************
 #************ Transformation Functions ***************
@@ -47,15 +46,15 @@ class CameraCatalog:
       self.epsilon = sky_catalog.epsilon
 
 class MeasuredCatalog:
-    def __init__(self, camera_catalog, inside_FoV): 
+    def __init__(self, params, camera_catalog, inside_FoV): 
       self.size = len(inside_FoV[0])
-      self.k = camera_catalog.k[inside_FoV] .astype(int)
+      self.k = camera_catalog.k[inside_FoV].astype(int)
       self.x = camera_catalog.x[inside_FoV]
       self.y = camera_catalog.y[inside_FoV]
-      flat = god.flat_field(self.x,self.y)
-      self.gods_invvar = self.true_invvar(camera_catalog, inside_FoV, flat)
+      flat = god.flat_field(params, self.x,self.y)
+      self.gods_invvar = self.true_invvar(params, camera_catalog, inside_FoV, flat)
       self.counts = camera_catalog.flux[inside_FoV] * flat + np.random.normal(size=self.size)/np.sqrt(self.gods_invvar)
-      self.invvar = self.reported_invvar()
+      self.invvar = self.reported_invvar(params)
 
     def append(self, other):
        self.size = self.size + other.size
@@ -69,58 +68,54 @@ class MeasuredCatalog:
     def mag(self):
       return flux2mag(self.counts)
       
-    def reported_invvar(self):
-      sky_unc = 0.1*mag2flux(pdic['mag_at_ten_sigma'])
-      var = (sky_unc**2 + (pdic['eta']**2) * self.counts**2)
+    def reported_invvar(self, params):
+      sky_unc = 0.1*mag2flux(params['mag_at_ten_sigma'])
+      var = (sky_unc**2 + (params['eta']**2) * self.counts**2)
       return 1. / var
 
-    def true_invvar(self, camera_catalog, inside_FoV, flat):
+    def true_invvar(self, params, camera_catalog, inside_FoV, flat):
       epsilon = camera_catalog.epsilon[inside_FoV]
-      sky_unc = 0.1*mag2flux(pdic['mag_at_ten_sigma'])
+      sky_unc = 0.1*mag2flux(params['mag_at_ten_sigma'])
       flux = camera_catalog.flux[inside_FoV]
-      var = (sky_unc**2 * (1. + epsilon**2) + (pdic['eta']**2) * flat**2 * flux**2)
+      var = (sky_unc**2 * (1. + epsilon**2) + (params['eta']**2) * flat**2 * flux**2)
       return 1. / var
 
-def single_image(sky_catalog, pointing, orientation, plots=None, verbose=None):
+def single_image(params, sky_catalog, pointing, orientation, data_dir, plots=None, verbose=None):
   if verbose: print "Converting sky catalog to focal plane coordinates..."
   camera_catalog = CameraCatalog(sky_catalog, pointing, orientation)
   if verbose: print "...done!"
-
   if verbose: print "Finding stars within camera FoV..."
-  FoV = pdic['FoV']
+  FoV = params['FoV']
   x_min = -0.5*FoV[0]; y_min = -0.5*FoV[1]
   x_max = 0.5*FoV[0]; y_max = 0.5*FoV[1]
   inside_FoV = np.where((x_min<camera_catalog.x) & (camera_catalog.x<x_max) & (y_min<camera_catalog.y) & (camera_catalog.y<y_max))
   if verbose: print "...done!"
 
   if verbose: print "Measuring stars within FoV..."
-  measured_catalog = MeasuredCatalog(camera_catalog, inside_FoV)
+  measured_catalog = MeasuredCatalog(params, camera_catalog, inside_FoV)
   if verbose: print "...done!"
-  temp_filename = directory_path + '/camera_image.p'
-  one_camera_file = os.path.exists(temp_filename)
-  if plots and (one_camera_file != True) and (len(inside_FoV[0]) >= 5): save_camera(sky_catalog, measured_catalog, inside_FoV, pointing, orientation, verbose = verbose)
+  one_camera_file = os.path.exists((data_dir + '/camera_image.p'))
+  if plots and (one_camera_file != True): save_camera(params, sky_catalog, measured_catalog, inside_FoV, pointing, orientation, data_dir, verbose = verbose)
   return measured_catalog
   # measured_sources  *.size, *.k, *.flux, *.invvar, *.x, *.y
 
 #*****************************************************
 #**************** Survey Functions *******************
 #*****************************************************
-      
-def survey(sky_catalog, survey_file, plots=None, verbose=None):  
+
+def survey(params, sky_catalog, survey_file, data_dir, plots=None, verbose=None):  
   if verbose: print "Loading survey..."
   pointing = np.loadtxt(survey_file)
   number_pointings = len(pointing[:,0])  
   if verbose: print "...done!"
-  
   if verbose: print "Surveying sky..."
   obs_cat = None
   for i in range(number_pointings):
-    si = single_image(sky_catalog, [pointing[i,1],pointing[i,2]], pointing[i,3], plots=plots, verbose = verbose)
+    si = single_image(params, sky_catalog, [pointing[i,1],pointing[i,2]], pointing[i,3], data_dir, plots=plots, verbose = verbose)
     if obs_cat is None:
       obs_cat = si
     else:
       obs_cat.append(si)
-
   if verbose: print "...done!"
   return obs_cat
 
@@ -128,48 +123,31 @@ def survey(sky_catalog, survey_file, plots=None, verbose=None):
 #**************** Ubercal Functions ******************
 #*****************************************************
 
-def ubercalibration(observation_catalog,sky_catalog, strategy,modified_parameter, modified_value, ff_plots = None):
-  order = pdic['flat_field_order']
+def ubercalibration(params, observation_catalog, sky_catalog, strategy, data_dir, plots = None):
+  order = params['flat_field_order']
   q = np.array([1])
-  stop_condition = 1e-6
+  stop_condition = 1e-8
   chi2 = 1e9
   old_chi2 = 1e10
   iteration_number = 0
   next_plot_iteration = 1 
-  saveout_flat_fields(q, iteration_number, strategy=strategy)
+  if plots: saveout_flat_fields(params, q, iteration_number, data_dir)
   while ((abs(chi2 - old_chi2) > stop_condition) and (iteration_number < 258)):
     iteration_number += 1
     temp_chi2 = chi2
-    s, s_invvar = s_step(observation_catalog,q)
-    q, q_invvar, chi2 = q_step(observation_catalog, s, order,iteration_number,plots=ff_plots)
+    s, s_invvar = s_step(params, observation_catalog,q)
+    q, q_invvar, chi2 = q_step(params, observation_catalog, s, order,iteration_number,plots=plots)
     old_chi2 = temp_chi2
-    
      # Calculate rms error in stars
     indx = [s != 0]
     rms = rms_error(s[indx],sky_catalog.flux[indx])
-    bdness = badness(q)
+    bdness = badness(params, q)
     print "%i: RMS = %.6f %%, Badness = %0.6f %%, chi2 = %0.2f (%i)" % (iteration_number, rms, bdness,chi2, observation_catalog.size)
     print q
-
-    if (ff_plots and (iteration_number == next_plot_iteration)) or (abs(chi2 - old_chi2) < stop_condition): 
-      saveout_flat_fields(q, iteration_number, strategy=strategy)
+    if (plots and (iteration_number == next_plot_iteration)) or (abs(chi2 - old_chi2) < stop_condition): 
+      saveout_flat_fields(params, q, iteration_number, data_dir)
       next_plot_iteration *= 2
-    
-    if (ff_plots and (abs(chi2 - old_chi2) < stop_condition)):
-      if modified_value != None:
-        modified_value = float(modified_value)
-        out = np.zeros((1,4))
-        out[0,0] = modified_value
-        out[0,1] = bdness
-        out[0,2] = rms
-        out[0,3] = chi2
-        filename = '%s/%s_%s.txt' % (string.rstrip(directory_path, ('/'+str(modified_value))),  strategy, modified_parameter)
-        #print filename
-        f_handle = file(filename, 'a')
-        np.savetxt(f_handle, out)
-        f_handle.close()
-    
-  return 
+  return np.array([iteration_number, rms, bdness, chi2])
 
 def evaluate_flat_field_functions(x, y, order):
   L = (order + 1)*(order + 2)/2
@@ -181,19 +159,34 @@ def evaluate_flat_field_functions(x, y, order):
       l += 1 
   return g
 
-def evaluate_flat_field(x, y, q):  
+def evaluate_flat_field(params, x, y, q):  
   # Calculate required order
   order = int(np.around(np.sqrt(0.25+2*len(q))-1.5))
   assert(len(q) == ((order + 1) * (order + 2) / 2))
   g = evaluate_flat_field_functions(x, y, order)
   return np.dot(g, q)
-  
-def normalize_flat_field(q):
-  fit_mean = average_over_ff(evaluate_flat_field, (q))
-  return (q * god_mean_flat_field/fit_mean)
 
-def s_step(obs_cat, q):
-  ff = evaluate_flat_field(obs_cat.x, obs_cat.y, q)
+def normalize_flat_field(params, q):
+  fit_mean = average_over_ff(params, evaluate_flat_field, (q))
+  god_mean = average_over_ff(params, god.flat_field,(god.flat_field_parameters()))
+  return (q * god_mean/fit_mean)
+  
+def average_over_ff(params, func, args):
+  FoV = params['FoV']
+  nalpha, nbeta = params['ff_samples']
+  dalpha = FoV[0]/(nalpha-1)
+  dbeta = FoV[1]/(nbeta-1)
+  x = np.arange(-FoV[0]/2+dalpha/2,FoV[0]/2,dalpha)
+  y = np.arange(-FoV[1]/2+dbeta/2,FoV[1]/2,dbeta)
+  X, Y = np.meshgrid(x, y)
+  temp_x = np.reshape(X,-1)
+  temp_y = np.reshape(Y,-1)
+  temp_ff = func(params, temp_x, temp_y, args)
+  ff = np.reshape(temp_ff, (len(X[:,0]),len(X[0,:])))
+  return np.mean(ff)
+
+def s_step(params, obs_cat, q):
+  ff = evaluate_flat_field(params, obs_cat.x, obs_cat.y, q)
   fcss = ff * obs_cat.counts * obs_cat.invvar  
   ffss = ff * ff * obs_cat.invvar
   max_star = np.max(obs_cat.k)
@@ -206,38 +199,25 @@ def s_step(obs_cat, q):
     if denominator > 0.:
       s[ID] = np.sum(fcss[indx])/denominator
   return (s, s_invvar)
-  
-def q_step(obs_cat, s, order, iteration_number, plots=None):
+
+def q_step(params, obs_cat, s, order, iteration_number, plots=None):
   g = evaluate_flat_field_functions(obs_cat.x,obs_cat.y, order)
   ss = s[obs_cat.k]
   q_invvar = np.dot(np.transpose(g)*ss*ss*obs_cat.invvar,g)
   numerator = np.sum(np.transpose(g)*ss*obs_cat.counts*obs_cat.invvar,axis=1)
   q = np.dot(np.linalg.inv(q_invvar),numerator)
-  q = normalize_flat_field(q)
+  q = normalize_flat_field(params, q)
   np.set_printoptions(precision=2) 
   chi2 = np.sum((np.dot(g,q) * ss - obs_cat.counts)**2 * obs_cat.invvar)
   return (q, q_invvar, chi2)
-  
-  
+
 #*****************************************************
 #*************** Analysis Functions ******************
 #*****************************************************
 
-def badness_old(s, s_true):
-  f0 = 1.0
-  df = 0.01
-  x = np.array([-1.,0.,1.])
-  f = f0 + df * x
-  b = [np.mean(((f1*s - s_true)/s_true)**2) for f1 in f]
-  # second-order polynomial fit a0 + a1 x + a2 xx
-  a = [b[1], 0.5*(b[2]-b[0]), 0.5*(b[2]-2.*b[1]+b[0])]
-  a = np.polyfit(f,b,2)
-  xmin = - 0.5 * a[1] / a[2]
-  return np.sqrt(a[0] + a[1] * xmin + a[2] * xmin * xmin)
-
-def badness(q):
-  FoV = pdic['FoV']
-  nalpha, nbeta = pdic['ff_samples']
+def badness(params, q):
+  FoV = params['FoV']
+  nalpha, nbeta = params['ff_samples']
   dalpha = FoV[0]/(nalpha-1)
   dbeta = FoV[1]/(nbeta-1)
   x = np.arange(-FoV[0]/2+dalpha/2,FoV[0]/2,dalpha)
@@ -245,43 +225,30 @@ def badness(q):
   X, Y = np.meshgrid(x, y)
   temp_x = np.reshape(X,-1)
   temp_y = np.reshape(Y,-1)
-  our_ff = evaluate_flat_field(temp_x, temp_y, q)
-  god_ff = god.flat_field(temp_x, temp_y, god.flat_field_parameters())
+  our_ff = evaluate_flat_field(params, temp_x, temp_y, q)
+  god_ff = god.flat_field(params,temp_x, temp_y, god.flat_field_parameters())
   return 100*np.sqrt(np.mean(((our_ff-god_ff)/god_ff)**2))
 
 def rms_error(flux_estimate, true_flux):
   return 100*np.sqrt(np.mean(((flux_estimate-true_flux)/true_flux)**2))
 
-def average_over_ff(func, args):
-  FoV = pdic['FoV']
-  nalpha, nbeta = pdic['ff_samples']
-  dalpha = FoV[0]/(nalpha-1)
-  dbeta = FoV[1]/(nbeta-1)
-  x = np.arange(-FoV[0]/2+dalpha/2,FoV[0]/2,dalpha)
-  y = np.arange(-FoV[1]/2+dbeta/2,FoV[1]/2,dbeta)
-  X, Y = np.meshgrid(x, y)
-  temp_x = np.reshape(X,-1)
-  temp_y = np.reshape(Y,-1)
-  temp_ff = func(temp_x, temp_y, args)
-  ff = np.reshape(temp_ff, (len(X[:,0]),len(X[0,:])))
-  return np.mean(ff)
 
 #*****************************************************
 #********** Saving pickles for plotting **************
 #*****************************************************
 
-def saveout_flat_fields(q, iteration_number, strategy):
-  FoV = pdic['FoV']
+def saveout_flat_fields(params, q, iteration_number, data_dir):
+  FoV = params['FoV']
   x = np.arange(-FoV[0]/2,FoV[0]/2,0.01)
   y = np.arange(-FoV[1]/2,FoV[1]/2,0.01)
   X, Y = np.meshgrid(x, y)
   # Have to reshape so that evaluate_flat_field() works 
   temp_x = np.reshape(X,-1)
   temp_y = np.reshape(Y,-1)
-  temp_z = evaluate_flat_field(temp_x,temp_y,q)
+  temp_z = evaluate_flat_field(params, temp_x,temp_y,q)
   our_ff = np.reshape(temp_z, (len(X[:,0]),len(X[0,:])))
   god_q = god.flat_field_parameters()
-  temp_z = god.flat_field(temp_x,temp_y)
+  temp_z = god.flat_field(params,temp_x,temp_y)
   god_ff = np.reshape(temp_z, (len(X[:,0]),len(X[0,:])))
   dic = {}
   dic['x'] = X
@@ -289,22 +256,22 @@ def saveout_flat_fields(q, iteration_number, strategy):
   dic['god_ff'] = god_ff
   dic['our_ff'] = our_ff
   dic['iteration_number'] = iteration_number
-  filename = '%s/%s/%04d_ff.p' % (directory_path, strategy, iteration_number)
+  filename = '%s/FF/%d_ff.p' % (data_dir, iteration_number)
   pickle.dump(dic, open(filename, "wb"))
 
-def coverage(obs_cat, strategy):
+def coverage(params, obs_cat, strategy, data_dir):
   dic = {}
-  sky_limits = pdic['sky_limits']
-  dic['number_stars'] = int(np.around(pdic['density_of_stars']*(sky_limits[1]-sky_limits[0]) * (sky_limits[3]-sky_limits[2])))
+  sky_limits = params['sky_limits']
+  dic['number_stars'] = int(np.around(params['density_of_stars']*(sky_limits[1]-sky_limits[0]) * (sky_limits[3]-sky_limits[2])))
   dic['k'] = obs_cat.k 
   dic['strategy'] = strategy
-  filename = "%s/%s_coverage.p" % (directory_path, strategy)
+  filename = data_dir + "/coverage.p"
   pickle.dump(dic, open(filename, "wb" )) 
   return 0
 
-def save_camera(sky_catalog, measured_catalog, inside_FoV, pointing, orientation, verbose=None):
+def save_camera(params, sky_catalog, measured_catalog, inside_FoV, pointing, orientation, data_dir, verbose=None):
   if verbose: print "Writing out camera pickle..."
-  FoV = pdic['FoV']
+  FoV = params['FoV']
   x_min = -FoV[0]/2; y_min = -FoV[1]/2
   x_max = FoV[0]/2; y_max = FoV[1]/2
   x = np.array([x_min, x_min, x_max, x_max, x_min])
@@ -317,24 +284,23 @@ def save_camera(sky_catalog, measured_catalog, inside_FoV, pointing, orientation
   dic['sky_catalog.beta'] = sky_catalog.beta
   dic['pointing'] = pointing
   dic['orientation'] = orientation
-  dic['sky'] = pdic['sky_limits']
+  dic['sky'] = params['sky_limits']
   dic['fp_x'] = x
   dic['fp_y'] = y
   dic['fp_alpha'] = alpha
   dic['fp_beta'] = beta
   dic['inside_FoV'] = inside_FoV
-  filename = directory_path + '/camera_image.p'
+  filename = data_dir + '/camera_image.p'
   pickle.dump(dic, open(filename, "wb"))
   if verbose: print "...done!"
 
-def invvar_saveout(obs_cat):
+def invvar_saveout(obs_cat, data_dir):
   dic = {}
   dic['counts'] = obs_cat.counts
   dic['true_invvar'] = obs_cat.gods_invvar
   dic['reported_invvar'] = obs_cat.invvar
-  filename = directory_path + '/invvar.p'  
+  filename = data_dir + '/invvar.p'  
   print filename
   pickle.dump(dic, open(filename, "wb"))
   return 0
-# constants
-god_mean_flat_field = average_over_ff(god.flat_field,god.flat_field_parameters())
+
