@@ -3,13 +3,17 @@
 
 import numpy as np
 import random
-import tparameters as p
+import default_parameters as p
 import matplotlib.pylab as plt
 
-# XX Dangerous hack!!
 pdic = p.dic
 FoV = pdic['FoV']
 sky_limits = pdic['sky_limits']
+
+number_fonts = 20
+label_fontsize = 25
+plt.rc('xtick', labelsize=number_fonts) 
+plt.rc('ytick', labelsize=number_fonts) 
 
 def fp2sky(x, y, pointing, orientation):
   theta = - orientation*np.pi/180 # telescope rotates NOT sky
@@ -25,12 +29,12 @@ def plot_survey(survey, survey_name):
   for image in survey:
     alpha, beta = fp2sky(x,y,image[1:3], image[3])
     plt.plot(alpha,beta,'k-',alpha=0.25)
-  plt.xlabel(r"$\alpha$", fontsize=25)
-  plt.ylabel(r"$\beta$", fontsize=25)
-  plt.title(r"Strategy %s: %i Pointings" % (survey_name, len(survey[:,0])))
+  #plt.title(r"Strategy %s: %i Pointings" % (survey_name, len(survey[:,0])))
+  print ('Survey %s: %d pointings' % (survey_name, len(survey[:,0])))
+  plt.text(sky_limits[0]-1*FoV[0], sky_limits[3]+0.8*FoV[1], ('('+survey_name+')'), fontsize = label_fontsize)
   plt.axis('equal')
-  plt.xlim(sky_limits[0]-FoV[0], sky_limits[1]+FoV[0])
-  plt.ylim(sky_limits[2]-FoV[1], sky_limits[3]+FoV[1])
+  plt.xlim(sky_limits[0]-2*FoV[0], sky_limits[1]+2*FoV[0])
+  plt.ylim(sky_limits[2]-2*FoV[1], sky_limits[3]+2*FoV[1])
   return
 
 def uniform_center_list(nx,ny):
@@ -102,26 +106,36 @@ def generate_random_survey(N):
   return x
 
 if __name__ == "__main__":
-  number_passes = 20
+  plt.clf()
+  number_passes = 12
   plt.figure(figsize=(15,15))
   plt.subplot(221)
   xA = generate_uniform_survey(number_passes)
+  plt.ylabel(r"$\beta$", fontsize= label_fontsize+5)
+  plt.gca().set_xticklabels([])
   plot_survey(xA,'A')
   np.savetxt('A.txt',xA)
   
   xB = generate_uniform_survey(number_passes, rotate = True)
   plt.subplot(222)
+  plt.gca().set_xticklabels([])
+  plt.gca().set_yticklabels([])
   plot_survey(xB,'B')
   np.savetxt('B.txt',xB)
   
   xC = generate_uniform_survey(number_passes, offset = True)
   plt.subplot(223)
+  plt.xlabel(r"$\alpha$", fontsize=label_fontsize+5)
+  plt.ylabel(r"$\beta$", fontsize=label_fontsize+5)
   plot_survey(xC,'C')
   np.savetxt('C.txt',xC)  
   
   xD = generate_random_survey(len(xA))
   plt.subplot(224)
+  plt.xlabel(r"$\alpha$", fontsize=label_fontsize+5)
+  plt.gca().set_yticklabels([])
   plot_survey(xD,'D')
   np.savetxt('D.txt',xD)
-  plt.savefig("./surveys.png",bbox_inches='tight',pad_inches=0.)
+  plt.subplots_adjust(wspace=0,hspace=0.0)
+  plt.savefig("./simple_surveys.png",bbox_inches='tight',pad_inches=0.1)
   

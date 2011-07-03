@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 dic = {
-  'survey_strategies'     :     ['deep', 'D'], #['D', 'C', 'B', 'A']
+  'survey_strategies'     :     ['D'], #['D', 'C', 'B', 'A']
   
   'mag_at_ten_sigma'    :     22.5,
 
@@ -24,7 +24,7 @@ dic = {
   
   'epsilon_max'         :     1,
   
-  'sky_limits'          :     [-5.0, 5.0, -5.0, 5.0], #[α_min, α_max, β_min, β_max]
+  'sky_limits'          :     [-4.0, 4.0, -4.0, 4.0], #[α_min, α_max, β_min, β_max]
   
   'seed'                :     1 # Random number seed
   

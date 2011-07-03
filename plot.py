@@ -27,11 +27,11 @@ else:
   sys.exit()
 
 # General Plotting Parameters
-fontsize = 20
-tick_fontsize = 12
-double_fig_width = 14
-single_fig_width = 6
-single_fig_height = 6
+fontsize = 40
+tick_fontsize = 24
+double_fig_width = 28
+single_fig_width = 12
+single_fig_height = 12
 
 
 def plot_flat_fields(params, ff_filename, strategy):
@@ -45,30 +45,42 @@ def plot_flat_fields(params, ff_filename, strategy):
   god_ff = dic['god_ff']
   iteration_number = dic['iteration_number']
   plt.subplot(121)
-  plt.suptitle('Survey %s' % strategy, fontsize = fontsize)
-  plt.title(r"Flat-Fields (True = Black; Fitted = Red) Iteration: %i" % (iteration_number))
-  plt.xlabel(r"$\alpha$")
-  plt.ylabel(r"$\beta$")
+  #plt.suptitle('Survey %s' % strategy, fontsize = fontsize)
+  plt.title(r"Flat-Fields (True = Black; Fitted = Red) Iteration: %i" % (iteration_number), fontsize = fontsize-10)
+  plt.xlabel(r"$\alpha$", fontsize = fontsize)
+  plt.ylabel(r"$\beta$", fontsize = fontsize)
   # Find parameters for contour plot
   god_ff_max = np.max(god_ff)
   god_ff_min = np.min(god_ff)
   # XX magic number
   levels = np.arange(0.5,1.5,0.01)
-  CS = plt.contour(X,Y,god_ff,levels ,colors='k')
-  plt.clabel(CS, fontsize=9, inline=1)
-  CS2 = plt.contour(X,Y,our_ff,levels,colors='r',alpha=0.5)
-
+  CS = plt.contour(X,Y,god_ff,levels ,colors='k', linewidths = 3)
+  plt.clabel(CS, fontsize=tick_fontsize, inline=1)
+  CS2 = plt.contour(X,Y,our_ff,levels,colors='r',alpha=0.5, linewidths = 3)
+  ax = plt.gca()
+  for tick in ax.xaxis.get_major_ticks():
+    tick.label1.set_fontsize(tick_fontsize)
+  for tick in ax.yaxis.get_major_ticks():
+    tick.label1.set_fontsize(tick_fontsize)
   plt.xlim(-FoV[0]/2, FoV[0]/2)
   plt.ylim(-FoV[1]/2, FoV[1]/2)
   
   # Plot residual in flat-field
   plt.subplot(122)
-  plt.title(r"Residual (Fit - True) in Flat-Field (\%)")
+  plt.title(r"Residual (Fit - True) in Flat-Field (\%)", fontsize = fontsize-10)
   a = plt.imshow((100*(our_ff-god_ff)/god_ff),extent=(-FoV[0]/2,FoV[0]/2,-FoV[1]/2,FoV[1]/2), vmin = -0.5,vmax = 0.5, cmap='gray')
-  plt.colorbar(a,shrink=0.7)
-  plt.xlabel(r"$\alpha$")
-  plt.ylabel(r"$\beta$")
-  
+  cb = plt.colorbar(a,shrink=0.7)
+  for t in cb.ax.get_yticklabels():
+    t.set_fontsize(tick_fontsize)
+
+
+  plt.xlabel(r"$\alpha$", fontsize = fontsize)
+  plt.ylabel(r"$\beta$", fontsize = fontsize)
+  ax = plt.gca()
+  for tick in ax.xaxis.get_major_ticks():
+    tick.label1.set_fontsize(tick_fontsize)
+  for tick in ax.yaxis.get_major_ticks():
+    tick.label1.set_fontsize(tick_fontsize)  
   filename = string.replace(ff_filename, '.p', '.png')  
   plt.savefig(filename,bbox_inches='tight',pad_inches=0.5)
   plt.clf() 
@@ -90,12 +102,12 @@ def camera_image(params, camera_filename):
   fp_beta = dic['fp_beta']
   inside_FoV = dic['inside_FoV']
   
-  title = ur'$\alpha$ = %.1lf, $\beta$ = %.1lf, $\theta$ = %.1lf$^\circ$' % (pointing[0],pointing[1], orientation)
-  plt.suptitle(title, fontsize=fontsize)
+  #title = ur'$\alpha$ = %.1lf, $\beta$ = %.1lf, $\theta$ = %.1lf$^\circ$' % (pointing[0],pointing[1], orientation)
+  #plt.suptitle(title, fontsize=fontsize)
   plt.subplot(121)
-  plt.plot(alpha,beta,'.', markersize=2)
-  plt.plot(alpha[inside_FoV],beta[inside_FoV],'r.',markersize=2)  
-  plt.plot(fp_alpha,fp_beta,'k', linewidth=2)
+  plt.plot(alpha,beta,'.', markersize=5)
+  plt.plot(alpha[inside_FoV],beta[inside_FoV],'r.',markersize=5)  
+  plt.plot(fp_alpha,fp_beta,'k', linewidth=4)
   plt.xlabel(ur'$\alpha$', fontsize=fontsize)
   plt.ylabel(ur'$\beta$', fontsize=fontsize)
   ax = plt.gca()
@@ -111,8 +123,8 @@ def camera_image(params, camera_filename):
 
   # Plot sources on focal plane
   plt.subplot(122)
-  plt.plot(x,y,'r.', markersize=10)
-  plt.plot(fp_x, fp_y, 'k', linewidth=3)
+  plt.plot(x,y,'r.', markersize=20)
+  plt.plot(fp_x, fp_y, 'k', linewidth=6)
   plt.xlabel(ur'$x$', fontsize=fontsize)
   plt.ylabel(ur'$y$', fontsize=fontsize)
 
@@ -121,6 +133,11 @@ def camera_image(params, camera_filename):
   dy = np.max(fp_y) - np.min(fp_y)
   plt.xlim(np.min(fp_x) - dx*fp_buffer, np.max(fp_x) + dx*fp_buffer)
   plt.ylim(np.min(fp_y) - dy*fp_buffer, np.max(fp_y) + dy*fp_buffer)
+  ax = plt.gca()
+  for tick in ax.xaxis.get_major_ticks():
+    tick.label1.set_fontsize(tick_fontsize)
+  for tick in ax.yaxis.get_major_ticks():
+    tick.label1.set_fontsize(tick_fontsize)
   filename = string.replace(camera_filename, '.p', '.png')
   plt.savefig(filename,bbox_inches='tight',pad_inches=0.5)
   plt.clf()
@@ -138,11 +155,11 @@ def plot_invvar(params, invvar_filename):
   sort = sort[sort[:,0].argsort(),:]
   sort_reported_invvar = sort[:,1]
   sort_counts = sort[:,0]
-  plt.plot(counts, np.log10((1/true_invvar)/counts**2),'r.', markersize = 1., label = "Actual Variance")
+  plt.plot(counts, np.log10((1/true_invvar)/counts**2),'k.', markersize = 2., label = "Actual Variance", alpha = 0.2)
   plt.plot(sort_counts, np.log10((1/sort_reported_invvar)/sort_counts**2),'k', label = "Assumed Variance")
   plt.xlabel(r'$c_i$', fontsize=fontsize)
   plt.ylabel(ur'$\log_{10}(\frac{{\sigma_i}^2}{c_i^2})$',fontsize=fontsize)#, rotation='horizontal')
-  plt.legend()
+  #plt.legend()
   ax = plt.gca()
   for tick in ax.xaxis.get_major_ticks():
     tick.label1.set_fontsize(tick_fontsize)
