@@ -65,10 +65,7 @@ def create_catalog(params, out_dir, plots=None, verbose=False):
   catalog = SourceCatalog(params, out_dir, number_stars, m_min, m_max,powerlaw, limits, seed)
   if verbose: print "...done!"
 
-  #**********************************************************
-  #********************* Plot Catalog ***********************
-  #**********************************************************
-    
+  # Print out catalog for plotting
   if plots:
     if verbose: print "Saving source catalog data..."
     pickle_dic = {}

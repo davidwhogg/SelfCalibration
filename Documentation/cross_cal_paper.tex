@@ -1,4 +1,8 @@
 % TO DO:
+% Plot catalog (histogram and sample sky)
+% Select brightess sources
+% Principle component analysis???!!!!
+
 % Introduction
 % add coverage plot
 % finish ubercal in matrix form
@@ -72,38 +76,34 @@ XX
 \keywords{XX, XX, XX}
 
 \section{Introduction}
-The big picture, for me, is this: Astronomers think in terms of taking science data and separately calibration data. The former is used for science and the latter is used to set instrument parameters like flat-field and bias and so-on. But typically you have far more photons in your science data; aren't they incredibly constraining on calibration themselves? Indeed, in the SDSS, we got much more calibration information out of the science data than the calibration data. But, of course, we had to adjust the SDSS imaging strategy to make it work: You need to have good redundancy in the data stream, and redundancy of a very specific kind.
+Astronomers tend to think in terms of taking science data and calibration data separately. The former is used for science and the latter is used to set instrument parameters like flat-field, bias and so-on. But typically far more photons are collected during science exposures; are these not incredibly constraining on the calibration themselves? Indeed, in the retrospective photometric calibration of the Sloan Digital Sky Survey data (XX ref) (SDSS) much more calibration information was obtained from the science data than the calibration data. But, of course, the SDSS imaging strategy had to be adjusted to make this calibration work: good redundancy is required in the data stream, and a redundancy of a very specific kind.
 
-\section{Sky Catalog}
-We create a catalog of fake stars, based on realistic star densities, in the magnitude range $m_{min} < m < m_{max}$. We choose these limits based on the properties of single exposure of the current configuration of Euclid NISP instrument: $m_{min} = 19$, the approximate saturation limit, and $m_{max} = 22.5$, the 10$\sigma$ limit. Stars are generated with random coordinates (uniformly distributed within the sky region being investigated) and with random magnitudes distributed according to the following powerlaw:
+In this paper we will show that this distinction between science and calibration data no longer applies in the large survey mission, both ground and space based, currently being planned and developed. We show that, as long as the survey strategy is designed appropriately, the calibration information within the science data can be used to accurately constrain the relative photometric response of an imaging instrument. This retrospective, cross-calibration of the dataset is a very powerful calibration method; future large scale imaging surveys should be optimized with this in mind. 
+
+We concentrate on catalog level simulations of different survey strategies and assess how well the resultant dataset can be used to constrain the relative response of the imaging instrument it came from. Although we do not model the imaging instrument on a pixel scale, we do include realistic measurement uncertainties within the simulations. 
+
+Although the results we present here are general to all large scale imaging surveys, in Section XX we focus on the proposed Euclid Deep Field Survey. This survey has been optimized, within other constraints, based on the results from this work. 
+
+\section{Simulating the Measured Source Database}
+To assess how well this cross-calibration performs with different observation strategies, we first constructed the required simulation machinery to take an observing strategy as an input, generate a realistic sky, perform the survey - with appropriate measurement uncertainties - and cross-calibration the resulting dataset. The following subsections detail the main methods and assumptions used in our simulations.  
+
+\subsection{Sky Catalog}
+We first create a catalog of fake sources, both stars and galaxies, based on realistic densities within the magnitude range $m_{min} < m < m_{max}$. We choose these limits based on the properties of single exposure of the current configuration of Euclid NIR Imaging Channel (NIP): $m_{min} = 17$, the approximate saturation limit, and $m_{max} = 22$, the 10$\sigma$ limit. Sources are generated with random coordinates (uniformly distributed within the sky region being investigated) and with random magnitudes distributed according to the following powerlaw:
 \begin{displaymath}
 \log_{10} \frac{dN}{d\Omega\,dm} = a + b\,m
 \end{displaymath}
-Where $a$ sets the total stellar density and we choose $b = 0.25$ for no reason (yet).
-The following displaymath is used to generate random star magnitudes with the appropriate probability density distribution function:
-
-\begin{displaymath}
-m = \frac{1}{b} \log_{10}{(\left[ 10^{b m_{max}} - 10^{b m_{min}} \right] r + 10^{b m_{min}})}
-\end{displaymath}
-
-\noindent{}where $r$ is a random number in the range [0.0, 1.0). The catalog is shown in Fig. \ref{fig:sky}. The random number generator is given the same seed, so that the same simulated sky is produced each time the simulation is run.
+Where $a$ sets the total source density and $b_{star} = 0.25$ steller and galaxy populations reported in XX. We make no distinction between stars and galaxies in our simulations. The random number generator is given the same seed, so that the same simulated sky is produced each time the simulation is run. This ensures that the differences observed are not a result of random fluctuations. We relate source magnitudes, $m$, to source fluxes, $s$, simply by: $m = 22.5 - 2.5\log_{10}(s)$. We therefore do not consider the imaging instrument's absolute response.
 
 \begin{figure}[ht]
 \begin{center}
-\includegraphics[width=\textwidth]{Catalog.png}
+\includegraphics[width=\textwidth]{coverage.png}
 \end{center}
-\caption{The catalog of fake stars. The stars are shown at their position on the sky (left) and as a histogram of their magnitudes (right).
+\caption{An example catalog of fake sources used within the simulations. The sources are shown at their position on a portion of the sky (left) and as a histogram of their magnitudes (right).
 \label{fig:sky}}
 \end{figure}
 
-We relate star magnitudes, $m$, to star fluxes, $s$, simply by:
-\begin{displaymath}
-m = 22.5 - 2.5\log_{10}(s)
-\end{displaymath}
-and therefore do not consider the NISP instrument's absolute response.
-
-\section{Single Exposure}
-With a given camera pointing $(\alpha, \beta)$ and camera orientation $(\theta)$, we transform the sky catalog into focal plane coordinates and find all the stars falling within the instrument's field-of-view. The NISP instrument's field-of-view of $0.7 \times 0.7$~deg$^{2}$ is used as the default in the simulations. We do not simulate images, instead we trivially convert the actual star fluxes into measured counts $(c)$ with a flat field model $(f)$ and a noise model. A typical exposure is depicted in Figure \ref{fig:camera}.
+\subsection{Single Exposure}
+With a given camera pointing $(\alpha, \beta)$ and camera orientation $(\theta)$, we transform the we transform the sky catalog into focal plane coordinates and find all the stars falling within the instrument's field-of-view. For the instrument's field-of-view, we use the current size of the Euclid NIR imager's: $0.7 \times 0.7$~deg$^{2}$. We do not simulate images, instead we trivially convert the true source fluxes into measured counts $(c)$ with an instrument response model $(f)$ and a measurement uncertainty model. A typical exposure is depicted in Figure \ref{fig:camera}.
 
 \begin{figure}[ht]
 \begin{center}
@@ -112,16 +112,17 @@ With a given camera pointing $(\alpha, \beta)$ and camera orientation $(\theta)$
 \caption{A single exposure of the sky with the pointing coordinates $(\alpha = 9.2^\circ, \beta = 2.2^\circ)$ and an orientation of $\theta = 175.4^\circ$. Left: Plot of the entire fake sky, with the instrument's field-of-view shown in black and the measured sources highlighted in red. Right: The distribution of the highlighted sources on the instrument's focal plane. \label{fig:camera}}
 \end{figure}
 
-\subsection{Catalog to Measured Counts Conversion}
-For a measurement $(i)$ the counts recorded from a star (with an ID $k$) depends on God's flat-field ($f(\vec{q}_{god})$), which is a function of focal plane position $(\vec{x_i})$, and the star's true flux ($s$): 
+\subsubsection{Catalog to Measured Counts Conversion}
+For a measurement $(i)$ the counts recorded from a source ($k$) depends on true instrument response ($f(\vec{q}_{true})$), which is a function of focal plane position $(\vec{x_i})$, and the source's true flux ($s$): 
 
 \begin{displaymath}
-c_i = f(\vec{x_i} | \vec{q}_{god}) . s_{k} + e_{i}
+c_i = f(\vec{x_i} | \vec{q}_{true}) . s_{k} + e_{i}
 \end{displaymath}
 
-\noindent{}An error, drawn from the Normal Distribution $N(e|0,{\sigma_i}^2)$, is also introduced to the measurement.
+\noindent{}An error, drawn from the Normal Distribution $N(e|0,{\sigma_i}^2)$, is also introduced to the measurement. In this analysis, we do not consider temporal variations in the instrument's response. 
 
-\subsection{Noise Model}
+\subsubsection{Noise Model}
+\label{sec:noise_model}
 We assume that the Euclid exposures will be background limited and that, for systematic reasons, we will hit an upper limit on the signal-to-noise for bright sources. We assume that the uncertainty variance on the counts are:
 
 \begin{displaymath}
@@ -132,7 +133,7 @@ We assume that the Euclid exposures will be background limited and that, for sys
 \begin{displaymath}
 \sigma_{{act}}^{2} = (1 + \epsilon) \,\alpha^{2} + \eta^{2}\, c^{2} 
 \end{displaymath}
-\noindent{}where $\epsilon$ is a random number, in the range [0.0, $\epsilon_{max}$), generated for each measurement $i$. The assumed and the actual uncertainty variances are shown in Fig. \ref{fig:count_uncertainty}.
+\noindent{}where $\epsilon$ is a random number, in the range [0.0, $\epsilon_{max}$), generated for each measurement $i$. An example of the assumed compared to the true uncertainty variances is shown in Fig. \ref{fig:count_uncertainty}.
 
 \begin{figure}[ht]
 \begin{center}
@@ -141,19 +142,22 @@ We assume that the Euclid exposures will be background limited and that, for sys
 \caption{The assumed and the actual variances as a function of counts.\label{fig:count_uncertainty}}
 \end{figure}
 
-\section{Ubercalibration}
-The ubercalibration procedure works in two sub-steps: (i) the star fluxes are refined based on the latest flat-field estimate (\textit{s\_step}) and (ii) the flat-field parameters are refined based on the latest star flux estimates (\textit{q\_step}). We iterate these steps until the parameters converge. Our flat-field is defined by a set of parameters $\vec{q}$. The individual star measurements are defined as $c_i$ (``counts''), where each $i$ corresponds to a exposure number $n$, a specific star (with ID number $k$) and a focal plane position $\vec{x}$.
+\subsubsection{Instrument Response Model}
+We simulate the instrument response $f(\vec{x_i} | \vec{q}_{true})$ variations on both large and small scales. We model large scale structure, such as the residual from a flat-field calibration source, as a second order polynomial. We model small scale variations in the instrument response with XX sine and cosine contributions. We intentionally do not for the instrument response with a model of the same form, instead we fit with a XX order polynomial only. 
 
-Our model is
+\subsection{Cross-Calibrating the Source Dataset}
+The next step is to calibrate the simulated dataset generated for the survey being investigated. We consider the same cross-calibration procedure used with a number of ground based surveys, such as SDSS XX. This cross-calibration, termed ``ubercalibration´´ in SDSS terminology is an iterative procedure with two sub-steps: (i) the source fluxes are refined based on the latest instrument response estimate (\textit{s\_step}) and (ii) the instrument response is then refined based on the latest star flux estimates (\textit{q\_step}). We iterate these steps until the solution converges. There is a degeneracy in the problem, as both the true value of the instrument response and the source magnitudes are unknown. With this method we are therefore only able to constrain the relative instrument response. We could not, for example, know if the sources are fainter or if the instrument response is lower. This is not an issue though, as absolute standards are always used to constrain the absolute instrument response. We define a relative instrument response with a set of parameters $\vec{q}$. The individual source measurements are defined as $c_i$ (``counts''), where each $i$ corresponds to a exposure number $n$, a specific star ($k$) and a focal plane position $\vec{x}$.
 
+\noindent{}We solve for the following \textit{incomplete} (see Section \ref{sec:noise_model}) model.
 \begin{displaymath}
 c_i = f(\vec{x_i} | \vec{q}) . s_{k} + e_{i}
 \end{displaymath}
-
 where $s_k$ is the true flux from star $k$ and our error is drawn from the Normal Distribution $e_{i} = N(e|0,{\sigma_i}^2)$.
 
-\subsection{Star Flux Refinement: \textbf{\textit{s\_step}}}
-The flux estimates, $s_k$, for each star can be considered individually. At each \textit{s\_step} we can refine a star's flux estimate by minimizing the error function with the latest flat-field parameters:
+\noindent{}The two steps in the cross-calibration procedure, called the \textit{s\_step} and the \textit{q\_step}, are detailed in the following two sections:
+
+\subsubsection{Source Flux Refinement (\textit{s\_step})}
+The flux estimates of each source, $s_k$, are considered individually. At each \textit{s\_step} we can refine a sources's flux estimate by minimizing the error function with the latest instrument response parameters:
 
 \begin{displaymath}
 \chi^2_{k} = \sum_{i \in \mathcal{O}(k)} \frac{(c_i-f_{i}s_{k})^2}{{\sigma_i}^2}
@@ -170,29 +174,29 @@ s'_{k} \leftarrow \left[{\sum_{i \in \mathcal{O}(k)}  \frac{f_{i}^2}{{\sigma_i}^
 The standard uncertainty variance on the new star flux estimate, $s'_{k}$, is given by:
 
 \begin{displaymath}
-\sigma'^2_s = \left[{\sum_{i \in \mathcal{O}(k)}  \frac{f_{i}^2}{{\sigma_i}^2}} \right]
+\sigma'^2_k = \left[{\sum_{i \in \mathcal{O}(k)}  \frac{f_{i}^2}{{\sigma_i}^2}} \right]
 \end{displaymath}
 
 
-\subsection{Flat-Field Refinement: \textbf{\textit{p\_step}}}
-The flat-field parameters can now be refined with the latest star flux estimates. To do this we minimize the error function for all measurements with respect to the flat-field parameters.
+\subsubsection{Instrument Response Refinement: \textbf{\textit{p\_step}}}
+The instrument response parameters can now be refined with the latest star flux estimates. To do this we minimize the total error function for all measurements with respect to the instrument response parameters.
 
 \begin{displaymath}
-\chi^2 = \sum_{k}^{K} \chi^2_k
+\chi^2 = \sum_{k} \chi^2_k
 \end{displaymath}
-
+where:
 \begin{displaymath}
-\chi^2 = \sum_{i} \frac{(c_i-f_{i}s'_{k})^2}{{\sigma_i}^2}
+\chi^2_k = \sum_{i} \frac{(c_i-f_{i}s'_{k})^2}{{\sigma_i}^2}
 \end{displaymath}
-
+The instrument response $f_i$ is parameterized as:
 \begin{displaymath}
 f_{i} = \sum_{l = 1}^L q_{lj} g_l(\vec{x_i})
 \end{displaymath}
-
+So the total error function can be rewritten as:
 \begin{displaymath}
 \chi^2 = \sum_{i} \frac{(c_i- s'_{k} \sum_{l = 1}^L q_{lj} g_l(\vec{x_i}))^2}{{\sigma_i}^2}
 \end{displaymath}
-
+The error function is the minimized with respect to the instrument response parameters $q_{lj}$:
 \begin{displaymath}
 \frac{d\chi^2}{dq_{lj}} = \sum_{i} \frac{-2 g_l(\vec{x_i}) s'_{k} (c_i- s'_{k} \sum_{l' = 1}^{L'} q_{l'} g_{l'}(\vec{x_i}))}{{\sigma_i}^2} = 0
 \end{displaymath}
@@ -201,13 +205,16 @@ f_{i} = \sum_{l = 1}^L q_{lj} g_l(\vec{x_i})
 \sum_{i} \frac{g_l(\vec{x_i}) s'_{k} c_i}{{\sigma_i}^2} = \sum_{i} \frac{g_l (\vec{x_i}) s'^2_{k} \sum_{l' = 1}^{L'} q_{l'} g_{l'} (\vec{x_i})} {{\sigma_i}^2}
 \end{displaymath}
 
-\section{Initial Results}
+These two steps are iterated until the solution converges, or until, it is clear that a solution will not be found. 
 
-\subsection{God's Flat Field}
-We first consider the simple case where God's flat field is given by:
-\begin{displaymath}
-f(\vec{x} | \vec{q}) = 1 - 0.3\,x^2 - 0.5\,y^2 
-\end{displaymath}
+\subsubsection{Badness}
+To assess the performance of the cross-calibration procedure we define a ``badness'' quantity, which quantifies the difference between the true and fitted instrument response in single number. The focal plane is sampled on a $300 \times 300$ grid and the badness is defined as the root-mean-squared difference between the true and fitted instrument response at these positions. This provides a more complete description of the cross-calibration performance than the RMS of the fitted star fluxes, especially in the case - such as Euclid - in which repeat observations of a deep field will be used to calibrate a wide survey.
+
+\section{Results}
+\subsection{Simple Survey Strategies}
+In this section we consider four simple, very different, survey strategies. 
+
+
 
 \subsection{Surveys Strategies}
 We consider two extreme survey examples. The first, called Strategy A, consists of a regular grid of pointings over the sky with a small overlap between neighboring fields. Nine passes are performed over the sky and each time the grids are aligned exactly. The second survey, Strategy D, has the same number of fields as Strategy A, but the pointing and orientation of these fields are random. These two surveys can be seen in Fig. \ref{fig:surveys}.
@@ -215,7 +222,7 @@ We consider two extreme survey examples. The first, called Strategy A, consists 
 
 \begin{figure}[ht]
 \begin{center}
-\includegraphics[width=\textwidth]{surveys.png}
+\includegraphics[width=\textwidth]{coverage.png}
 \end{center}
 \caption{Left: The A Strategy has regular pointings over the sky with a small overlap between adjacent fields. Nine passes are performed over the sky and each time the grids are aligned exactly. Right: The D Strategy has the same number of pointings as the A Strategy, but the pointings and orientations are random.\label{fig:surveys}}
 \end{figure}
@@ -255,3 +262,13 @@ is the small scale power we put in realistic?
 - survey D is much better than survey C for astrometric self calibration 
 we haven't thought about gaps
 \end{document}
+
+
+
+%The following displaymath is used to generate random star magnitudes with the appropriate probability density distribution function:
+%
+%\begin{displaymath}
+%m = \frac{1}{b} \log_{10}{(\left[ 10^{b m_{max}} - 10^{b m_{min}} \right] r + 10^{b m_{min}})}
+%\end{displaymath}
+%
+%\noindent{}where $r$ is a random number in the range [0.0, 1.0). The catalog is shown in Fig. \ref{fig:sky}. 
