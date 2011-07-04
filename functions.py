@@ -256,7 +256,7 @@ def saveout_flat_fields(params, q, iteration_number, data_dir):
   dic['god_ff'] = god_ff
   dic['our_ff'] = our_ff
   dic['iteration_number'] = iteration_number
-  filename = '%s/FF/%d_ff.p' % (data_dir, iteration_number)
+  filename = '%s/FF/%0*d_ff.p' % (data_dir, 3, iteration_number)
   pickle.dump(dic, open(filename, "wb"))
 
 def coverage(params, obs_cat, strategy, data_dir):
