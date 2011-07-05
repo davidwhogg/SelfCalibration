@@ -24,6 +24,7 @@
 
 \newcommand{\vdag}{(v)^\dagger}
 \newcommand{\myemail}{holmes@mpia.de}
+\newcommand{\true}{\mathrm{true}}
 
 %% You can insert a short comment on the title page using the command below.
 
@@ -92,11 +93,11 @@ We first create a catalog of fake sources, both stars and galaxies, based on rea
 \begin{displaymath}
 \log_{10} \frac{dN}{d\Omega\,dm} = a + b\,m
 \end{displaymath}
-Where $a$ sets the total source density and $b_{star} = 0.25$ steller and galaxy populations reported in XX. We make no distinction between stars and galaxies in our simulations. The random number generator is given the same seed, so that the same simulated sky is produced each time the simulation is run. This ensures that the differences observed are not a result of random fluctuations. We relate source magnitudes, $m$, to source fluxes, $s$, simply by: $m = 22.5 - 2.5\log_{10}(s)$. We therefore do not consider the imaging instrument's absolute response.
+Where $a$ sets the total source density and $b_{star} = 0.25$ steller and galaxy populations reported in XX. We make no distinction between stars and galaxies in our simulations. The random number generator is given the same seed, so that the same simulated sky is produced each time the simulation is run. This ensures that the differences observed are not a result of random fluctuations. We relate source magnitudes, $m$, to source fluxes, $s$, simply by: $m = 22.5 - 2.5\log_{10}(s)$, where the 22.5 puts the fluxes in units of nanomaggies. 
 
 \begin{figure}[ht]
 \begin{center}
-\includegraphics[width=\textwidth]{survey.png}
+\includegraphics[width=\textwidth]{temp.png}
 \end{center}
 \caption{An example catalog of fake sources used within the simulations. The sources are shown at their position on a portion of the sky (left) and as a histogram of their magnitudes (right).
 \label{fig:sky}}
@@ -109,31 +110,33 @@ With a given camera pointing $(\alpha, \beta)$ and camera orientation $(\theta)$
 \begin{center}
 \includegraphics[width=\textwidth]{camera_image.png}
 \end{center}
-\caption{A single exposure of the sky with the pointing coordinates $(\alpha = 9.2^\circ, \beta = 2.2^\circ)$ and an orientation of $\theta = 175.4^\circ$. Left: Plot of the entire fake sky, with the instrument's field-of-view shown in black and the measured sources highlighted in red. Right: The distribution of the highlighted sources on the instrument's focal plane. \label{fig:camera}}
+\caption{A single exposure of the fake sky. Left: Plot of the entire fake sky, with the instrument's field-of-view shown. Right: The resultant distribution of the highlighted sources on the instrument's focal plane. \label{fig:camera}}
 \end{figure}
 
-\subsubsection{Catalog to Measured Counts Conversion}
-For a measurement $(i)$ the counts recorded from a source ($k$) depends on true instrument response ($f(\vec{q}_{true})$), which is a function of focal plane position $(\vec{x_i})$, and the source's true flux ($s$): 
+\subsubsection{Measurement Model}
+For a measurement $i$ the counts recorded from a source $k$ depends on true instrument response $f_{\true}$, which is a function of focal plane position $\vec{x_i}$, and the source's true flux $s$: 
 
 \begin{displaymath}
-c_i = f(\vec{x_i} | \vec{q}_{true}) . s_{k} + e_{i}
+c_i = f_{\true}(\vec{x_i}) \, s_{k, \true} + e_{i}
 \end{displaymath}
 
-\noindent{}An error, drawn from the Normal Distribution $N(e|0,{\sigma_i}^2)$, is also introduced to the measurement. In this analysis, we do not consider temporal variations in the instrument's response. 
+\noindent{}An error, drawn from the Normal Distribution $N(e|0,{\sigma_\true}^2)$, is also introduced to the measurement. In this analysis, we do not consider temporal variations in the instrument's response. 
 
 \subsubsection{Noise Model}
 \label{sec:noise_model}
-We assume that the Euclid exposures will be background limited and that, for systematic reasons, we will hit an upper limit on the signal-to-noise for bright sources. We assume that the uncertainty variance on the counts are:
-
+We assume that the Euclid exposures will be background limited and that, for systematic reasons, we will hit an upper limit on the signal-to-noise for bright sources. We complicate the model by applying an extra term to the count's uncertainty variance, which we do not take into account in our analysis:
 \begin{displaymath}
-\sigma_{{ass}}^{2} = \alpha^{2} + \eta^{2}\, c^{2} 
+\sigma_{i, \true}^{2} = (1 + \epsilon_k) \, \alpha^{2} + \eta^{2}\, [ f_\true(\vec{x_i}) \, s_{k, \true} ]^2
+\end{displaymath}
+\noindent{}where $\epsilon$ is a random number, in the range [0.0, $\epsilon_{max}$), generated for each measurement $i$. 
+
+We do not take into account this final term in our analysis and we therefoer assume that the uncertainty variance on the counts are:
+\begin{displaymath}
+\sigma_{{i}}^{2} = \alpha^{2} + \eta^{2}\, c^{2}_i
 \end{displaymath}
 \noindent{}where $\alpha$ and $\eta$ are both constants. In fact, we complicate the model by applying an extra term to the count's uncertainty variance, which we do not take into account in our analysis: 
 
-\begin{displaymath}
-\sigma_{{act}}^{2} = (1 + \epsilon) \,\alpha^{2} + \eta^{2}\, c^{2} 
-\end{displaymath}
-\noindent{}where $\epsilon$ is a random number, in the range [0.0, $\epsilon_{max}$), generated for each measurement $i$. An example of the assumed compared to the true uncertainty variances is shown in Fig. \ref{fig:invvar}.
+An example of the assumed compared to the true uncertainty variances is shown in Fig. \ref{fig:invvar}.
 
 \begin{figure}[ht]
 \begin{center}
@@ -143,7 +146,7 @@ We assume that the Euclid exposures will be background limited and that, for sys
 \end{figure}
 
 \subsubsection{Instrument Response Model}
-We simulate the instrument response $f(\vec{x_i} | \vec{q}_{true})$ variations on both large and small scales. We model large scale structure, such as the residual from a flat-field calibration source, as a second order polynomial. We model small scale variations in the instrument response with XX sine and cosine contributions. We intentionally do not for the instrument response with a model of the same form, instead we fit with a XX order polynomial only. 
+We simulate the instrument response $f_\true(\vec{x_i} | \vec{q}_{\true})$ variations on both large and small scales. We model large scale structure, such as the residual from a flat-field calibration source, as a second order polynomial. We model small scale variations in the instrument response with XX sine and cosine contributions. We intentionally do not for the instrument response with a model of the same form.
 
 \subsection{Cross-Calibrating the Source Dataset}
 The next step is to calibrate the simulated dataset generated for the survey being investigated. We consider the same cross-calibration procedure used with a number of ground based surveys, such as SDSS XX. This cross-calibration, termed ``ubercalibration´´ in SDSS terminology is an iterative procedure with two sub-steps: (i) the source fluxes are refined based on the latest instrument response estimate (\textit{s\_step}) and (ii) the instrument response is then refined based on the latest star flux estimates (\textit{q\_step}). We iterate these steps until the solution converges. There is a degeneracy in the problem, as both the true value of the instrument response and the source magnitudes are unknown. With this method we are therefore only able to constrain the relative instrument response. We could not, for example, know if the sources are fainter or if the instrument response is lower. This is not an issue though, as absolute standards are always used to constrain the absolute instrument response. We define a relative instrument response with a set of parameters $\vec{q}$. The individual source measurements are defined as $c_i$ (``counts''), where each $i$ corresponds to a exposure number $n$, a specific star ($k$) and a focal plane position $\vec{x}$.
@@ -152,12 +155,12 @@ The next step is to calibrate the simulated dataset generated for the survey bei
 \begin{displaymath}
 c_i = f(\vec{x_i} | \vec{q}) . s_{k} + e_{i}
 \end{displaymath}
-where $s_k$ is the true flux from star $k$ and our error is drawn from the Normal Distribution $e_{i} = N(e|0,{\sigma_i}^2)$.
+where $s_k$ is a model flux for source $k$ and the error $e_i$ is drawn from the Normal Distribution $N(e|0,{\sigma_i}^2)$. We model the instrument response as a XX order polynominal. 
 
 \noindent{}The two steps in the cross-calibration procedure, called the \textit{s\_step} and the \textit{q\_step}, are detailed in the following two sections:
 
 \subsubsection{Source Flux Refinement (\textit{s\_step})}
-The flux estimates of each source, $s_k$, are considered individually. At each \textit{s\_step} we can refine a sources's flux estimate by minimizing the error function with the latest instrument response parameters:
+The model fluxes of each source, $s_k$, are considered individually. At each \textit{s\_step} we can refine a sources's flux estimate by minimizing the error function with the latest instrument response parameters:
 
 \begin{displaymath}
 \chi^2_{k} = \sum_{i \in \mathcal{O}(k)} \frac{(c_i-f_{i}s_{k})^2}{{\sigma_i}^2}
@@ -256,6 +259,34 @@ We can draw a strong conclusion from these simple survey strategies: small and r
 \includegraphics[width=\textwidth]{fit_example.png}
 \end{center}
 \caption{The fitted flat field compared to the actual flat field found with Strategy D. \label{fig:D}}
+\end{figure}
+
+
+\begin{figure}[ht]
+\begin{center}
+\includegraphics[width=\textwidth]{density_of_stars.png}
+\end{center}
+
+\end{figure}
+
+
+\begin{figure}[ht]
+\begin{center}
+\includegraphics[width=\textwidth]{epsilon_max.png}
+\end{center}
+\end{figure}
+
+
+\begin{figure}[ht]
+\begin{center}
+\includegraphics[width=\textwidth]{m_min.png}
+\end{center}
+\end{figure}
+
+\begin{figure}[ht]
+\begin{center}
+\includegraphics[width=\textwidth]{mag_at_10_sigma.png}
+\end{center}
 \end{figure}
 
 \end{document}

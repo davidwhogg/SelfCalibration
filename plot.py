@@ -105,8 +105,8 @@ def camera_image(params, camera_filename):
   #title = ur'$\alpha$ = %.1lf, $\beta$ = %.1lf, $\theta$ = %.1lf$^\circ$' % (pointing[0],pointing[1], orientation)
   #plt.suptitle(title, fontsize=fontsize)
   plt.subplot(121)
-  plt.plot(alpha,beta,'.', markersize=5)
-  plt.plot(alpha[inside_FoV],beta[inside_FoV],'r.',markersize=5)  
+  plt.plot(alpha,beta,'k.', markersize=5)
+  plt.plot(alpha[inside_FoV],beta[inside_FoV],'k.',markersize=5)  
   plt.plot(fp_alpha,fp_beta,'k', linewidth=4)
   plt.xlabel(ur'$\alpha$', fontsize=fontsize)
   plt.ylabel(ur'$\beta$', fontsize=fontsize)
@@ -123,7 +123,7 @@ def camera_image(params, camera_filename):
 
   # Plot sources on focal plane
   plt.subplot(122)
-  plt.plot(x,y,'r.', markersize=20)
+  plt.plot(x,y,'k.', markersize=20)
   plt.plot(fp_x, fp_y, 'k', linewidth=6)
   plt.xlabel(ur'$x$', fontsize=fontsize)
   plt.ylabel(ur'$y$', fontsize=fontsize)
