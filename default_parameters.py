@@ -12,7 +12,7 @@ dic = {
   
   'm_max'               :     19, #22.5,
   
-  'density_of_stars'    :     25, # all magnitudes
+  'density_of_stars'    :     25, # all magnitudes, number per unit area on sky
   
   'powerlaw'            :     0.25, # B in log10(dN/dm) = A + B*m
   
@@ -26,6 +26,10 @@ dic = {
   
   'sky_limits'          :     [-4.0, 4.0, -4.0, 4.0], #[α_min, α_max, β_min, β_max]
   
-  'seed'                :     1 # Random number seed
+  'seed'                :     1, # Random number seed
+  
+  'stop_condition'	:     1e-8, # Stop cross-cal when difference in X2 less than this
+  
+  'max_iterations'	:     1000 # the maximum number of cross cal iterations
   
   } 

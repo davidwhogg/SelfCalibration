@@ -88,33 +88,43 @@ if __name__ == '__main__':
       if (operating_mode == 1):
 	data_dir = ('%s/%s/default' % (out_dir,strategy))
       elif (operating_mode == 2):
-	params[mod_param] = mod_value
-	data_dir = ('%s/%s/%s=%.3f' % (out_dir,strategy, mod_param, mod_value))
+	if mod_param in params:
+	  params[mod_param] = mod_value
+	  data_dir = ('%s/%s/%s=%.3f' % (out_dir,strategy, mod_param, mod_value))
+	else: 
+	  print "Error! Unknown parameter specified..." 
+	  sys.exit()
+      
       else: print "Error - operating mode not defined!"
       sky_catalog = god.create_catalog(params, out_dir, plots = plotdata, verbose = verbosemode)
       run_sim(sky_catalog, params, strategy, data_dir)
   elif (operating_mode == 3):
-    param_range = np.linspace(mod_value_low, mod_value_high, num=no_mod_value, endpoint=True, retstep=False)
-    for strategy in params['survey_strategies']:
-      os.system('mkdir -p %s/%s' % (out_dir, strategy)) # create directory for survey
-      sln_dic = {}
-      sln_dic['modified_parameter'] = mod_param
-      sln_dic['parameter_range'] = param_range
-      sln_it = 0*param_range
-      sln_rms = 0*param_range
-      sln_bdnss = 0*param_range
-      sln_chi2 = 0*param_range
-      for indx in range(len(param_range)):
-	params[mod_param] = param_range[indx]
-	sky_catalog = god.create_catalog(params, out_dir, plots = plotdata, verbose = verbosemode)
-	data_dir = ('%s/%s/%s=%.3f' % (out_dir, strategy, mod_param, param_range[indx]))
-	sln_it[indx], sln_bdnss[indx], sln_rms[indx], sln_chi2[indx] = run_sim(sky_catalog, params, strategy, data_dir)      
+    if mod_param in params:
+      param_range = np.linspace(mod_value_low, mod_value_high, num=no_mod_value, endpoint=True, retstep=False)
+      if (mod_param == 'flat_field_order'): param_range = param_range.astype('int') 
+      for strategy in params['survey_strategies']:
+	os.system('mkdir -p %s/%s' % (out_dir, strategy)) # create directory for survey
+	sln_dic = {}
+	sln_dic['modified_parameter'] = mod_param
+	sln_dic['parameter_range'] = param_range
+	sln_it = 0*param_range
+	sln_rms = 0*param_range
+	sln_bdnss = 0*param_range
+	sln_chi2 = 0*param_range
+	for indx in range(len(param_range)):
+	  params[mod_param] = param_range[indx]
+	  sky_catalog = god.create_catalog(params, out_dir, plots = plotdata, verbose = verbosemode)
+	  data_dir = ('%s/%s/%s=%.3f' % (out_dir, strategy, mod_param, param_range[indx]))
+	  sln_it[indx], sln_bdnss[indx], sln_rms[indx], sln_chi2[indx] = run_sim(sky_catalog, params, strategy, data_dir)      
 
-      sln_dic['it_num'] = sln_it
-      sln_dic['rms'] = sln_rms
-      sln_dic['bdnss'] = sln_bdnss
-      sln_dic['chi2'] = sln_chi2
-      pickle.dump(sln_dic, open((out_dir + '/' + strategy +'/solution.p'), "wb"))
+	sln_dic['it_num'] = sln_it
+	sln_dic['rms'] = sln_rms
+	sln_dic['bdnss'] = sln_bdnss
+	sln_dic['chi2'] = sln_chi2
+	pickle.dump(sln_dic, open((out_dir + '/' + strategy +'/solution.p'), "wb"))
+    else: 
+      print "Error! Unknown parameter specified..." 
+      sys.exit()
   else:
     print "Error - no operating mode defined!"
 

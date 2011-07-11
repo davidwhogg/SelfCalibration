@@ -4,6 +4,7 @@
 import numpy as np
 import pickle
 import functions as f
+import default_parameters
 
 # magic numbers
 def flat_field_parameters():
@@ -32,6 +33,11 @@ def flat_field(params,x,y,par = flat_field_parameters()):
       ff += par[k+3] * skx * sky
       k += 4
   return ff
+
+'''
+def bestfit_flat():
+  flat_field_order = default_parameters.dic['flat_field_order']
+'''
 
 def generate_magnitudes(m_min,m_max,powerlaw,size):
   # Randomly generate source magnitudes according to probability distribution

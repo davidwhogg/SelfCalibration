@@ -126,13 +126,14 @@ def survey(params, sky_catalog, survey_file, data_dir, plots=None, verbose=None)
 def ubercalibration(params, observation_catalog, sky_catalog, strategy, data_dir, plots = None):
   order = params['flat_field_order']
   q = np.array([1])
-  stop_condition = 1e-8
+  stop_condition = params['stop_condition']
+  max_iterations = params['max_iterations']
   chi2 = 1e9
   old_chi2 = 1e10
   iteration_number = 0
   next_plot_iteration = 1 
   if plots: saveout_flat_fields(params, q, iteration_number, data_dir)
-  while ((abs(chi2 - old_chi2) > stop_condition) and (iteration_number < 258)):
+  while ((abs(chi2 - old_chi2) > stop_condition) and (iteration_number < max_iterations)):
     iteration_number += 1
     temp_chi2 = chi2
     s, s_invvar = s_step(params, observation_catalog,q)
