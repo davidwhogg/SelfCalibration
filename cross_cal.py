@@ -22,10 +22,16 @@ import god
 plotdata = True
 verbosemode = False
 
-def run_sim(sky, params, strategy, data_dir):
+def run_sim(sky, params, strategy, out_dir, data_dir):
   os.system('mkdir -p %s' % (data_dir))
   os.system('mkdir -p %s' % (data_dir + '/FF'))
   pickle.dump(params, open((data_dir+'/parameters.p'), "wb"))
+  # Check to see if God and bestfit flat-fields have been saved already
+  if os.path.isfile(out_dir+ '/bestfit_ff.py') == False:
+    god.saveout_bestfit_ff(params, out_dir)
+  if os.path.isfile(out_dir+ '/god_ff.py') == False:
+    god.saveout_god_ff(params, out_dir)
+
   survey_file = strategy + ".txt"
   observation_catalog = f.survey(params,sky, survey_file, data_dir, plots=plotdata, verbose=verbosemode) 
   # observation_catalog: *.size, *.pointing_ID, *.star_ID, *.flux, *.invvar, *.x, *.y
@@ -80,7 +86,6 @@ if __name__ == '__main__':
 
   # Load Default Parameters Dictionary and modify if required
   params = default_parameters.dic
-    
   # Run Simulations
   if ((operating_mode == 1) or (operating_mode == 2)):
     for strategy in params['survey_strategies']:
@@ -97,8 +102,11 @@ if __name__ == '__main__':
       
       else: print "Error - operating mode not defined!"
       sky_catalog = god.create_catalog(params, out_dir, plots = plotdata, verbose = verbosemode)
-      run_sim(sky_catalog, params, strategy, data_dir)
+      run_sim(sky_catalog, params, strategy, out_dir, data_dir)
   elif (operating_mode == 3):
+    if (mod_param == 'FoV') or (mod_param == 'ff_samples') or (mod_param == 'flat_field_order'):
+      print "Error! Unsuitable parameter selected..."
+      sys.exit()
     if mod_param in params:
       param_range = np.linspace(mod_value_low, mod_value_high, num=no_mod_value, endpoint=True, retstep=False)
       if (mod_param == 'flat_field_order'): param_range = param_range.astype('int') 
@@ -115,7 +123,7 @@ if __name__ == '__main__':
 	  params[mod_param] = param_range[indx]
 	  sky_catalog = god.create_catalog(params, out_dir, plots = plotdata, verbose = verbosemode)
 	  data_dir = ('%s/%s/%s=%.3f' % (out_dir, strategy, mod_param, param_range[indx]))
-	  sln_it[indx], sln_bdnss[indx], sln_rms[indx], sln_chi2[indx] = run_sim(sky_catalog, params, strategy, data_dir)      
+	  sln_it[indx], sln_bdnss[indx], sln_rms[indx], sln_chi2[indx] = run_sim(sky_catalog, params, strategy, out_dir, data_dir)      
 
 	sln_dic['it_num'] = sln_it
 	sln_dic['rms'] = sln_rms

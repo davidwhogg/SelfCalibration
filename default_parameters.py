@@ -18,7 +18,7 @@ dic = {
   
   'FoV'                 :     [0.7, 0.7], # [Δα, Δβ]
   
-  'ff_samples'          :     [100, 100],
+  'ff_samples'          :     [10, 10],
   
   'flat_field_order'    :     8,
   

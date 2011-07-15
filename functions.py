@@ -240,8 +240,9 @@ def rms_error(flux_estimate, true_flux):
 
 def saveout_flat_fields(params, q, iteration_number, data_dir):
   FoV = params['FoV']
-  x = np.arange(-FoV[0]/2,FoV[0]/2,0.01)
-  y = np.arange(-FoV[1]/2,FoV[1]/2,0.01)
+  ff_samples = params['ff_samples']
+  x = np.linspace(-FoV[0]/2,FoV[0]/2,ff_samples[0])
+  y = np.linspace(-FoV[1]/2,FoV[1]/2,ff_samples[1])
   X, Y = np.meshgrid(x, y)
   # Have to reshape so that evaluate_flat_field() works 
   temp_x = np.reshape(X,-1)
@@ -254,11 +255,11 @@ def saveout_flat_fields(params, q, iteration_number, data_dir):
   dic = {}
   dic['x'] = X
   dic['y'] = Y
-  dic['god_ff'] = god_ff
   dic['our_ff'] = our_ff
   dic['iteration_number'] = iteration_number
   filename = '%s/FF/%0*d_ff.p' % (data_dir, 3, iteration_number)
   pickle.dump(dic, open(filename, "wb"))
+
 
 def coverage(params, obs_cat, strategy, data_dir):
   dic = {}

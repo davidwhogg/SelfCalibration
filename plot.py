@@ -34,17 +34,24 @@ single_fig_width = 12
 single_fig_height = 12
 
 
-def plot_flat_fields(params, ff_filename, strategy):
+def plot_flat_fields(params, out_dir,ff_filename, strategy):
   print ff_filename
   FoV = params['FoV']
-  plt.figure(figsize=(double_fig_width, single_fig_height))
+  plt.figure(figsize=(double_fig_width, double_fig_width))
   dic = pickle.load(open(ff_filename))
-  X = dic['x']
-  Y = dic['y']
+  our_X = dic['x']
+  our_Y = dic['y']
   our_ff = dic['our_ff']
-  god_ff = dic['god_ff']
   iteration_number = dic['iteration_number']
-  plt.subplot(121)
+  god_dic = pickle.load(open(out_dir+'/god_ff.p'))
+  god_ff = god_dic['god_ff']
+  god_X = god_dic['x']
+  god_Y = god_dic['y']
+  bestfit_dic = pickle.load(open(out_dir+'/bestfit_ff.p'))
+  bestfit_ff = bestfit_dic['bestfit_ff']
+  bestfit_X = bestfit_dic['x']
+  bestfit_Y = bestfit_dic['y']
+  plt.subplot(221)
   #plt.suptitle('Survey %s' % strategy, fontsize = fontsize)
   plt.title(r"Flat-Fields (True = Black; Fitted = Red) Iteration: %i" % (iteration_number), fontsize = fontsize-10)
   plt.xlabel(r"$\alpha$", fontsize = fontsize)
@@ -54,9 +61,9 @@ def plot_flat_fields(params, ff_filename, strategy):
   god_ff_min = np.min(god_ff)
   # XX magic number
   levels = np.arange(0.5,1.5,0.01)
-  CS = plt.contour(X,Y,god_ff,levels ,colors='k', linewidths = 3)
+  CS = plt.contour(god_X,god_Y,god_ff,levels ,colors='k', linewidths = 3)
   plt.clabel(CS, fontsize=tick_fontsize, inline=1)
-  CS2 = plt.contour(X,Y,our_ff,levels,colors='r',alpha=0.5, linewidths = 3)
+  CS2 = plt.contour(our_X, our_Y, our_ff, levels,colors='r',alpha=0.5, linewidths = 3)
   ax = plt.gca()
   for tick in ax.xaxis.get_major_ticks():
     tick.label1.set_fontsize(tick_fontsize)
@@ -66,7 +73,7 @@ def plot_flat_fields(params, ff_filename, strategy):
   plt.ylim(-FoV[1]/2, FoV[1]/2)
   
   # Plot residual in flat-field
-  plt.subplot(122)
+  plt.subplot(222)
   plt.title(r"Residual (Fit - True) in Flat-Field (\%)", fontsize = fontsize-10)
   a = plt.imshow((100*(our_ff-god_ff)/god_ff),extent=(-FoV[0]/2,FoV[0]/2,-FoV[1]/2,FoV[1]/2), vmin = -0.5,vmax = 0.5, cmap='gray')
   cb = plt.colorbar(a,shrink=0.7)
@@ -81,6 +88,43 @@ def plot_flat_fields(params, ff_filename, strategy):
     tick.label1.set_fontsize(tick_fontsize)
   for tick in ax.yaxis.get_major_ticks():
     tick.label1.set_fontsize(tick_fontsize)  
+    
+  plt.subplot(223)
+  #plt.suptitle('Survey %s' % strategy, fontsize = fontsize)
+  plt.title(r"Flat-Fields (Bestfit = Black; Fitted = Red) Iteration: %i" % (iteration_number), fontsize = fontsize-10)
+  plt.xlabel(r"$\alpha$", fontsize = fontsize)
+  plt.ylabel(r"$\beta$", fontsize = fontsize)
+  # Find parameters for contour plot
+  # XX magic number
+  levels = np.arange(0.5,1.5,0.01)
+  CS = plt.contour(bestfit_X,bestfit_Y,bestfit_ff,levels ,colors='k', linewidths = 3)
+  plt.clabel(CS, fontsize=tick_fontsize, inline=1)
+  CS2 = plt.contour(our_X, our_Y, our_ff, levels,colors='r',alpha=0.5, linewidths = 3)
+  ax = plt.gca()
+  for tick in ax.xaxis.get_major_ticks():
+    tick.label1.set_fontsize(tick_fontsize)
+  for tick in ax.yaxis.get_major_ticks():
+    tick.label1.set_fontsize(tick_fontsize)
+  plt.xlim(-FoV[0]/2, FoV[0]/2)
+  plt.ylim(-FoV[1]/2, FoV[1]/2)
+  
+  # Plot residual in flat-field
+  plt.subplot(224)
+  plt.title(r"Residual (Fit - True) in Flat-Field (\%)", fontsize = fontsize-10)
+  a = plt.imshow((100*(our_ff-bestfit_ff) /bestfit_ff),extent=(-FoV[0]/2,FoV[0]/2,-FoV[1]/2,FoV[1]/2), vmin = -0.5,vmax = 0.5, cmap='gray')
+  cb = plt.colorbar(a,shrink=0.7)
+  for t in cb.ax.get_yticklabels():
+    t.set_fontsize(tick_fontsize)
+
+
+  plt.xlabel(r"$\alpha$", fontsize = fontsize)
+  plt.ylabel(r"$\beta$", fontsize = fontsize)
+  ax = plt.gca()
+  for tick in ax.xaxis.get_major_ticks():
+    tick.label1.set_fontsize(tick_fontsize)
+  for tick in ax.yaxis.get_major_ticks():
+    tick.label1.set_fontsize(tick_fontsize)      
+    
   filename = string.replace(ff_filename, '.p', '.png')  
   plt.savefig(filename,bbox_inches='tight',pad_inches=0.5)
   plt.clf() 
@@ -225,7 +269,7 @@ if __name__ == "__main__":
       os.system("rm -r %s/*.png" % ff_path)
       FFs = os.listdir(ff_path)
       for ff in FFs:
-	plot_flat_fields(params, (ff_path + '/' + ff), srvy)
+	plot_flat_fields(params, out_dir, (ff_path + '/' + ff), srvy)
       # Create Animations
       png_dir = ff_path
       command = ('convert -delay 50 -loop 0 %s/*.png %s/ff_animation.gif' % (png_dir, dir_path))

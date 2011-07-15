@@ -5,6 +5,7 @@ import numpy as np
 import pickle
 import functions as f
 import default_parameters
+import scipy.optimize as sci
 
 # magic numbers
 def flat_field_parameters():
@@ -34,10 +35,67 @@ def flat_field(params,x,y,par = flat_field_parameters()):
       k += 4
   return ff
 
-'''
-def bestfit_flat():
-  flat_field_order = default_parameters.dic['flat_field_order']
-'''
+def saveout_god_ff(params, out_dir):
+  flat_field_order = params['flat_field_order']
+  ff_samples = params['ff_samples']
+  FoV = params['FoV']
+  x = np.linspace(-0.5*FoV[0], 0.5*FoV[0], ff_samples[0])
+  y = np.linspace(-0.5*FoV[1], 0.5*FoV[1], ff_samples[1])
+  X, Y = np.meshgrid(x,y)
+  god_ff = flat_field(params, X, Y)
+  dic = {}
+  dic['x'] = X
+  dic['y'] = Y
+  dic['god_ff'] = god_ff
+  filename = '%s/god_ff.p' % (out_dir)
+  pickle.dump(dic, open(filename, "wb"))
+
+
+################################################
+
+def compare_flats(a, Z_true, X, Y):
+  order = len(a)
+  l = 0
+  total = 0*X
+  for n in range(order):
+    for m in range(n+1):
+      total += a[l]*(X**(n-m)) * (Y**m)
+    l += 1
+  error = np.sqrt(np.mean((Z_true - total)**2))
+  return error
+
+def saveout_bestfit_ff(params, out_dir):
+  flat_field_order = params['flat_field_order']
+  ff_samples = params['ff_samples']
+  FoV = params['FoV']
+  x = np.linspace(-0.5*FoV[0], 0.5*FoV[0], ff_samples[0])
+  y = np.linspace(-0.5*FoV[1], 0.5*FoV[1], ff_samples[1])
+  X, Y = np.meshgrid(x,y)
+  god_ff = flat_field(params, X, Y)
+  a = np.ones((flat_field_order + 1)*(flat_field_order + 2)/2)
+  print "Fitting god's flat-field with basis..."
+  fitted_parameters = sci.fmin(compare_flats, a, args = (god_ff, X, Y))
+  print "Fitted Parameters: ", fitted_parameters
+  "...done!"
+  order = len(fitted_parameters)
+  l = 0
+  bestfit_ff = 0*X
+  for n in range(order):
+    for m in range(n+1):
+      bestfit_ff += fitted_parameters[l]*(X**(n-m)) * (Y**m)
+    l += 1
+  dic = {}
+  dic['x'] = X
+  dic['y'] = Y
+  dic['bestfit_ff'] = bestfit_ff
+  dic['fit_parameters'] = fitted_parameters
+  filename = '%s/bestfit_ff.p' % (out_dir)
+  pickle.dump(dic, open(filename, "wb"))
+
+
+  
+
+###################################################
 
 def generate_magnitudes(m_min,m_max,powerlaw,size):
   # Randomly generate source magnitudes according to probability distribution
