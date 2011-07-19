@@ -22,6 +22,7 @@ rc('text', usetex=True)
 if len(sys.argv) == 2:
   print "Running plotting routine..."
   out_dir = sys.argv[1]
+  if out_dir[-1] == '/': out_dir = out_dir[:-1]
 else:
   print "Error - no plotting directory given!"
   sys.exit()
@@ -61,10 +62,11 @@ def plot_flat_fields(params, out_dir,ff_filename, strategy):
   god_ff_min = np.min(god_ff)
   # XX magic number
   levels = np.arange(0.5,1.5,0.01)
-  CS = plt.contour(god_X,god_Y,god_ff,levels ,colors='k', linewidths = 3)
-  plt.clabel(CS, fontsize=tick_fontsize, inline=1)
-  CS2 = plt.contour(our_X, our_Y, our_ff, levels,colors='r',alpha=0.5, linewidths = 3)
+  CS = plt.contour(god_X,god_Y,god_ff,levels ,colors='k',alpha=0.3, linewidths
+= 3)
+  CS2 = plt.contour(our_X, our_Y, our_ff, levels,colors='k',linewidths = 3)
   ax = plt.gca()
+  plt.clabel(CS2, fontsize=tick_fontsize, inline=1)
   for tick in ax.xaxis.get_major_ticks():
     tick.label1.set_fontsize(tick_fontsize)
   for tick in ax.yaxis.get_major_ticks():
@@ -97,9 +99,11 @@ def plot_flat_fields(params, out_dir,ff_filename, strategy):
   # Find parameters for contour plot
   # XX magic number
   levels = np.arange(0.5,1.5,0.01)
-  CS = plt.contour(bestfit_X,bestfit_Y,bestfit_ff,levels ,colors='k', linewidths = 3)
-  plt.clabel(CS, fontsize=tick_fontsize, inline=1)
-  CS2 = plt.contour(our_X, our_Y, our_ff, levels,colors='r',alpha=0.5, linewidths = 3)
+  CS = plt.contour(bestfit_X,bestfit_Y,bestfit_ff,levels ,colors='k',alpha=0.3,
+linewidths = 3)
+  CS2 = plt.contour(our_X, our_Y, our_ff, levels,colors='k',
+linewidths = 3)
+  plt.clabel(CS2, fontsize=tick_fontsize, inline=1)
   ax = plt.gca()
   for tick in ax.xaxis.get_major_ticks():
     tick.label1.set_fontsize(tick_fontsize)

@@ -28,7 +28,7 @@ def run_sim(sky, params, strategy, out_dir, data_dir):
   pickle.dump(params, open((data_dir+'/parameters.p'), "wb"))
   # Check to see if God and bestfit flat-fields have been saved already
   if os.path.isfile(out_dir+ '/bestfit_ff.py') == False:
-    god.saveout_bestfit_ff(params, out_dir)
+    f.bestfit_ff(params, out_dir)
   if os.path.isfile(out_dir+ '/god_ff.py') == False:
     god.saveout_god_ff(params, out_dir)
 
