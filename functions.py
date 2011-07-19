@@ -239,7 +239,8 @@ def bestfit_ff(params, out_dir):
   a[3] = -0.2
   a[5] = 0.5
   print "Fitting god's flat-field with basis..."
-  fitted_parameters = sci.fmin_bfgs(compare_flats, a, args = (god_ff, g, x, y))
+  fitted_parameters = sci.fmin_bfgs(compare_flats, a, args = (god_ff, g, x, y),
+gtol = 1e-16, maxiter = 1e16)
   print "Fitted Parameters: ", fitted_parameters
   "...done!"
   fitted_parameters = normalize_flat_field(params, fitted_parameters)
