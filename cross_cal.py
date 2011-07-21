@@ -27,9 +27,9 @@ def run_sim(sky, params, strategy, out_dir, data_dir):
   os.system('mkdir -p %s' % (data_dir + '/FF'))
   pickle.dump(params, open((data_dir+'/parameters.p'), "wb"))
   # Check to see if God and bestfit flat-fields have been saved already
-  if os.path.isfile(out_dir+ '/bestfit_ff.py') == False:
+  if os.path.isfile(out_dir+ '/bestfit_ff.p') == False:
     f.bestfit_ff(params, out_dir)
-  if os.path.isfile(out_dir+ '/god_ff.py') == False:
+  if os.path.isfile(out_dir+ '/god_ff.p') == False:
     god.saveout_god_ff(params, out_dir)
 
   survey_file = strategy + ".txt"
@@ -45,8 +45,8 @@ def run_sim(sky, params, strategy, out_dir, data_dir):
     if verbosemode: print "...done!"  
 
   # Do cross-calibration
-  sln = f.ubercalibration(params, observation_catalog, sky_catalog, strategy, data_dir, plots=plotdata)
-  return sln # [iteration number, rms, badness, chi2]
+  sln = f.ubercalibration(params, observation_catalog, sky_catalog, strategy, out_dir, data_dir, plots=plotdata)
+  return sln # [iteration number, rms, badness, badness_bestfit, chi2]
   
 # Read command line inputs
 if len(sys.argv) > 1:
@@ -118,16 +118,18 @@ if __name__ == '__main__':
 	sln_it = 0*param_range
 	sln_rms = 0*param_range
 	sln_bdnss = 0*param_range
+	sln_bdnss_bestfit = 0*param_range
 	sln_chi2 = 0*param_range
 	for indx in range(len(param_range)):
 	  params[mod_param] = param_range[indx]
 	  sky_catalog = god.create_catalog(params, out_dir, plots = plotdata, verbose = verbosemode)
 	  data_dir = ('%s/%s/%s=%.3f' % (out_dir, strategy, mod_param, param_range[indx]))
-	  sln_it[indx], sln_bdnss[indx], sln_rms[indx], sln_chi2[indx] = run_sim(sky_catalog, params, strategy, out_dir, data_dir)      
+	  sln_it[indx], sln_bdnss[indx], sln_bdnss_bestfit[indx], sln_rms[indx], sln_chi2[indx] = run_sim(sky_catalog, params, strategy, out_dir, data_dir)      
 
 	sln_dic['it_num'] = sln_it
 	sln_dic['rms'] = sln_rms
 	sln_dic['bdnss'] = sln_bdnss
+	sln_dic['bdnss_bestfit'] = sln_bdnss_bestfit
 	sln_dic['chi2'] = sln_chi2
 	pickle.dump(sln_dic, open((out_dir + '/' + strategy +'/solution.p'), "wb"))
     else: 

@@ -125,7 +125,7 @@ def survey(params, sky_catalog, survey_file, data_dir, plots=None, verbose=None)
 #**************** Ubercal Functions ******************
 #*****************************************************
 
-def ubercalibration(params, observation_catalog, sky_catalog, strategy, data_dir, plots = None):
+def ubercalibration(params, observation_catalog, sky_catalog, strategy, out_dir, data_dir, plots = None):
   order = params['flat_field_order']
   q = np.array([1])
   stop_condition = params['stop_condition']
@@ -145,12 +145,13 @@ def ubercalibration(params, observation_catalog, sky_catalog, strategy, data_dir
     indx = [s != 0]
     rms = rms_error(s[indx],sky_catalog.flux[indx])
     bdness = badness(params, q)
-    print "%i: RMS = %.6f %%, Badness = %0.6f %%, chi2 = %0.2f (%i)" % (iteration_number, rms, bdness,chi2, observation_catalog.size)
+    bdness_bestfitff = badness_bestinbasis(params, q, out_dir) 
+    print "%i: RMS = %.6f %%, Badness = %0.6f %%, BestInBasis_Badness = %0.6f %%, chi2 = %0.2f (%i)" % (iteration_number, rms, bdness, bdness_bestfitff, chi2, observation_catalog.size)
     print q
     if (plots and (iteration_number == next_plot_iteration)) or (abs(chi2 - old_chi2) < stop_condition): 
       saveout_flat_fields(params, q, iteration_number, data_dir)
       next_plot_iteration *= 2
-  return np.array([iteration_number, rms, bdness, chi2])
+  return np.array([iteration_number, rms, bdness, bdness_bestfitff, chi2])
 
 def evaluate_flat_field_functions(x, y, order):
   L = (order + 1)*(order + 2)/2
@@ -219,7 +220,7 @@ def q_step(params, obs_cat, s, order, iteration_number, plots=None):
 #*****************************************************
 
 def compare_flats(a, Z_true, g, X, Y):
-  error = (np.sum((Z_true - np.dot(g,a))**2))
+  error = np.sum((Z_true - np.dot(g,a))**2)
   #print error
   return error
 
@@ -239,8 +240,7 @@ def bestfit_ff(params, out_dir):
   a[3] = -0.2
   a[5] = 0.5
   print "Fitting god's flat-field with basis..."
-  fitted_parameters = sci.fmin_bfgs(compare_flats, a, args = (god_ff, g, x, y),
-gtol = 0, maxiter = 1e16)
+  fitted_parameters = sci.fmin_bfgs(compare_flats, a, args = (god_ff, g, x, y), gtol = 1e-8, maxiter = 1e16)
   print "Fitted Parameters: ", fitted_parameters
   "...done!"
   fitted_parameters = normalize_flat_field(params, fitted_parameters)
@@ -261,16 +261,28 @@ gtol = 0, maxiter = 1e16)
 def badness(params, q):
   FoV = params['FoV']
   nalpha, nbeta = params['ff_samples']
-  dalpha = FoV[0]/(nalpha-1)
-  dbeta = FoV[1]/(nbeta-1)
-  x = np.arange(-FoV[0]/2+dalpha/2,FoV[0]/2,dalpha)
-  y = np.arange(-FoV[1]/2+dbeta/2,FoV[1]/2,dbeta)
+  x = np.linspace(-FoV[0]/2,FoV[0]/2,nalpha)
+  y = np.linspace(-FoV[1]/2,FoV[1]/2,nbeta)
   X, Y = np.meshgrid(x, y)
   temp_x = np.reshape(X,-1)
   temp_y = np.reshape(Y,-1)
   our_ff = evaluate_flat_field(params, temp_x, temp_y, q)
   god_ff = god.flat_field(params,temp_x, temp_y, god.flat_field_parameters())
   return 100*np.sqrt(np.mean(((our_ff-god_ff)/god_ff)**2))
+
+def badness_bestinbasis(params, q, out_dir):
+  FoV = params['FoV']
+  nalpha, nbeta = params['ff_samples']
+  x = np.linspace(-FoV[0]/2,FoV[0]/2,nalpha)
+  y = np.linspace(-FoV[1]/2,FoV[1]/2,nbeta)
+  X, Y = np.meshgrid(x, y)
+  temp_x = np.reshape(X,-1)
+  temp_y = np.reshape(Y,-1)
+  our_ff = evaluate_flat_field(params, temp_x, temp_y, q)
+  pickle_dic = pickle.load(open(out_dir+'/bestfit_ff.p'))
+  bestfit_ff_parameters = pickle_dic['fit_parameters']
+  bestfit_ff = evaluate_flat_field(params, temp_x, temp_y, bestfit_ff_parameters)
+  return 100*np.sqrt(np.mean(((our_ff-bestfit_ff)/bestfit_ff)**2))
 
 def rms_error(flux_estimate, true_flux):
   return 100*np.sqrt(np.mean(((flux_estimate-true_flux)/true_flux)**2))

@@ -226,6 +226,7 @@ def plot_solution(solution_path):
   mod_param = string.replace(mod_param, '_', ' ') 
   rms = pickle_dic['rms']
   bdnss = pickle_dic['bdnss']
+  bdnss_bestfit = pickle_dic['bdnss_bestfit']
   it_num = pickle_dic['it_num']
   chi2 = pickle_dic['chi2']
   plt.subplot(221)
@@ -238,6 +239,7 @@ def plot_solution(solution_path):
   plt.xlabel(mod_param)
   plt.subplot(223)
   plt.plot(param_range, bdnss)
+  plt.plot(param_range, bdnss_bestfit)
   plt.ylabel(u"Badness of Flat-Field (\%)")
   plt.xlabel(mod_param)
   plt.subplot(224)
