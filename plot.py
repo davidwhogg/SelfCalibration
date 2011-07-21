@@ -13,11 +13,24 @@ import pickle
 import os
 import sys
 import string
-from matplotlib import rc
-rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
-## for Palatino and other serif fonts use:
-#rc('font',**{'family':'serif','serif':['Palatino']))
-rc('text', usetex=True)
+
+scale = 2
+fig_width_pt = scale*415.55  # Get this from LaTeX using \showthe\columnwidth
+inches_per_pt = 1.0/72.27               # Convert pt to inches
+golden_mean = (np.sqrt(5)-1.0)/2.0         # Aesthetic ratio
+fig_width = fig_width_pt*inches_per_pt  # width in inches
+fig_height =fig_width*golden_mean       # height in inches
+params = {'backend': 'pdf',
+          'axes.labelsize': scale*10,
+          'text.fontsize': scale*10,
+          'legend.fontsize': scale*10,
+          'xtick.labelsize': scale*9,
+          'ytick.labelsize': scale*9,
+          'linewidth' : scale*1,
+          'text.usetex': True}
+          #'font': {'family':'sans-serif','sans-serif':['Helvetica']}}
+plt.rcParams.update(params)
+plt.rc('font', family = 'serif', serif = 'cmr10')
 
 if len(sys.argv) == 2:
   print "Running plotting routine..."
@@ -38,7 +51,11 @@ single_fig_height = 12
 def plot_flat_fields(params, out_dir,ff_filename, strategy):
   print ff_filename
   FoV = params['FoV']
-  plt.figure(figsize=(double_fig_width, double_fig_width))
+  plt.rcParams.update({'figure.figsize': [fig_width, fig_width/1.03], 'xtick.labelsize': scale*7, 'ytick.labelsize': scale*7})
+  fig = plt.figure()
+  # Axis for colorbar
+  cax = fig.add_axes([0.93, 0.1, 0.03, 0.8])
+  # Load Pickles
   dic = pickle.load(open(ff_filename))
   our_X = dic['x']
   our_Y = dic['y']
@@ -52,85 +69,46 @@ def plot_flat_fields(params, out_dir,ff_filename, strategy):
   bestfit_ff = bestfit_dic['bestfit_ff']
   bestfit_X = bestfit_dic['x']
   bestfit_Y = bestfit_dic['y']
-  plt.subplot(221)
-  #plt.suptitle('Survey %s' % strategy, fontsize = fontsize)
-  plt.title(r"Flat-Fields (True = Black; Fitted = Red) Iteration: %i" % (iteration_number), fontsize = fontsize-10)
-  plt.xlabel(r"$\alpha$", fontsize = fontsize)
-  plt.ylabel(r"$\beta$", fontsize = fontsize)
+  # Plot God and Fitted
+  plt.subplot(221, aspect = 'equal')
+  plt.xlabel(r"$\alpha$")
   # Find parameters for contour plot
   god_ff_max = np.max(god_ff)
   god_ff_min = np.min(god_ff)
-  # XX magic number
   levels = np.arange(0.5,1.5,0.01)
-  CS = plt.contour(god_X,god_Y,god_ff,levels ,colors='k',alpha=0.3, linewidths
-= 3)
-  CS2 = plt.contour(our_X, our_Y, our_ff, levels,colors='k',linewidths = 3)
-  ax = plt.gca()
-  plt.clabel(CS2, fontsize=tick_fontsize, inline=1)
-  for tick in ax.xaxis.get_major_ticks():
-    tick.label1.set_fontsize(tick_fontsize)
-  for tick in ax.yaxis.get_major_ticks():
-    tick.label1.set_fontsize(tick_fontsize)
+  CS = plt.contour(god_X,god_Y,god_ff,levels ,colors='k',alpha=0.3)
+  CS2 = plt.contour(our_X, our_Y, our_ff, levels,colors='k')
+  plt.ylabel(r"$\beta$")
+  plt.clabel(CS2, inline=1)
   plt.xlim(-FoV[0]/2, FoV[0]/2)
   plt.ylim(-FoV[1]/2, FoV[1]/2)
-  
-  # Plot residual in flat-field
-  plt.subplot(222)
-  plt.title(r"Residual (Fit - True) in Flat-Field (\%)", fontsize = fontsize-10)
+  plt.gca().set_xticklabels([])
+  # Plot residual in god and fitted
+  plt.subplot(222, aspect = 'equal')
   a = plt.imshow((100*(our_ff-god_ff)/god_ff),extent=(-FoV[0]/2,FoV[0]/2,-FoV[1]/2,FoV[1]/2), vmin = -0.5,vmax = 0.5, cmap='gray')
-  cb = plt.colorbar(a,shrink=0.7)
-  for t in cb.ax.get_yticklabels():
-    t.set_fontsize(tick_fontsize)
-
-
-  plt.xlabel(r"$\alpha$", fontsize = fontsize)
-  plt.ylabel(r"$\beta$", fontsize = fontsize)
-  ax = plt.gca()
-  for tick in ax.xaxis.get_major_ticks():
-    tick.label1.set_fontsize(tick_fontsize)
-  for tick in ax.yaxis.get_major_ticks():
-    tick.label1.set_fontsize(tick_fontsize)  
-    
-  plt.subplot(223)
-  #plt.suptitle('Survey %s' % strategy, fontsize = fontsize)
-  plt.title(r"Flat-Fields (Bestfit = Black; Fitted = Red) Iteration: %i" % (iteration_number), fontsize = fontsize-10)
-  plt.xlabel(r"$\alpha$", fontsize = fontsize)
-  plt.ylabel(r"$\beta$", fontsize = fontsize)
-  # Find parameters for contour plot
-  # XX magic number
+  plt.gca().set_xticklabels([])
+  plt.gca().set_yticklabels([])
+  # Plot best-in-basis and fitted
+  plt.subplot(223, aspect = 'equal')
+  plt.xlabel(r"$\alpha$")
+  plt.ylabel(r"$\beta$")
   levels = np.arange(0.5,1.5,0.01)
-  CS = plt.contour(bestfit_X,bestfit_Y,bestfit_ff,levels ,colors='k',alpha=0.3,
-linewidths = 3)
-  CS2 = plt.contour(our_X, our_Y, our_ff, levels,colors='k',
-linewidths = 3)
-  plt.clabel(CS2, fontsize=tick_fontsize, inline=1)
-  ax = plt.gca()
-  for tick in ax.xaxis.get_major_ticks():
-    tick.label1.set_fontsize(tick_fontsize)
-  for tick in ax.yaxis.get_major_ticks():
-    tick.label1.set_fontsize(tick_fontsize)
+  CS = plt.contour(bestfit_X,bestfit_Y,bestfit_ff,levels ,colors='k',alpha=0.3)
+  CS2 = plt.contour(our_X, our_Y, our_ff, levels,colors='k')
+  plt.clabel(CS2, inline=1)
   plt.xlim(-FoV[0]/2, FoV[0]/2)
   plt.ylim(-FoV[1]/2, FoV[1]/2)
-  
-  # Plot residual in flat-field
-  plt.subplot(224)
-  plt.title(r"Residual (Fit - True) in Flat-Field (\%)", fontsize = fontsize-10)
+  # Plot residual between fitted and best-in-basis
+  plt.subplot(224, aspect = 'equal')
   a = plt.imshow((100*(our_ff-bestfit_ff) /bestfit_ff),extent=(-FoV[0]/2,FoV[0]/2,-FoV[1]/2,FoV[1]/2), vmin = -0.5,vmax = 0.5, cmap='gray')
-  cb = plt.colorbar(a,shrink=0.7)
-  for t in cb.ax.get_yticklabels():
-    t.set_fontsize(tick_fontsize)
-
-
-  plt.xlabel(r"$\alpha$", fontsize = fontsize)
-  plt.ylabel(r"$\beta$", fontsize = fontsize)
-  ax = plt.gca()
-  for tick in ax.xaxis.get_major_ticks():
-    tick.label1.set_fontsize(tick_fontsize)
-  for tick in ax.yaxis.get_major_ticks():
-    tick.label1.set_fontsize(tick_fontsize)      
-    
+  plt.xlabel(r"$\alpha$")
+  plt.gca().set_yticklabels([])
+  # Squeeze subplots together
+  plt.subplots_adjust(wspace=0.0,hspace=0.0)
+  # Add Colorbar
+  fig.colorbar(a, cax, orientation = 'vertical')
   filename = string.replace(ff_filename, '.p', '.png')  
-  plt.savefig(filename,bbox_inches='tight',pad_inches=0.5)
+  plt.savefig(filename,bbox_inches='tight')
   plt.clf() 
   
 def camera_image(params, camera_filename):
