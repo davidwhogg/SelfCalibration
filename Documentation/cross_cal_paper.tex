@@ -95,13 +95,13 @@ We first create a catalog of fake sources, both stars and galaxies, based on rea
 \end{displaymath}
 Where $a$ sets the total source density and $b_{star} = 0.25$ steller and galaxy populations reported in XX. We make no distinction between stars and galaxies in our simulations. The random number generator is given the same seed, so that the same simulated sky is produced each time the simulation is run. This ensures that the differences observed are not a result of random fluctuations. We relate source magnitudes, $m$, to source fluxes, $s$, simply by: $m = 22.5 - 2.5\log_{10}(s)$, where the 22.5 puts the fluxes in units of nanomaggies. 
 
-\begin{figure}[ht]
-\begin{center}
-\includegraphics[width=\textwidth]{temp.png}
-\end{center}
-\caption{An example catalog of fake sources used within the simulations. The sources are shown at their position on a portion of the sky (left) and as a histogram of their magnitudes (right).
-\label{fig:sky}}
-\end{figure}
+%\begin{figure}[ht]
+%\begin{center}
+%\includegraphics[width=\textwidth]{temp.png}
+%\end{center}
+%\caption{An example catalog of fake sources used within the simulations. The sources are shown at their position on a portion of the sky (left) and as a histogram of their magnitudes (right).
+%\label{fig:sky}}
+%\end{figure}
 
 \subsection{Single Exposure}
 With a given camera pointing $(\alpha, \beta)$ and camera orientation $(\theta)$, we transform the we transform the sky catalog into focal plane coordinates and find all the stars falling within the instrument's field-of-view. For the instrument's field-of-view, we use the current size of the Euclid NIR imager's: $0.7 \times 0.7$~deg$^{2}$. We do not simulate images, instead we trivially convert the true source fluxes into measured counts $(c)$ with an instrument response model $(f)$ and a measurement uncertainty model. A typical exposure is depicted in Figure \ref{fig:camera}.

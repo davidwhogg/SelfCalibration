@@ -219,7 +219,7 @@ def q_step(params, obs_cat, s, order, iteration_number, plots=None):
 #*****************************************************
 
 def compare_flats(a, Z_true, g, X, Y):
-  error = np.sqrt(np.mean((Z_true - np.dot(g,a))**2))
+  error = (np.sum((Z_true - np.dot(g,a))**2))
   #print error
   return error
 
@@ -240,7 +240,7 @@ def bestfit_ff(params, out_dir):
   a[5] = 0.5
   print "Fitting god's flat-field with basis..."
   fitted_parameters = sci.fmin_bfgs(compare_flats, a, args = (god_ff, g, x, y),
-gtol = 1e-16, maxiter = 1e16)
+gtol = 0, maxiter = 1e16)
   print "Fitted Parameters: ", fitted_parameters
   "...done!"
   fitted_parameters = normalize_flat_field(params, fitted_parameters)
