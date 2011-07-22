@@ -14,6 +14,8 @@ import numpy as np
 import os
 import pickle
 import sys
+from multiprocessing import Pool
+import copy
 # Custom Modules
 import default_parameters
 import functions as f
@@ -21,19 +23,27 @@ import god
 
 plotdata = True
 verbosemode = False
+mult_proc = True
 
-def run_sim(sky, params, strategy, out_dir, data_dir):
+def run_sim(map_dic):
+  params = map_dic['params']
+  strategy = map_dic['strategy']
+  out_dir = map_dic['out_dir']
+  if 'mod_param' in map_dic: 
+    mod_param = map_dic['mod_param']
+  else:
+    mod_param = False
+  
+  if mod_param == False: data_dir = ('%s/%s/default' % (out_dir,strategy))
+  else: data_dir = ('%s/%s/%s=%.3f' % (out_dir, strategy, mod_param, params[mod_param]))
+  
+  sky_catalog = god.create_catalog(params, out_dir)
   os.system('mkdir -p %s' % (data_dir))
   os.system('mkdir -p %s' % (data_dir + '/FF'))
   pickle.dump(params, open((data_dir+'/parameters.p'), "wb"))
-  # Check to see if God and bestfit flat-fields have been saved already
-  if os.path.isfile(out_dir+ '/bestfit_ff.p') == False:
-    f.bestfit_ff(params, out_dir)
-  if os.path.isfile(out_dir+ '/god_ff.p') == False:
-    god.saveout_god_ff(params, out_dir)
 
   survey_file = strategy + ".txt"
-  observation_catalog = f.survey(params,sky, survey_file, data_dir, plots=plotdata, verbose=verbosemode) 
+  observation_catalog = f.survey(params, sky_catalog, survey_file, data_dir, plots=plotdata, verbose=verbosemode) 
   # observation_catalog: *.size, *.pointing_ID, *.star_ID, *.flux, *.invvar, *.x, *.y
   
   if plotdata:
@@ -46,7 +56,17 @@ def run_sim(sky, params, strategy, out_dir, data_dir):
 
   # Do cross-calibration
   sln = f.ubercalibration(params, observation_catalog, sky_catalog, strategy, out_dir, data_dir, plots=plotdata)
-  return sln # [iteration number, rms, badness, badness_bestfit, chi2]
+    
+  if mod_param != False:
+   result_dic = {}
+   result_dic['mod_param'] = mod_param
+   result_dic['mod_value'] = params[mod_param]
+   result_dic['iter_no'] = sln[0]
+   result_dic['rms'] = sln[1]
+   result_dic['badness'] = sln[2]
+   result_dic['badness_bestfit'] = sln[3]
+   result_dic['chi2'] = sln[4]
+   pickle.dump(result_dic, open((data_dir + '/solution.p'), "wb"))
   
 # Read command line inputs
 if len(sys.argv) > 1:
@@ -90,48 +110,49 @@ if __name__ == '__main__':
   if ((operating_mode == 1) or (operating_mode == 2)):
     for strategy in params['survey_strategies']:
       os.system('mkdir -p %s/%s' % (out_dir, strategy)) # create directory for survey
+      map_dic = {}
       if (operating_mode == 1):
-	data_dir = ('%s/%s/default' % (out_dir,strategy))
+       map_dic['params'] = params
       elif (operating_mode == 2):
-	if mod_param in params:
-	  params[mod_param] = mod_value
-	  data_dir = ('%s/%s/%s=%.3f' % (out_dir,strategy, mod_param, mod_value))
-	else: 
-	  print "Error! Unknown parameter specified..." 
-	  sys.exit()
-      
+        if mod_param in params:
+          params[mod_param] = mod_value
+          map_dic['params'] = params
+          map_dic['mod_param'] = mod_param 
+        else: 
+          print "Error! Unknown parameter specified..." 
+          sys.exit()
       else: print "Error - operating mode not defined!"
-      sky_catalog = god.create_catalog(params, out_dir, plots = plotdata, verbose = verbosemode)
-      run_sim(sky_catalog, params, strategy, out_dir, data_dir)
+      map_dic['strategy'] = strategy
+      map_dic['out_dir'] = out_dir  
+      f.bestfit_ff(params, out_dir)
+      god.saveout_god_ff(params, out_dir)
+      run_sim(map_dic)
+      
   elif (operating_mode == 3):
     if (mod_param == 'FoV') or (mod_param == 'ff_samples') or (mod_param == 'flat_field_order'):
       print "Error! Unsuitable parameter selected..."
       sys.exit()
+    else:
+      f.bestfit_ff(params, out_dir)
+      god.saveout_god_ff(params, out_dir)
     if mod_param in params:
       param_range = np.linspace(mod_value_low, mod_value_high, num=no_mod_value, endpoint=True, retstep=False)
       if (mod_param == 'flat_field_order'): param_range = param_range.astype('int') 
       for strategy in params['survey_strategies']:
-	os.system('mkdir -p %s/%s' % (out_dir, strategy)) # create directory for survey
-	sln_dic = {}
-	sln_dic['modified_parameter'] = mod_param
-	sln_dic['parameter_range'] = param_range
-	sln_it = 0*param_range
-	sln_rms = 0*param_range
-	sln_bdnss = 0*param_range
-	sln_bdnss_bestfit = 0*param_range
-	sln_chi2 = 0*param_range
-	for indx in range(len(param_range)):
-	  params[mod_param] = param_range[indx]
-	  sky_catalog = god.create_catalog(params, out_dir, plots = plotdata, verbose = verbosemode)
-	  data_dir = ('%s/%s/%s=%.3f' % (out_dir, strategy, mod_param, param_range[indx]))
-	  sln_it[indx], sln_bdnss[indx], sln_bdnss_bestfit[indx], sln_rms[indx], sln_chi2[indx] = run_sim(sky_catalog, params, strategy, out_dir, data_dir)      
-
-	sln_dic['it_num'] = sln_it
-	sln_dic['rms'] = sln_rms
-	sln_dic['bdnss'] = sln_bdnss
-	sln_dic['bdnss_bestfit'] = sln_bdnss_bestfit
-	sln_dic['chi2'] = sln_chi2
-	pickle.dump(sln_dic, open((out_dir + '/' + strategy +'/solution.p'), "wb"))
+        os.system('mkdir -p %s/%s' % (out_dir, strategy)) # create directory for survey
+        map_dictionaries = []
+        for indx in range(len(param_range)):
+          params[mod_param] = param_range[indx]
+          map_dic = {}
+          map_dic['params'] = params
+          map_dic['strategy'] = strategy
+          map_dic['out_dir'] = out_dir
+          map_dic['mod_param'] = mod_param
+          map_dictionaries.append(copy.deepcopy(map_dic))
+        if mult_proc:
+          p = Pool(32)
+          p.map(run_sim,map_dictionaries)      
+        else: map(run_sim,map_dictionaries)
     else: 
       print "Error! Unknown parameter specified..." 
       sys.exit()

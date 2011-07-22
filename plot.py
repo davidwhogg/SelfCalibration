@@ -195,39 +195,30 @@ def plot_invvar(params, invvar_filename):
   plt.savefig(filename,bbox_inches='tight',pad_inches=0.1)
   plt.clf()
 
-def plot_solution(solution_path):
+def plot_solution(sln, mod_param, solution_path):
+  mod_param = string.replace(mod_param, '_', ' ')
   print solution_path
   plt.figure()
-  pickle_dic = pickle.load(open(solution_path)) # [modified_param, iteration number, rms, badness, chi2]
-  param_range = pickle_dic['parameter_range']
-  mod_param = pickle_dic['modified_parameter']
-  mod_param = string.replace(mod_param, '_', ' ') 
-  rms = pickle_dic['rms']
-  bdnss = pickle_dic['bdnss']
-  bdnss_bestfit = pickle_dic['bdnss_bestfit']
-  it_num = pickle_dic['it_num']
-  chi2 = pickle_dic['chi2']
   plt.subplot(221)
-  plt.plot(param_range, it_num)
+  plt.plot(sln[:,0], sln[:,1])
   plt.ylabel("Number of Iterations to Converge")
   plt.xlabel(mod_param)
   plt.subplot(222)
-  plt.plot(param_range, rms)
+  plt.plot(sln[:,0], sln[:,2])
   plt.ylabel(u"RMS Source Error (\%)")
   plt.xlabel(mod_param)
   plt.subplot(223)
-  plt.plot(param_range, bdnss)
-  plt.plot(param_range, bdnss_bestfit)
+  plt.plot(sln[:,0], sln[:,3])
+  plt.plot(sln[:,0], sln[:,4])
   plt.ylabel(u"Badness of Flat-Field (\%)")
   plt.xlabel(mod_param)
   plt.subplot(224)
-  plt.plot(param_range, chi2)
+  plt.plot(sln[:,0], sln[:,5])
   plt.ylabel("$\chi^2$")
   plt.xlabel(mod_param)
   ax = plt.gca()
   ax.yaxis.major.formatter.set_powerlimits((0,0))
-  filename = string.replace(solution_path, '.p', '.png')
-  plt.savefig(filename,bbox_inches='tight',pad_inches=0.1)
+  plt.savefig(solution_path + '/solution.png',bbox_inches='tight',pad_inches=0.1)
   plt.clf()
 
 if __name__ == "__main__":
@@ -241,6 +232,7 @@ if __name__ == "__main__":
     # Find Modified Parameter Directories
     modified_value_dir = os.listdir(out_dir + '/' + srvy)
     temp = 1*modified_value_dir
+    sln = np.array([])
     for isfile in temp:
       if os.path.isfile(out_dir+ '/' + srvy + '/' + isfile):
 	modified_value_dir.remove(isfile)
@@ -264,8 +256,16 @@ if __name__ == "__main__":
       plot_invvar(params, (dir_path + '/invvar.p'))
     
     # plot iteration number, badness, rms, chi2 
-    solution_path = out_dir + '/' + srvy + '/solution.p'
-    if os.path.isfile(solution_path): plot_solution(solution_path)
+      solution_path = dir_path + '/solution.p'
+      if os.path.isfile(solution_path):
+        sln_dic = pickle.load(open(solution_path))
+        temp_sln = np.array([[sln_dic['mod_value'], sln_dic['iter_no'], sln_dic['rms'], sln_dic['badness'], sln_dic['badness_bestfit'], sln_dic['chi2']]])
+        if len(sln) == 0: sln = temp_sln
+        else: sln = np.append(sln, temp_sln, axis=0)
+    if len(sln.shape) > 1:
+     if len(sln[:,0]) > 1:
+       plot_solution(sln, sln_dic['mod_param'], (out_dir + '/' + srvy))
+        #plot_solution(solution_path)
 
 # Import general parameters
 '''
