@@ -196,6 +196,7 @@ def plot_invvar(params, invvar_filename):
   plt.clf()
 
 def plot_solution(sln, mod_param, solution_path):
+  sln = sln[sln[:,0].argsort(),:]
   mod_param = string.replace(mod_param, '_', ' ')
   print solution_path
   plt.figure()
