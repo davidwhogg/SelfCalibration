@@ -4,7 +4,7 @@
 dic = {
   'survey_strategies'     :     ['D'], #['D', 'C', 'B', 'A']
   
-  'mag_at_ten_sigma'    :     22.5,
+  'mag_at_ten_sigma'    :     22.,
 
   'eta'                 :     0.01,
   
