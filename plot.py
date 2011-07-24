@@ -130,8 +130,8 @@ def camera_image(params, out_dir, camera_filename):
   fp_beta = dic['fp_beta']
   inside_FoV = dic['inside_FoV']
   plt.subplot(121)
-  plt.plot(alpha,beta,'k.', alpha = 0.2, markersize=5)
-  plt.plot(alpha[inside_FoV],beta[inside_FoV],'k.',markersize=5)  
+  plt.plot(alpha,beta,'k.', alpha = 0.2, markersize=3)
+  #plt.plot(alpha[inside_FoV],beta[inside_FoV],'k.',markersize=5)  
   plt.plot(fp_alpha,fp_beta,'k', linewidth=2)
   plt.xlabel(ur'$\alpha$')
   plt.ylabel(ur'$\beta$')
@@ -145,7 +145,7 @@ def camera_image(params, out_dir, camera_filename):
 
   # Plot sources on focal plane
   plt.subplot(122)
-  plt.plot(x,y,'k.', markersize=10)
+  plt.plot(x,y,'k.', markersize=6)
   plt.plot(fp_x, fp_y, 'k', linewidth=3)
   plt.xlabel(ur'$x$')
   plt.ylabel(ur'$y$')
@@ -252,7 +252,7 @@ if __name__ == "__main__":
       command = ('convert -delay 50 -loop 0 %s/*.png %s/ff_animation.gif' % (png_dir, dir_path))
       os.system(command)
       # Plot Camera Image
-      camera_image(params, out_dir, (dir_path + '/camera_image.p'))
+      if os.path.isfile((dir_path + '/camera_image.p')): camera_image(params, out_dir, (dir_path + '/camera_image.p'))
       # Plot Inverse Invariance 
       plot_invvar(params, (dir_path + '/invvar.p'))
     

@@ -16,7 +16,7 @@ dic = {
   
   'density_of_stars'    :     25, # all magnitudes, number per unit area on sky
   
-  'powerlaw_constants'  :     np.array([-13.34863146, 1.25429311, -0.02122949]) # log10(dN/dm) = A + B*mag + C*mag**2
+  'powerlaw_constants'  :     np.array([-13.34863146, 1.25429311, -0.02122949]), # log10(dN/dm) = A + B*mag + C*mag**2
   
   'powerlaw'            :     0.25, # B in log10(dN/dm) = A + B*m
   

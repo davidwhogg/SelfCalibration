@@ -97,7 +97,7 @@ def single_image(params, sky_catalog, pointing, orientation, data_dir, plots=Non
   measured_catalog = MeasuredCatalog(params, camera_catalog, inside_FoV)
   if verbose: print "...done!"
   one_camera_file = os.path.exists((data_dir + '/camera_image.p'))
-  if plots and (one_camera_file != True): save_camera(params, sky_catalog, measured_catalog, inside_FoV, pointing, orientation, data_dir, verbose = verbose)
+  if plots and (one_camera_file != True) and (orientation > 30) and (pointing[0] > -1) and (pointing[0] < 1) and (pointing[1] > -1) and (pointing[1] < 1): save_camera(params, sky_catalog, measured_catalog, inside_FoV, pointing, orientation, data_dir, verbose = verbose)
   return measured_catalog
   # measured_sources  *.size, *.k, *.flux, *.invvar, *.x, *.y
 
