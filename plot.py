@@ -111,9 +111,11 @@ def plot_flat_fields(params, out_dir,ff_filename, strategy):
   plt.savefig(filename,bbox_inches='tight')
   plt.clf() 
   
-def camera_image(params, camera_filename):
+def camera_image(params, out_dir, camera_filename):
   print camera_filename
-  plt.figure(figsize=(double_fig_width, single_fig_height))
+  plt.figure(figsize = (fig_width, 0.5*fig_width))
+  plt.clf()
+  
   dic = pickle.load(open(camera_filename))
   x = dic['measured_catalog.x'] 
   y = dic['measured_catalog.y']
@@ -127,45 +129,42 @@ def camera_image(params, camera_filename):
   fp_alpha = dic['fp_alpha']
   fp_beta = dic['fp_beta']
   inside_FoV = dic['inside_FoV']
-  
-  #title = ur'$\alpha$ = %.1lf, $\beta$ = %.1lf, $\theta$ = %.1lf$^\circ$' % (pointing[0],pointing[1], orientation)
-  #plt.suptitle(title, fontsize=fontsize)
   plt.subplot(121)
-  plt.plot(alpha,beta,'k.', markersize=5)
+  plt.plot(alpha,beta,'k.', alpha = 0.2, markersize=5)
   plt.plot(alpha[inside_FoV],beta[inside_FoV],'k.',markersize=5)  
-  plt.plot(fp_alpha,fp_beta,'k', linewidth=4)
-  plt.xlabel(ur'$\alpha$', fontsize=fontsize)
-  plt.ylabel(ur'$\beta$', fontsize=fontsize)
-  ax = plt.gca()
-  for tick in ax.xaxis.get_major_ticks():
-    tick.label1.set_fontsize(tick_fontsize)
-  for tick in ax.yaxis.get_major_ticks():
-    tick.label1.set_fontsize(tick_fontsize)
+  plt.plot(fp_alpha,fp_beta,'k', linewidth=2)
+  plt.xlabel(ur'$\alpha$')
+  plt.ylabel(ur'$\beta$')
   dalpha_sky = sky[1] - sky[0]
   dbeta_sky = sky[3] - sky[2]
   buffer_sky = 0.1
+  plt.axis('scaled')
   plt.xlim(sky[0] - buffer_sky*dalpha_sky, sky[1] + buffer_sky*dalpha_sky)
   plt.ylim(sky[2] - buffer_sky*dbeta_sky, sky[3] + buffer_sky*dbeta_sky)
+  
 
   # Plot sources on focal plane
   plt.subplot(122)
-  plt.plot(x,y,'k.', markersize=20)
-  plt.plot(fp_x, fp_y, 'k', linewidth=6)
-  plt.xlabel(ur'$x$', fontsize=fontsize)
-  plt.ylabel(ur'$y$', fontsize=fontsize)
-
+  plt.plot(x,y,'k.', markersize=10)
+  plt.plot(fp_x, fp_y, 'k', linewidth=3)
+  plt.xlabel(ur'$x$')
+  plt.ylabel(ur'$y$')
   fp_buffer = 0.1
   dx = np.max(fp_x) - np.min(fp_x)
   dy = np.max(fp_y) - np.min(fp_y)
+  plt.axis('scaled')
   plt.xlim(np.min(fp_x) - dx*fp_buffer, np.max(fp_x) + dx*fp_buffer)
   plt.ylim(np.min(fp_y) - dy*fp_buffer, np.max(fp_y) + dy*fp_buffer)
-  ax = plt.gca()
-  for tick in ax.xaxis.get_major_ticks():
-    tick.label1.set_fontsize(tick_fontsize)
-  for tick in ax.yaxis.get_major_ticks():
-    tick.label1.set_fontsize(tick_fontsize)
+  god_dic = pickle.load(open(out_dir+'/god_ff.p'))
+  god_ff = god_dic['god_ff']
+  god_X = god_dic['x']
+  god_Y = god_dic['y'] 
+  levels = np.arange(0.5,1.5,0.01)
+  CS = plt.contour(god_X,god_Y,god_ff,levels ,colors='k',alpha=0.3)
+  #plt.clabel(CS, inline=1,color = '0.3')
+  
   filename = string.replace(camera_filename, '.p', '.png')
-  plt.savefig(filename,bbox_inches='tight',pad_inches=0.5)
+  plt.savefig(filename,bbox_inches='tight')
   plt.clf()
 
 def plot_invvar(params, invvar_filename):
@@ -244,15 +243,16 @@ if __name__ == "__main__":
       # Plot Flat-Fields
       ff_path = dir_path + '/FF'
       os.system("rm -r %s/*.png" % ff_path)
+      os.system("rm -r %s/*.pdf" % ff_path)
       FFs = os.listdir(ff_path)
       for ff in FFs:
-	plot_flat_fields(params, out_dir, (ff_path + '/' + ff), srvy)
+        plot_flat_fields(params, out_dir, (ff_path + '/' + ff), srvy)
       # Create Animations
       png_dir = ff_path
       command = ('convert -delay 50 -loop 0 %s/*.png %s/ff_animation.gif' % (png_dir, dir_path))
       os.system(command)
       # Plot Camera Image
-      camera_image(params, (dir_path + '/camera_image.p'))
+      camera_image(params, out_dir, (dir_path + '/camera_image.p'))
       # Plot Inverse Invariance 
       plot_invvar(params, (dir_path + '/invvar.p'))
     

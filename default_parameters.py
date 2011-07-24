@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import numpy as np
+
 dic = {
   'survey_strategies'     :     ['D'], #['D', 'C', 'B', 'A']
   
@@ -13,6 +15,8 @@ dic = {
   'm_max'               :     19, #22.5,
   
   'density_of_stars'    :     25, # all magnitudes, number per unit area on sky
+  
+  'powerlaw_constants'  :     np.array([-13.34863146, 1.25429311, -0.02122949]) # log10(dN/dm) = A + B*mag + C*mag**2
   
   'powerlaw'            :     0.25, # B in log10(dN/dm) = A + B*m
   
