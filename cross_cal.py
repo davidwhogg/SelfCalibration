@@ -37,7 +37,7 @@ def run_sim(map_dic):
   if mod_param == False: data_dir = ('%s/%s/default' % (out_dir,strategy))
   else: data_dir = ('%s/%s/%s=%.3f' % (out_dir, strategy, mod_param, params[mod_param]))
   
-  sky_catalog = god.create_catalog(params, out_dir)
+  sky_catalog = god.create_catalog(params, out_dir, plots=plotdata)
   os.system('mkdir -p %s' % (data_dir))
   os.system('mkdir -p %s' % (data_dir + '/FF'))
   pickle.dump(params, open((data_dir+'/parameters.p'), "wb"))

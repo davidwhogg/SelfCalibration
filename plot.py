@@ -13,6 +13,7 @@ import pickle
 import os
 import sys
 import string
+import functions as f
 
 scale = 2
 fig_width_pt = scale*415.55  # Get this from LaTeX using \showthe\columnwidth
@@ -167,8 +168,26 @@ def camera_image(params, out_dir, camera_filename):
   plt.savefig(filename,bbox_inches='tight')
   plt.clf()
 
-def plot_invvar(params, invvar_filename):
-  plt.figure(figsize=(single_fig_width, single_fig_height))
+def SurveyInnvar(params, out_dir, invvar_filename):
+  print out_dir+'/source_catalog.p'
+  plt.figure(figsize = (fig_width, 0.5*fig_width))
+  plt.clf()
+  
+  plt.subplot(121)
+  survey_dic = pickle.load(open(out_dir+'/source_catalog.p'))
+  mag = survey_dic['mag']
+  all_mag = survey_dic['all_sources']
+  fit_mag = survey_dic['fit_mag']
+  fit_dens = survey_dic['fit_dens']
+  plt.semilogy(fit_mag, fit_dens, 'k:')
+  hist_mag = np.arange(params['m_min'], params['m_max']+0.5, 0.5)
+  plt.bar(hist_mag[:-1], np.histogram(all_mag, bins = hist_mag)[0], width = 0.5, color = 'w')
+  plt.bar(hist_mag[:-1], np.histogram(mag, bins = hist_mag)[0], width = 0.5, hatch = '/', color = 'k', alpha =0.3)
+  plt.xlabel(r'Source Magnitude (AB)')
+  plt.ylabel(r'Source Density (deg$^{-2}$ (0.5 mag)$^{-1})$')
+  
+  print invvar_filename
+  plt.subplot(122)
   pickle_dic = pickle.load(open(invvar_filename))
   counts = pickle_dic['counts']
   true_invvar = pickle_dic['true_invvar']
@@ -180,18 +199,14 @@ def plot_invvar(params, invvar_filename):
   sort = sort[sort[:,0].argsort(),:]
   sort_reported_invvar = sort[:,1]
   sort_counts = sort[:,0]
-  plt.plot(counts, np.log10((1/true_invvar)/counts**2),'k.', markersize = 2., label = "Actual Variance", alpha = 0.2)
-  plt.plot(sort_counts, np.log10((1/sort_reported_invvar)/sort_counts**2),'k', label = "Assumed Variance")
-  plt.xlabel(r'$c_i$', fontsize=fontsize)
-  plt.ylabel(ur'$\log_{10}(\frac{{\sigma_i}^2}{c_i^2})$',fontsize=fontsize)#, rotation='horizontal')
-  #plt.legend()
-  ax = plt.gca()
-  for tick in ax.xaxis.get_major_ticks():
-    tick.label1.set_fontsize(tick_fontsize)
-  for tick in ax.yaxis.get_major_ticks():
-    tick.label1.set_fontsize(tick_fontsize)
+  plt.plot(np.log10(counts), np.log10((1/true_invvar)/counts**2),'k.', markersize = 2., label = "Actual Variance", alpha = 0.01)
+  plt.plot(np.log10(sort_counts), np.log10((1/sort_reported_invvar)/sort_counts**2),'k', label = "Assumed Variance")
+  plt.xlabel(r'$\log_{10}(c_i)$')
+  plt.ylabel(ur'$\log_{10}(\frac{{\sigma_i}^2}{c_i^2})$')
+  plt.xlim(np.min(np.log10(counts)), np.max(np.log10(counts)))
+  plt.subplots_adjust(wspace=0.3)
   filename = string.replace(invvar_filename, '.p', '.png')
-  plt.savefig(filename,bbox_inches='tight',pad_inches=0.1)
+  plt.savefig(filename,bbox_inches='tight')
   plt.clf()
 
 def plot_solution(sln, mod_param, solution_path):
@@ -254,7 +269,7 @@ if __name__ == "__main__":
       # Plot Camera Image
       if os.path.isfile((dir_path + '/camera_image.p')): camera_image(params, out_dir, (dir_path + '/camera_image.p'))
       # Plot Inverse Invariance 
-      plot_invvar(params, (dir_path + '/invvar.p'))
+      SurveyInnvar(params, out_dir, (dir_path + '/invvar.p'))
     
     # plot iteration number, badness, rms, chi2 
       solution_path = dir_path + '/solution.p'
