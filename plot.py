@@ -184,7 +184,7 @@ def SurveyInnvar(params, out_dir, invvar_filename):
   plt.bar(hist_mag[:-1], np.histogram(all_mag, bins = hist_mag)[0], width = 0.5, color = 'w')
   plt.bar(hist_mag[:-1], np.histogram(mag, bins = hist_mag)[0], width = 0.5, hatch = '/', color = 'k', alpha =0.3)
   plt.xlabel(r'Source Magnitude (AB)')
-  plt.ylabel(r'Source Density (deg$^{-2}$ (0.5 mag)$^{-1})$')
+  plt.ylabel(r'Sources within Survey ((0.5 mag)$^{-1})$')
   
   print invvar_filename
   plt.subplot(122)

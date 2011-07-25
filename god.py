@@ -69,6 +69,7 @@ def prob_dist(m_min, m_max, a, size):
 
 def generate_magnitudes(params, number_sources, out_dir, plots = False):
   A = params['powerlaw_constants']
+  area = (params['sky_limits'][1]-params['sky_limits'][0])*(params['sky_limits'][3]-params['sky_limits'][2])
   # fit for dN/dm = B[0] + B[1]*m
   mag_range = np.arange(params['m_min']+0.25, params['m_max'], 0.5)
   B = opt.fmin(error, np.array([0,0]), args = (power_law(A, mag_range), mag_range), xtol=1e-14, maxiter = 1e16, maxfun = 1e16)
@@ -81,7 +82,7 @@ def generate_magnitudes(params, number_sources, out_dir, plots = False):
    B[0] += 0.001
    chck = np.sum(bad[ii[0]])
   
-  total_sources = np.sum(power_law(A, mag_range))
+  total_sources = np.sum(power_law(A, mag_range))*area
   if total_sources*params['useful_fraction'] < number_sources:
    print "Error! You want more sources than there are in the sky..."
    sys.exit()
@@ -107,7 +108,7 @@ def generate_magnitudes(params, number_sources, out_dir, plots = False):
     survey_dic['mag'] = selected_sources
     survey_dic['all_sources'] = mag
     survey_dic['fit_mag'] = np.arange(14, 26, 0.01)
-    survey_dic['fit_dens'] = power_law(A, np.arange(14, 26, 0.01))
+    survey_dic['fit_dens'] = power_law(A, np.arange(14, 26, 0.01))*area
     pickle_path = out_dir+'/source_catalog.p'
     pickle.dump(survey_dic, open(pickle_path, "wb"))
   return selected_sources
