@@ -11,7 +11,7 @@ import sys
 # magic numbers
 def flat_field_parameters():
   np.random.seed(1) # same seed => same FF
-  return np.append(np.array([1, 0, 0, -0.2, 0, -0.5]),
+  return np.append(np.array([1, -0.02, 0.03, -0.2, 0.01, -0.5]),
     (1e-4) * np.random.uniform(size = 256))
 
 def flat_field(params,x,y,par = flat_field_parameters()):
