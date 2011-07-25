@@ -36,6 +36,6 @@ dic = {
   
   'stop_condition'	:     1e-8, # Stop cross-cal when difference in X2 less than this
   
-  'max_iterations'	:     1000 # the maximum number of cross cal iterations
+  'max_iterations'	:     1049 # the maximum number of cross cal iterations
   
   } 
