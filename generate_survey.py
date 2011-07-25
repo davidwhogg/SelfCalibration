@@ -6,14 +6,27 @@ import random
 import default_parameters as p
 import matplotlib.pylab as plt
 
+scale = 2
+fig_width_pt = scale*415.55  # Get this from LaTeX using \showthe\columnwidth
+inches_per_pt = 1.0/72.27               # Convert pt to inches
+golden_mean = (np.sqrt(5)-1.0)/2.0         # Aesthetic ratio
+fig_width = fig_width_pt*inches_per_pt  # width in inches
+fig_height =fig_width*golden_mean       # height in inches
+params = {'backend': 'pdf',
+          'axes.labelsize': scale*10,
+          'text.fontsize': scale*10,
+          'legend.fontsize': scale*10,
+          'xtick.labelsize': scale*9,
+          'ytick.labelsize': scale*9,
+          'linewidth' : scale*1,
+          'text.usetex': True}
+          #'font': {'family':'sans-serif','sans-serif':['Helvetica']}}
+plt.rcParams.update(params)
+plt.rc('font', family = 'serif', serif = 'cmr10')
+
 pdic = p.dic
 FoV = pdic['FoV']
 sky_limits = pdic['sky_limits']
-
-number_fonts = 20
-label_fontsize = 25
-plt.rc('xtick', labelsize=number_fonts) 
-plt.rc('ytick', labelsize=number_fonts) 
 
 def fp2sky(x, y, pointing, orientation):
   theta = - orientation*np.pi/180 # telescope rotates NOT sky
@@ -31,8 +44,8 @@ def plot_survey(survey, survey_name):
     plt.plot(alpha,beta,'k-',alpha=0.25)
   #plt.title(r"Strategy %s: %i Pointings" % (survey_name, len(survey[:,0])))
   print ('Survey %s: %d pointings' % (survey_name, len(survey[:,0])))
-  plt.text(sky_limits[0]-1*FoV[0], sky_limits[3]+0.8*FoV[1], ('('+survey_name+')'), fontsize = label_fontsize)
-  plt.axis('equal')
+  plt.text(sky_limits[0]-1.5*FoV[0], sky_limits[3]+0.5*FoV[1], ('('+survey_name+')'), fontsize = scale*11)
+  plt.axis('scaled')
   plt.xlim(sky_limits[0]-2*FoV[0], sky_limits[1]+2*FoV[0])
   plt.ylim(sky_limits[2]-2*FoV[1], sky_limits[3]+2*FoV[1])
   return
@@ -108,10 +121,10 @@ def generate_random_survey(N):
 if __name__ == "__main__":
   plt.clf()
   number_passes = 12
-  plt.figure(figsize=(15,15))
+  plt.figure(figsize=(fig_width,fig_width*0.97))
   plt.subplot(221)
   xA = generate_uniform_survey(number_passes)
-  plt.ylabel(r"$\beta$", fontsize= label_fontsize+5)
+  plt.ylabel(r"$\beta$")
   plt.gca().set_xticklabels([])
   plot_survey(xA,'A')
   np.savetxt('A.txt',xA)
@@ -125,17 +138,17 @@ if __name__ == "__main__":
   
   xC = generate_uniform_survey(number_passes, offset = True)
   plt.subplot(223)
-  plt.xlabel(r"$\alpha$", fontsize=label_fontsize+5)
-  plt.ylabel(r"$\beta$", fontsize=label_fontsize+5)
+  plt.xlabel(r"$\alpha$",)
+  plt.ylabel(r"$\beta$")
   plot_survey(xC,'C')
   np.savetxt('C.txt',xC)  
   
   xD = generate_random_survey(len(xA))
   plt.subplot(224)
-  plt.xlabel(r"$\alpha$", fontsize=label_fontsize+5)
+  plt.xlabel(r"$\alpha$",)
   plt.gca().set_yticklabels([])
   plot_survey(xD,'D')
   np.savetxt('D.txt',xD)
   plt.subplots_adjust(wspace=0,hspace=0.0)
-  plt.savefig("./simple_surveys.png",bbox_inches='tight',pad_inches=0.1)
+  plt.savefig("./simple_surveys.png",bbox_inches='tight')
   
