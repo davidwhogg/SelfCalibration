@@ -199,7 +199,7 @@ def SurveyInnvar(params, out_dir, invvar_filename):
   sort = sort[sort[:,0].argsort(),:]
   sort_reported_invvar = sort[:,1]
   sort_counts = sort[:,0]
-  plt.plot(np.log10(counts), np.log10((1/true_invvar)/counts**2),'k.', markersize = 2., label = "Actual Variance", alpha = 0.01)
+  plt.plot(np.log10(counts), np.log10((1/true_invvar)/counts**2),'k.', markersize = 2., label = "Actual Variance", alpha = 0.1)
   plt.plot(np.log10(sort_counts), np.log10((1/sort_reported_invvar)/sort_counts**2),'k', label = "Assumed Variance")
   plt.xlabel(r'$\log_{10}(c_i)$')
   plt.ylabel(ur'$\log_{10}(\frac{{\sigma_i}^2}{c_i^2})$')

@@ -18,7 +18,7 @@ dic = {
   
   'powerlaw_constants'  :     np.array([-13.34863146, 1.25429311, -0.02122949]), # log10(dN/dm) = A + B*mag + C*mag**2
   
-  'useful_fraction'     :     .5,
+  'useful_fraction'     :     1.,
   
   'powerlaw'            :     0.25, # B in log10(dN/dm) = A + B*m
   
