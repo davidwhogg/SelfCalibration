@@ -8,7 +8,7 @@ dic = {
   
   'mag_at_ten_sigma'    :     22.,
 
-  'eta'                 :     0.01,
+  'eta'                 :     0.001,
   
   'm_min'               :     17,
   
