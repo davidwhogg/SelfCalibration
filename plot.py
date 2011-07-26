@@ -14,6 +14,11 @@ import os
 import sys
 import string
 import functions as f
+import copy
+from multiprocessing import Pool
+
+mult_proc = True
+plot_ff = False
 
 scale = 2
 fig_width_pt = scale*415.55  # Get this from LaTeX using \showthe\columnwidth
@@ -49,7 +54,11 @@ single_fig_width = 12
 single_fig_height = 12
 
 
-def plot_flat_fields(params, out_dir,ff_filename, strategy):
+def plot_flat_fields(map_dic):
+  params = map_dic['params']
+  out_dir = map_dic['out_dir']
+  ff_filename = map_dic['ff_filename']
+  strategy = map_dic['survey']
   print ff_filename
   FoV = params['FoV']
   plt.rcParams.update({'figure.figsize': [fig_width, fig_width/1.03], 'xtick.labelsize': scale*7, 'ytick.labelsize': scale*7})
@@ -278,16 +287,27 @@ if __name__ == "__main__":
       # Import Simulation Parameters
       params = pickle.load(open(('./%s/parameters.p' % dir_path)))
       # Plot Flat-Fields
-      ff_path = dir_path + '/FF'
-      os.system("rm -r %s/*.png" % ff_path)
-      os.system("rm -r %s/*.pdf" % ff_path)
-      FFs = os.listdir(ff_path)
-      for ff in FFs:
-        plot_flat_fields(params, out_dir, (ff_path + '/' + ff), srvy)
-      # Create Animations
-      png_dir = ff_path
-      command = ('convert -delay 50 -loop 0 %s/*.png %s/ff_animation.gif' % (png_dir, dir_path))
-      os.system(command)
+      if plot_ff:
+        ff_path = dir_path + '/FF'
+        os.system("rm -r %s/*.png" % ff_path)
+        os.system("rm -r %s/*.pdf" % ff_path)
+        FFs = os.listdir(ff_path)
+        map_dictionaries = []
+        for ff in FFs:
+          map_dic = {}
+          map_dic['params'] = params
+          map_dic['out_dir'] = out_dir
+          map_dic['ff_filename'] = (ff_path + '/' + ff)
+          map_dic['survey'] = srvy
+          map_dictionaries.append(copy.deepcopy(map_dic))
+        if mult_proc:
+          p = Pool(8)
+          p.map(plot_flat_fields,map_dictionaries)      
+        else: map(plot_flat_fields,map_dictionaries)
+        # Create Animations
+        png_dir = ff_path
+        command = ('convert -delay 50 -loop 0 %s/*.png %s/ff_animation.gif' % (png_dir, dir_path))
+        os.system(command)
       # Plot Camera Image
       if os.path.isfile((dir_path + '/camera_image.p')): camera_image(params, out_dir, (dir_path + '/camera_image.p'))
       # Plot Inverse Invariance 
@@ -305,54 +325,4 @@ if __name__ == "__main__":
        plot_solution(sln, sln_dic['mod_param'], (out_dir + '/' + srvy))
        plot_performance(sln, sln_dic['mod_param'], (out_dir + '/' + srvy))
 
-# Import general parameters
-'''
-simulation_parameters = pickle.load(open(('./%ssimulation_parameters.p' % dir_path)))
-sky_limits = simulation_parameters['sky_limits']
-m_min = simulation_parameters['m_min']
-m_max = simulation_parameters['m_max']
-survey_strategies = simulation_parameters['survey_strategies']
-FoV = simulation_parameters['FoV'] 
 
-  if plot_bdness:
-    # Plot badness against parameter
-    select_files = os.listdir(dir_path)
-    temp = 1*select_files
-    for isfile in temp:
-      if os.path.isfile(dir_path + isfile) != True:
-        select_files.remove(isfile)
-    select_files.remove('simulation_parameters.p')
-    for data_files in select_files:
-      data = np.loadtxt((dir_path+data_files))
-      xdata = data[:,0]
-      badness = data[:,1]
-      plt.plot((xdata), (badness), label = data_files[0])
-      plt.xlabel((bdness_plot_xlabel))
-      plt.ylabel("Badness")
-    plt.legend()
-    filename = dir_path+'Badness.png'
-    plt.savefig(filename,bbox_inches='tight',pad_inches=0.5)
-    plt.clf() 
-    
-  if plot_rms:
-    # Plot badness against parameter
-    select_files = os.listdir(dir_path)
-    temp = 1*select_files
-    for isfile in temp:
-      if os.path.isfile(dir_path + isfile) != True:
-        select_files.remove(isfile)
-    select_files.remove('simulation_parameters.p')
-    select_files.remove('Badness.png')
-    for data_files in select_files:
-      data = np.loadtxt((dir_path+data_files))
-      xdata = data[:,0]
-      rms = data[:,2]
-      plt.plot((xdata), (rms), label = data_files[0])
-      plt.xlabel((bdness_plot_xlabel))
-      plt.ylabel("rms")      
-    plt.legend()
-    filename = dir_path+'/rms.png'
-    plt.savefig(filename,bbox_inches='tight',pad_inches=0.5)
-    plt.clf() 
-    
-'''
