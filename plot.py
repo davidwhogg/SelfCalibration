@@ -209,6 +209,28 @@ def SurveyInnvar(params, out_dir, invvar_filename):
   plt.savefig(filename,bbox_inches='tight')
   plt.clf()
 
+def plot_performance(sln, mod_param, solution_path):
+  print "Plotting Solution: ", solution_path
+  sln = sln[sln[:,0].argsort(),:]
+  if mod_param == 'density_of_stars':
+    mod_param = r'Density of Sources (deg$^{-2}$mag$^{-1}$)'
+  else:
+    mod_param = string.replace(mod_param, '_', ' ')
+  plt.figure(figsize = (fig_width, 0.4*fig_width))
+  plt.subplot(121)
+  plt.loglog(sln[:,0], sln[:,3], 'kx',label = r'True Badness')
+  plt.loglog(sln[:,0], sln[:,4], 'k.', label = r'Best-in-Basis Badness')
+  plt.legend(loc = 'upper right')
+  plt.ylabel(r"Badness of Fitted Instrument Response (\%)")
+  plt.xlabel(mod_param)
+  plt.subplot(122)
+  plt.loglog(sln[:,0], sln[:,2], 'k.')
+  plt.ylabel(r"RMS Source Error (\%)")
+  plt.xlabel(mod_param)
+  plt.savefig(solution_path + '/performance.png',bbox_inches='tight')
+  plt.clf()
+
+
 def plot_solution(sln, mod_param, solution_path):
   sln = sln[sln[:,0].argsort(),:]
   mod_param = string.replace(mod_param, '_', ' ')
@@ -281,7 +303,7 @@ if __name__ == "__main__":
     if len(sln.shape) > 1:
      if len(sln[:,0]) > 1:
        plot_solution(sln, sln_dic['mod_param'], (out_dir + '/' + srvy))
-        #plot_solution(solution_path)
+       plot_performance(sln, sln_dic['mod_param'], (out_dir + '/' + srvy))
 
 # Import general parameters
 '''

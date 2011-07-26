@@ -4,7 +4,7 @@
 import numpy as np
 
 dic = {
-  'survey_strategies'     :     ['D', 'C', 'B', 'A'], #['D', 'C', 'B', 'A']
+  'survey_strategies'     :     ['deep'], #['D', 'C', 'B', 'A']
   
   'mag_at_ten_sigma'    :     22.,
 

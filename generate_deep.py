@@ -9,6 +9,25 @@ import numpy as np
 import default_parameters as p
 import matplotlib.pylab as plt
 
+scale = 2
+fig_width_pt = scale*415.55  # Get this from LaTeX using \showthe\columnwidth
+inches_per_pt = 1.0/72.27               # Convert pt to inches
+golden_mean = (np.sqrt(5)-1.0)/2.0         # Aesthetic ratio
+fig_width = fig_width_pt*inches_per_pt  # width in inches
+fig_height =fig_width*golden_mean       # height in inches
+params = {'backend': 'pdf',
+          'axes.labelsize': scale*10,
+          'text.fontsize': scale*10,
+          'legend.fontsize': scale*10,
+          'xtick.labelsize': scale*9,
+          'ytick.labelsize': scale*9,
+          'linewidth' : scale*1,
+          'text.usetex': True}
+          #'font': {'family':'sans-serif','sans-serif':['Helvetica']}}
+plt.rcParams.update(params)
+plt.rc('font', family = 'serif', serif = 'cmr10')
+
+
 # XX Dangerous hack!!
 pdic = p.dic
 FoV = pdic['FoV']
@@ -60,11 +79,13 @@ for ii in range(passes):
   offset = np.random.uniform(FoV[0]*0.25, FoV[0]*0.75, size = 2)
   temp_X = single_pass(offset, ii*angle_between_passes)
   X = np.append(X, temp_X, axis = 0)
-  
+
 final_X = np.zeros((len(X[:,0]),4))
 
 final_X[:,0] = np.arange(len(X[:,0]))
 final_X[:,1:] = X
+print len(final_X[:,0])/12
+first_pass = final_X[0:len(final_X[:,0])/12,:]
 
 def fp2sky(x, y, pointing, orientation):
   theta = - orientation*np.pi/180 # telescope rotates NOT sky
@@ -77,19 +98,34 @@ def plot_survey(survey, survey_name):
   x_max = FoV[0]/2; y_max = FoV[1]/2
   x = np.array([x_min, x_min, x_max, x_max, x_min])
   y = np.array([y_min, y_max, y_max, y_min, y_min])
+  
+  if survey_name == "Deep": Alpha = 0.05
+  if survey_name == "Single Pass": Alpha = 0.3
   for image in survey:
     alpha, beta = fp2sky(x,y,image[1:3], image[3])
-    plt.plot(alpha,beta,'k-',alpha=0.25)
-  plt.xlabel(r"$\alpha$", fontsize=25)
-  plt.ylabel(r"$\beta$", fontsize=25)
-  plt.title(r"Strategy %s: %i Pointings" % (survey_name, len(survey[:,0])))
-  plt.axis('equal')
-  plt.xlim(sky_limits[0]-FoV[0], sky_limits[1]+FoV[0])
-  plt.ylim(sky_limits[2]-FoV[1], sky_limits[3]+FoV[1])
+    plt.plot(alpha,beta,'k-',alpha=Alpha)
+
+  plt.axis('scaled')
+  #plt.xlim(sky_limits[0]-FoV[0], sky_limits[1]+FoV[0])
+  #plt.ylim(sky_limits[2]-FoV[1], sky_limits[3]+FoV[1])
+  plt.xlim(-3.5,3.5)
+  plt.ylim(-3.5,3.5)  
   plt.savefig("deep.png")
+  print (r"Strategy %s: %i Pointings" % (survey_name, len(survey[:,0])))
   return
 
-plot_survey(final_X, "Deep")
-np.savetxt("deep.txt", final_X)
+plt.figure(figsize = (fig_width, fig_height))
+plt.subplot(121)
+plot_survey(first_pass, "Single Pass")
+plt.xlabel(r"$\alpha$")
+plt.ylabel(r"$\beta$")
 
-plt.savefig("deep.png")
+plt.subplot(122)
+plot_survey(final_X, "Deep")
+plt.gca().set_yticklabels([])
+plt.xlabel(r"$\alpha$")
+
+np.savetxt("deep.txt", final_X)
+plt.subplots_adjust(wspace=0,hspace=0.0)
+
+plt.savefig("deep.png",bbox_inches='tight')

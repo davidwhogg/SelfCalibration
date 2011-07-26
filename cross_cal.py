@@ -82,7 +82,7 @@ if len(sys.argv) > 1:
       no_mod_value = int(sys.argv[5]) # spacing for modified parameter
       print ("Low Value: %.3f" % mod_value_low)
       print ("High Value: %.3f" % mod_value_high)
-      print ("Number of Values in Range: %.3f" % no_mod_value)
+      print ("Number of Values in Range: %d" % int(no_mod_value))
       operating_mode = 3 # modified range of parameters
     else:
       mod_value = sys.argv[3] # OR modified single value
@@ -150,7 +150,7 @@ if __name__ == '__main__':
           map_dic['mod_param'] = mod_param
           map_dictionaries.append(copy.deepcopy(map_dic))
         if mult_proc:
-          p = Pool(32)
+          p = Pool(6)
           p.map(run_sim,map_dictionaries)      
         else: map(run_sim,map_dictionaries)
     else: 
