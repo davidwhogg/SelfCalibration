@@ -23,7 +23,7 @@ import god
 
 plotdata = False
 verbosemode = False
-mult_proc = True
+mult_proc = False
 
 def run_sim(map_dic):
   params = map_dic['params']
