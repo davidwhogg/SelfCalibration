@@ -21,7 +21,7 @@ import default_parameters
 import functions as f
 import god
 
-plotdata = True
+plotdata = False
 verbosemode = False
 mult_proc = True
 

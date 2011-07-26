@@ -18,7 +18,7 @@ import copy
 from multiprocessing import Pool
 
 mult_proc = True
-plot_ff = False
+plot_ff = True
 
 scale = 2
 fig_width_pt = scale*415.55  # Get this from LaTeX using \showthe\columnwidth
@@ -177,13 +177,13 @@ def camera_image(params, out_dir, camera_filename):
   plt.savefig(filename,bbox_inches='tight')
   plt.clf()
 
-def SurveyInnvar(params, data_dir, invvar_filename):
-  print data_dir+'/source_catalog.p'
+def SurveyInnvar(params, survey_filemane, invvar_filename):
+  print survey_filename
   plt.figure(figsize = (fig_width, 0.5*fig_width))
   plt.clf()
   
   plt.subplot(121)
-  survey_dic = pickle.load(open(data_dir+'/source_catalog.p'))
+  survey_dic = pickle.load(open(survey_filename))
   mag = survey_dic['mag']
   all_mag = survey_dic['all_sources']
   fit_mag = survey_dic['fit_mag']
@@ -311,7 +311,9 @@ if __name__ == "__main__":
       # Plot Camera Image
       if os.path.isfile((dir_path + '/camera_image.p')): camera_image(params, out_dir, (dir_path + '/camera_image.p'))
       # Plot Inverse Invariance 
-      SurveyInnvar(params, dir_path, (dir_path + '/invvar.p'))
+      survey_filename = dir_path+'/source_catalog.p'
+      invvar_filename = dir_path + '/invvar.p'
+      if os.path.isfile(survey_filename) and os.path.isfile(invvar_filename): SurveyInnvar(params, dir_path, invvar_filename)
     
     # plot iteration number, badness, rms, chi2 
       solution_path = dir_path + '/solution.p'
