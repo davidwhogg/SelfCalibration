@@ -150,7 +150,7 @@ if __name__ == '__main__':
           map_dic['mod_param'] = mod_param
           map_dictionaries.append(copy.deepcopy(map_dic))
         if mult_proc:
-          p = Pool(6)
+          p = Pool(8)
           p.map(run_sim,map_dictionaries)      
         else: map(run_sim,map_dictionaries)
     else: 
