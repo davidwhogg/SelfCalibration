@@ -45,7 +45,7 @@ def single_pass(offset, theta):
   x_high = -x_low
   y_low = -FoV[1]*(square_num+1)*0.5*(1-field_overlap)
   y_high = -y_low
-  x_centers = np.linspace(y_low,y_high, num = (square_num+2), endpoint=True)
+  x_centers = np.linspace(x_low,x_high, num = (square_num+2), endpoint=True)
   y_centers = np.linspace(y_low,y_high, num = (square_num+2), endpoint=True)
   X_centers,Y_centers = np.meshgrid(x_centers[1:-1],y_centers[1:-1])
   # Add Edges
@@ -99,7 +99,7 @@ def plot_survey(survey, survey_name):
   x = np.array([x_min, x_min, x_max, x_max, x_min])
   y = np.array([y_min, y_max, y_max, y_min, y_min])
   
-  if survey_name == "Deep": Alpha = 0.05
+  if survey_name == "Deep": Alpha = 0.1
   if survey_name == "Single Pass": Alpha = 0.3
   for image in survey:
     alpha, beta = fp2sky(x,y,image[1:3], image[3])
@@ -110,7 +110,6 @@ def plot_survey(survey, survey_name):
   #plt.ylim(sky_limits[2]-FoV[1], sky_limits[3]+FoV[1])
   plt.xlim(-3.5,3.5)
   plt.ylim(-3.5,3.5)  
-  plt.savefig("deep.png")
   print (r"Strategy %s: %i Pointings" % (survey_name, len(survey[:,0])))
   return
 
@@ -128,4 +127,4 @@ plt.xlabel(r"$\alpha$")
 np.savetxt("deep.txt", final_X)
 plt.subplots_adjust(wspace=0,hspace=0.0)
 
-plt.savefig("deep.png",bbox_inches='tight')
+plt.savefig("deep.pdf",bbox_inches='tight')
