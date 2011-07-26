@@ -67,7 +67,7 @@ def prob_dist(m_min, m_max, a, size):
   m = (1.0/a) * np.log10((10.0**(a*m_max)-10.0**(a*m_min)) * r+ 10**(a*m_min))
   return m
 
-def generate_magnitudes(params, number_sources, out_dir, plots = False):
+def generate_magnitudes(params, number_sources, data_dir, plots = False):
   A = params['powerlaw_constants']
   area = (params['sky_limits'][1]-params['sky_limits'][0])*(params['sky_limits'][3]-params['sky_limits'][2])
   # fit for dN/dm = B[0] + B[1]*m
@@ -109,34 +109,33 @@ def generate_magnitudes(params, number_sources, out_dir, plots = False):
     survey_dic['all_sources'] = mag
     survey_dic['fit_mag'] = np.arange(14, 26, 0.01)
     survey_dic['fit_dens'] = power_law(A, np.arange(14, 26, 0.01))*area
-    pickle_path = out_dir+'/source_catalog.p'
+    pickle_path = data_dir+'/source_catalog.p'
     pickle.dump(survey_dic, open(pickle_path, "wb"))
   return selected_sources
 
 class SourceCatalog:
-    def __init__(self, params, out_dir, number_sources, plots = False):
+    def __init__(self, params, out_dir, data_dir, number_sources, plots = False):
       np.random.seed(params['seed'])
       self.k = np.arange(number_sources).astype(int)
       self.alpha = np.random.uniform(low=params['sky_limits'][0],high=params['sky_limits'][1],size=number_sources) # α
       self.beta = np.random.uniform(low=params['sky_limits'][2],high=params['sky_limits'][3],size=number_sources) # β
-      self.mag = generate_magnitudes(params, number_sources, out_dir, plots = plots)
+      self.mag = generate_magnitudes(params, number_sources, data_dir, plots = plots)
       self.size = number_sources
       self.flux = f.mag2flux(self.mag)
       self.epsilon = np.random.uniform(0,params['epsilon_max'], size=number_sources)
       
-def create_catalog(params, out_dir, plots=False, verbose=False):
+def create_catalog(params, out_dir, data_dir, plots=False, verbose=False):
   if verbose: print "Generating God's Catalog..."
   # Calculate total number of stars in catalog
   number_sources = params['density_of_stars'] * (params['sky_limits'][1]-params['sky_limits'][0])*(params['sky_limits'][3]-params['sky_limits'][2])
   # Create catalog
-  catalog = SourceCatalog(params, out_dir, number_sources, plots = plots)
+  catalog = SourceCatalog(params, out_dir, data_dir, number_sources, plots = plots)
   if verbose: print "...done!"
   if plots:
-    pickle_path = out_dir+'/source_catalog.p'
+    pickle_path = data_dir+'/source_catalog.p'
     survey_dic = pickle.load(open(pickle_path))
     survey_dic['alpha'] = catalog.alpha
     survey_dic['beta'] = catalog.beta
-    pickle_path = out_dir+'/source_catalog.p'
     pickle.dump(survey_dic, open(pickle_path, "wb"))
   return catalog
   # catalog.ID, catalog.mag, catalog.alpha, catalog.beta, catalog.size

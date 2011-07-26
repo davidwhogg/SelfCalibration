@@ -168,13 +168,13 @@ def camera_image(params, out_dir, camera_filename):
   plt.savefig(filename,bbox_inches='tight')
   plt.clf()
 
-def SurveyInnvar(params, out_dir, invvar_filename):
-  print out_dir+'/source_catalog.p'
+def SurveyInnvar(params, data_dir, invvar_filename):
+  print data_dir+'/source_catalog.p'
   plt.figure(figsize = (fig_width, 0.5*fig_width))
   plt.clf()
   
   plt.subplot(121)
-  survey_dic = pickle.load(open(out_dir+'/source_catalog.p'))
+  survey_dic = pickle.load(open(data_dir+'/source_catalog.p'))
   mag = survey_dic['mag']
   all_mag = survey_dic['all_sources']
   fit_mag = survey_dic['fit_mag']
@@ -291,7 +291,7 @@ if __name__ == "__main__":
       # Plot Camera Image
       if os.path.isfile((dir_path + '/camera_image.p')): camera_image(params, out_dir, (dir_path + '/camera_image.p'))
       # Plot Inverse Invariance 
-      SurveyInnvar(params, out_dir, (dir_path + '/invvar.p'))
+      SurveyInnvar(params, dir_path, (dir_path + '/invvar.p'))
     
     # plot iteration number, badness, rms, chi2 
       solution_path = dir_path + '/solution.p'

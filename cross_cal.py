@@ -35,12 +35,13 @@ def run_sim(map_dic):
     mod_param = False
   
   if mod_param == False: data_dir = ('%s/%s/default' % (out_dir,strategy))
-  else: data_dir = ('%s/%s/%s=%.3f' % (out_dir, strategy, mod_param, params[mod_param]))
-  
-  sky_catalog = god.create_catalog(params, out_dir, plots=plotdata)
+  else: data_dir = ('%s/%s/%s=%.3f' % (out_dir, strategy, mod_param, params[mod_param]))  
+
   os.system('mkdir -p %s' % (data_dir))
   os.system('mkdir -p %s' % (data_dir + '/FF'))
   pickle.dump(params, open((data_dir+'/parameters.p'), "wb"))
+
+  sky_catalog = god.create_catalog(params, out_dir, data_dir, plots=plotdata)
 
   survey_file = strategy + ".txt"
   observation_catalog = f.survey(params, sky_catalog, survey_file, data_dir, plots=plotdata, verbose=verbosemode) 
@@ -53,7 +54,7 @@ def run_sim(map_dic):
     if verbosemode: print "Writing out invvar pickle..."
     f.invvar_saveout(observation_catalog, data_dir)
     if verbosemode: print "...done!"  
-
+  
   # Do cross-calibration
   sln = f.ubercalibration(params, observation_catalog, sky_catalog, strategy, out_dir, data_dir, plots=plotdata)
     
@@ -71,6 +72,7 @@ def run_sim(map_dic):
 # Read command line inputs
 if len(sys.argv) > 1:
   out_dir = sys.argv[1] # directory to save output data to - always needed
+  if out_dir[-1] == '/': out_dir = out_dir[0:-1] 
   os.system(('mkdir -p %s' % out_dir))
   print "Output ==> %s" % out_dir
   if len(sys.argv) > 3: # additional options
@@ -150,7 +152,7 @@ if __name__ == '__main__':
           map_dic['mod_param'] = mod_param
           map_dictionaries.append(copy.deepcopy(map_dic))
         if mult_proc:
-          p = Pool(8)
+          p = Pool(4)
           p.map(run_sim,map_dictionaries)      
         else: map(run_sim,map_dictionaries)
     else: 
