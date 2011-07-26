@@ -138,7 +138,7 @@ if __name__ == '__main__':
       f.bestfit_ff(params, out_dir)
       god.saveout_god_ff(params, out_dir)
     if mod_param in params:
-      param_range = np.linspace(mod_value_low, mod_value_high, num=no_mod_value, endpoint=True, retstep=False)
+      param_range = np.logspace(mod_value_low, mod_value_high, num=no_mod_value, endpoint=True)
       if (mod_param == 'flat_field_order'): param_range = param_range.astype('int') 
       for strategy in params['survey_strategies']:
         os.system('mkdir -p %s/%s' % (out_dir, strategy)) # create directory for survey
