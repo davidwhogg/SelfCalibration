@@ -108,21 +108,24 @@ def plot_survey(survey, survey_name):
   plt.axis('scaled')
   #plt.xlim(sky_limits[0]-FoV[0], sky_limits[1]+FoV[0])
   #plt.ylim(sky_limits[2]-FoV[1], sky_limits[3]+FoV[1])
-  plt.xlim(-3.5,3.5)
-  plt.ylim(-3.5,3.5)  
+  plt.xlim(sky_limits[0]-1*FoV[0], sky_limits[1]+1*FoV[0])
+  plt.ylim(sky_limits[2]-1*FoV[1], sky_limits[3]+1*FoV[1]) 
   print (r"Strategy %s: %i Pointings" % (survey_name, len(survey[:,0])))
   return
+
+alpha = r'Sky Position $\alpha$ (deg$^2$)'
+beta = r'Sky Position $\beta$ (deg$^2$)'
 
 plt.figure(figsize = (fig_width, fig_height))
 plt.subplot(121)
 plot_survey(first_pass, "Single Pass")
-plt.xlabel(r"$\alpha$")
-plt.ylabel(r"$\beta$")
+plt.xlabel(alpha)
+plt.ylabel(beta)
 
 plt.subplot(122)
 plot_survey(final_X, "Deep")
 plt.gca().set_yticklabels([])
-plt.xlabel(r"$\alpha$")
+plt.xlabel(alpha)
 
 np.savetxt("deep.txt", final_X)
 plt.subplots_adjust(wspace=0,hspace=0.0)

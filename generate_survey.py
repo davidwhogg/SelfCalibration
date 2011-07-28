@@ -44,10 +44,9 @@ def plot_survey(survey, survey_name):
     plt.plot(alpha,beta,'k-',alpha=0.25)
   #plt.title(r"Strategy %s: %i Pointings" % (survey_name, len(survey[:,0])))
   print ('Survey %s: %d pointings' % (survey_name, len(survey[:,0])))
-  plt.text(sky_limits[0]-0.1*FoV[0], sky_limits[3]-0*FoV[1], ('('+survey_name+')'), fontsize = scale*11)
-  plt.axis('scaled')
-  plt.xlim(sky_limits[0]-1.5*FoV[0], sky_limits[1]+1.5*FoV[0])
-  plt.ylim(sky_limits[2]-1.5*FoV[1], sky_limits[3]+1.5*FoV[1])
+  plt.text(sky_limits[0]-0.8*FoV[0], sky_limits[3]+0.2*FoV[1], (survey_name), fontsize = scale*11)#, backgroundcolor = 'w')
+  plt.xlim(sky_limits[0]-1*FoV[0], sky_limits[1]+1*FoV[0])
+  plt.ylim(sky_limits[2]-1*FoV[1], sky_limits[3]+1*FoV[1])
   return
 
 def uniform_center_list(nx,ny):
@@ -121,10 +120,13 @@ def generate_random_survey(N):
 if __name__ == "__main__":
   plt.clf()
   number_passes = 12
+  alpha = r'Sky Position $\alpha$ (deg$^2$)'
+  beta = r'Sky Position $\beta$ (deg$^2$)'
+  
   plt.figure(figsize=(fig_width,fig_width*0.97))
   plt.subplot(221)
   xA = generate_uniform_survey(number_passes)
-  plt.ylabel(r"$\beta$")
+  plt.ylabel(beta)
   plt.gca().set_xticklabels([])
   plot_survey(xA,'A')
   np.savetxt('A.txt',xA)
@@ -138,17 +140,17 @@ if __name__ == "__main__":
   
   xC = generate_uniform_survey(number_passes, offset = True)
   plt.subplot(223)
-  plt.xlabel(r"$\alpha$",)
-  plt.ylabel(r"$\beta$")
+  plt.xlabel(alpha,)
+  plt.ylabel(beta)
   plot_survey(xC,'C')
   np.savetxt('C.txt',xC)  
   
   xD = generate_random_survey(len(xA))
   plt.subplot(224)
-  plt.xlabel(r"$\alpha$",)
+  plt.xlabel(alpha,)
   plt.gca().set_yticklabels([])
   plot_survey(xD,'D')
   np.savetxt('D.txt',xD)
   plt.subplots_adjust(wspace=0,hspace=0.0)
-  plt.savefig("./simple_surveys.png",bbox_inches='tight')
+  plt.savefig("./simple_surveys.pdf",bbox_inches='tight')
   

@@ -17,9 +17,12 @@ import functions as f
 import copy
 from multiprocessing import Pool
 
-mult_proc = True
+mult_proc = False
 plot_ff = True
 expct_perf = True
+
+alpha = r'Sky Position $\alpha$ (deg$^2$)'
+beta = r'Sky Position $\beta$ (deg$^2$)'
 
 scale = 2
 fig_width_pt = scale*415.55  # Get this from LaTeX using \showthe\columnwidth
@@ -62,7 +65,7 @@ def plot_flat_fields(map_dic):
   strategy = map_dic['survey']
   print ff_filename
   FoV = params['FoV']
-  plt.rcParams.update({'figure.figsize': [fig_width, fig_width/1.03], 'xtick.labelsize': scale*7, 'ytick.labelsize': scale*7})
+  plt.rcParams.update({'figure.figsize': [fig_width, fig_width*0.94], 'xtick.labelsize': scale*7, 'ytick.labelsize': scale*7})
   fig = plt.figure()
   # Axis for colorbar
   cax = fig.add_axes([0.93, 0.1, 0.03, 0.8])
@@ -81,38 +84,40 @@ def plot_flat_fields(map_dic):
   bestfit_X = bestfit_dic['x']
   bestfit_Y = bestfit_dic['y']
   # Plot God and Fitted
-  plt.subplot(221, aspect = 'equal')
-  plt.xlabel(r"$\alpha$")
+  plt.subplot(221)
   # Find parameters for contour plot
   god_ff_max = np.max(god_ff)
   god_ff_min = np.min(god_ff)
   levels = np.arange(0.5,1.5,0.01)
   CS = plt.contour(god_X,god_Y,god_ff,levels ,colors='k',alpha=0.3)
   CS2 = plt.contour(our_X, our_Y, our_ff, levels,colors='k')
-  plt.ylabel(r"$\beta$")
+  plt.ylabel(beta)
   plt.clabel(CS2, inline=1)
   plt.xlim(-FoV[0]/2, FoV[0]/2)
   plt.ylim(-FoV[1]/2, FoV[1]/2)
+
   plt.gca().set_xticklabels([])
   # Plot residual in god and fitted
-  plt.subplot(222, aspect = 'equal')
+  plt.subplot(222)
   a = plt.imshow((100*(our_ff-god_ff)/god_ff),extent=(-FoV[0]/2,FoV[0]/2,-FoV[1]/2,FoV[1]/2), vmin = -0.5,vmax = 0.5, cmap='gray')
   plt.gca().set_xticklabels([])
   plt.gca().set_yticklabels([])
   # Plot best-in-basis and fitted
-  plt.subplot(223, aspect = 'equal')
-  plt.xlabel(r"$\alpha$")
-  plt.ylabel(r"$\beta$")
+  plt.subplot(223)
+  plt.xlabel(alpha)
+  plt.ylabel(beta)
   levels = np.arange(0.5,1.5,0.01)
   CS = plt.contour(bestfit_X,bestfit_Y,bestfit_ff,levels ,colors='k',alpha=0.3)
   CS2 = plt.contour(our_X, our_Y, our_ff, levels,colors='k')
   plt.clabel(CS2, inline=1)
   plt.xlim(-FoV[0]/2, FoV[0]/2)
   plt.ylim(-FoV[1]/2, FoV[1]/2)
+
   # Plot residual between fitted and best-in-basis
-  plt.subplot(224, aspect = 'equal')
+  plt.subplot(224)
   a = plt.imshow((100*(our_ff-bestfit_ff) /bestfit_ff),extent=(-FoV[0]/2,FoV[0]/2,-FoV[1]/2,FoV[1]/2), vmin = -0.5,vmax = 0.5, cmap='gray')
-  plt.xlabel(r"$\alpha$")
+  plt.xlabel(alpha) 
+
   plt.gca().set_yticklabels([])
   # Squeeze subplots together
   plt.subplots_adjust(wspace=0.0,hspace=0.0)
@@ -130,8 +135,8 @@ def camera_image(params, out_dir, camera_filename):
   dic = pickle.load(open(camera_filename))
   x = dic['measured_catalog.x'] 
   y = dic['measured_catalog.y']
-  alpha = dic['sky_catalog.alpha'] 
-  beta = dic['sky_catalog.beta']
+  Alpha = dic['sky_catalog.alpha'] 
+  Beta = dic['sky_catalog.beta']
   sky = dic['sky'] 
   pointing = dic['pointing']
   orientation = dic['orientation']
@@ -141,11 +146,11 @@ def camera_image(params, out_dir, camera_filename):
   fp_beta = dic['fp_beta']
   inside_FoV = dic['inside_FoV']
   plt.subplot(121)
-  plt.plot(alpha,beta,'k.', alpha = 0.2, markersize=3)
+  plt.plot(Alpha,Beta,'k.', alpha = 0.2, markersize=3)
   #plt.plot(alpha[inside_FoV],beta[inside_FoV],'k.',markersize=5)  
   plt.plot(fp_alpha,fp_beta,'k', linewidth=2)
-  plt.xlabel(ur'$\alpha$')
-  plt.ylabel(ur'$\beta$')
+  plt.xlabel(alpha)
+  plt.ylabel(beta)
   dalpha_sky = sky[1] - sky[0]
   dbeta_sky = sky[3] - sky[2]
   buffer_sky = 0.1
@@ -158,8 +163,8 @@ def camera_image(params, out_dir, camera_filename):
   plt.subplot(122)
   plt.plot(x,y,'k.', markersize=6)
   plt.plot(fp_x, fp_y, 'k', linewidth=3)
-  plt.xlabel(ur'$x$')
-  plt.ylabel(ur'$y$')
+  plt.xlabel(ur'Focal Plane Position $x$ (deg$^2$)')
+  plt.ylabel(ur'Focal Plane Position $y$ (deg$^2$)')
   fp_buffer = 0.1
   dx = np.max(fp_x) - np.min(fp_x)
   dy = np.max(fp_y) - np.min(fp_y)
@@ -174,7 +179,7 @@ def camera_image(params, out_dir, camera_filename):
   CS = plt.contour(god_X,god_Y,god_ff,levels ,colors='k',alpha=0.3)
   #plt.clabel(CS, inline=1,color = '0.3')
   
-  filename = string.replace(camera_filename, '.p', '.png')
+  filename = string.replace(camera_filename, '.p', '.pdf')
   plt.savefig(filename,bbox_inches='tight')
   plt.clf()
 
@@ -215,7 +220,7 @@ def SurveyInnvar(params, survey_filemane, invvar_filename):
   plt.ylabel(ur'$\log_{10}(\frac{{\sigma_i}^2}{c_i^2})$')
   plt.xlim(np.min(np.log10(counts)), np.max(np.log10(counts)))
   plt.subplots_adjust(wspace=0.3)
-  filename = string.replace(invvar_filename, '.p', '.png')
+  filename = string.replace(invvar_filename, '.p', '.pdf')
   plt.savefig(filename,bbox_inches='tight')
   plt.clf()
 
@@ -269,7 +274,7 @@ def plot_solution(sln, mod_param, solution_path):
   plt.xlabel(mod_param)
   ax = plt.gca()
   ax.yaxis.major.formatter.set_powerlimits((0,0))
-  plt.savefig(solution_path + '/solution.png',bbox_inches='tight',pad_inches=0.1)
+  plt.savefig(solution_path + '/solution.pdf',bbox_inches='tight',pad_inches=0.1)
   plt.clf()
 
 if __name__ == "__main__":
