@@ -223,6 +223,8 @@ def plot_performance(sln, mod_param, solution_path):
   sln = sln[sln[:,0].argsort(),:]
   if mod_param == 'density_of_stars':
     mod_param = r'Density of Sources (deg$^{-2}$mag$^{-1}$)'
+  elif mod_param == 'epsilon_max':
+    mod_param = r'$\epsilon_{max}$'
   else:
     mod_param = string.replace(mod_param, '_', ' ')
   plt.figure(figsize = (1.1*fig_width, 0.5*fig_width))
