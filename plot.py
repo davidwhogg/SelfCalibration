@@ -19,6 +19,7 @@ from multiprocessing import Pool
 
 mult_proc = True
 plot_ff = True
+expct_perf = True
 
 scale = 2
 fig_width_pt = scale*415.55  # Get this from LaTeX using \showthe\columnwidth
@@ -222,7 +223,7 @@ def plot_performance(sln, mod_param, solution_path):
   print "Plotting Solution: ", solution_path
   sln = sln[sln[:,0].argsort(),:]
   if mod_param == 'density_of_stars':
-    mod_param = r'Density of Sources (deg$^{-2}$mag$^{-1}$)'
+    mod_param = r'Density of Sources (deg$^{-2}$)'
   elif mod_param == 'epsilon_max':
     mod_param = r'$\epsilon_{max}$'
   else:
@@ -231,6 +232,7 @@ def plot_performance(sln, mod_param, solution_path):
   plt.subplot(121)
   plt.loglog(sln[:,0], sln[:,3], 'kx',label = r'True')
   plt.loglog(sln[:,0], sln[:,4], 'k.', label = r'Best-in-Basis')
+  if expct_perf: plt.loglog(sln[:,0], (0.04*(sln[:,0])**-0.5), 'k:')
   #plt.legend(loc = 'upper right')
   plt.ylabel(r"Badness (\%)")
   plt.xlabel(mod_param)
@@ -238,7 +240,8 @@ def plot_performance(sln, mod_param, solution_path):
   plt.loglog(sln[:,0], sln[:,2], 'k.')
   plt.ylabel(r"Source Error (\%)")
   plt.xlabel(mod_param)
-  plt.savefig(solution_path + '/performance.png',bbox_inches='tight')
+  plt.subplots_adjust(wspace=0.3)
+  plt.savefig(solution_path + '/performance.pdf',bbox_inches='tight')
   plt.clf()
 
 

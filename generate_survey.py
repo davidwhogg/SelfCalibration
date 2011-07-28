@@ -44,10 +44,10 @@ def plot_survey(survey, survey_name):
     plt.plot(alpha,beta,'k-',alpha=0.25)
   #plt.title(r"Strategy %s: %i Pointings" % (survey_name, len(survey[:,0])))
   print ('Survey %s: %d pointings' % (survey_name, len(survey[:,0])))
-  plt.text(sky_limits[0]-1.5*FoV[0], sky_limits[3]+0.5*FoV[1], ('('+survey_name+')'), fontsize = scale*11)
+  plt.text(sky_limits[0]-0.1*FoV[0], sky_limits[3]-0*FoV[1], ('('+survey_name+')'), fontsize = scale*11)
   plt.axis('scaled')
-  plt.xlim(sky_limits[0]-2*FoV[0], sky_limits[1]+2*FoV[0])
-  plt.ylim(sky_limits[2]-2*FoV[1], sky_limits[3]+2*FoV[1])
+  plt.xlim(sky_limits[0]-1.5*FoV[0], sky_limits[1]+1.5*FoV[0])
+  plt.ylim(sky_limits[2]-1.5*FoV[1], sky_limits[3]+1.5*FoV[1])
   return
 
 def uniform_center_list(nx,ny):
