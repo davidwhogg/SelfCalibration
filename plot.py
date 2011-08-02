@@ -42,8 +42,8 @@ params = {'backend': 'pdf',
           'text.usetex': True}
           #'font': {'family':'sans-serif','sans-serif':['Helvetica']}}
 plt.rcParams.update(params)
-plt.rc('font', family = 'serif', serif = 'cmr10')
-
+# plt.rc('font', family = 'serif', serif = 'Computer Modern Roman')
+plt.rc('font', family = 'serif', serif = 'Times')
 
 if len(sys.argv) == 2:
   print "Running plotting routine..."
@@ -68,7 +68,8 @@ def plot_flat_fields(map_dic):
   strategy = map_dic['survey']
   print ff_filename
   FoV = params['FoV']
-  plt.rcParams.update({'figure.figsize': [fig_width, fig_width*0.95], 'xtick.labelsize': scale*7, 'ytick.labelsize': scale*7})
+  sky_limits = params['sky_limits']
+  plt.rcParams.update({'figure.figsize': [fig_width, fig_width*0.915]})
   fig = plt.figure()
   # Axis for colorbar
   cax = fig.add_axes([0.93, 0.1, 0.03, 0.8])
@@ -92,12 +93,13 @@ def plot_flat_fields(map_dic):
   god_ff_max = np.max(god_ff)
   god_ff_min = np.min(god_ff)
   levels = np.arange(0.5,1.5,0.01)
-  CS = plt.contour(god_X,god_Y,god_ff,levels ,colors='k',alpha=0.3)
+  CS = plt.contour(god_X,god_Y,god_ff,levels ,colors='0.6')
   CS2 = plt.contour(our_X, our_Y, our_ff, levels,colors='k')
   plt.ylabel(ylab)
   plt.clabel(CS2, inline=1)
   plt.xlim(-FoV[0]/2, FoV[0]/2)
   plt.ylim(-FoV[1]/2, FoV[1]/2)
+  plt.text(0.5*FoV[0]-0.08,0.5*FoV[1]-0.07, '(a)', fontsize = scale*11, backgroundcolor = 'w')
   #plt.axis('equal')
   plt.gca().set_xticklabels([])
   # Plot residual in god and fitted
@@ -105,17 +107,19 @@ def plot_flat_fields(map_dic):
   a = plt.imshow((100*(our_ff-god_ff)/god_ff),extent=(-FoV[0]/2,FoV[0]/2,-FoV[1]/2,FoV[1]/2), vmin = -0.5,vmax = 0.5, cmap='gray')
   plt.gca().set_xticklabels([])
   plt.gca().set_yticklabels([])
+  plt.text(0.5*FoV[0]-0.08,0.5*FoV[1]-0.07, '(b)', fontsize = scale*11, color = 'k')
   #plt.axis('equal')
   # Plot best-in-basis and fitted
   plt.subplot(223)
   plt.xlabel(xlab)
   plt.ylabel(ylab)
   levels = np.arange(0.5,1.5,0.01)
-  CS = plt.contour(bestfit_X,bestfit_Y,bestfit_ff,levels ,colors='k',alpha=0.3)
+  CS = plt.contour(bestfit_X,bestfit_Y,bestfit_ff,levels ,colors='0.75')
   CS2 = plt.contour(our_X, our_Y, our_ff, levels,colors='k')
   plt.clabel(CS2, inline=1)
   plt.xlim(-FoV[0]/2, FoV[0]/2)
   plt.ylim(-FoV[1]/2, FoV[1]/2)
+  plt.text(0.5*FoV[0]-0.08,0.5*FoV[1]-0.07, '(c)', fontsize = scale*11, backgroundcolor = 'w')
   #plt.axis('equal')
   # Plot residual between fitted and best-in-basis
   plt.subplot(224)
@@ -123,12 +127,14 @@ def plot_flat_fields(map_dic):
   plt.xlabel(xlab) 
   #plt.axis('equal')
   plt.gca().set_yticklabels([])
+  plt.text(0.5*FoV[0]-0.08,0.5*FoV[1]-0.07, '(d)', fontsize = scale*11, color = 'k')
   # Squeeze subplots together
   plt.subplots_adjust(wspace=0.0,hspace=0.0)
   # Add Colorbar
   fig.colorbar(a, cax, orientation = 'vertical')
-  filename = string.replace(ff_filename, '.p', '.png')  
-  plt.savefig(filename,bbox_inches='tight')
+  for sffx in ['.png', '.pdf']:
+    filename = string.replace(ff_filename, '.p', sffx)  
+    plt.savefig(filename,bbox_inches='tight')
   plt.clf() 
   
 def camera_image(params, out_dir, camera_filename):
@@ -179,9 +185,9 @@ def camera_image(params, out_dir, camera_filename):
   god_X = god_dic['x']
   god_Y = god_dic['y'] 
   levels = np.arange(0.5,1.5,0.01)
-  CS = plt.contour(god_X,god_Y,god_ff,levels ,colors='k',alpha=0.3)
-  #plt.clabel(CS, inline=1,color = '0.3')
-  
+  CS = plt.contour(god_X,god_Y,god_ff,levels ,colors='0.75')
+  plt.clabel(CS, inline=1,color = '0.75')
+  plt.subplots_adjust(wspace=.3,hspace=0.0)  
   filename = string.replace(camera_filename, '.p', '.pdf')
   plt.savefig(filename,bbox_inches='tight')
   plt.clf()
