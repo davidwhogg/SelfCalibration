@@ -131,7 +131,8 @@ def plot_flat_fields(map_dic):
   # Squeeze subplots together
   plt.subplots_adjust(wspace=0.0,hspace=0.0)
   # Add Colorbar
-  fig.colorbar(a, cax, orientation = 'vertical')
+  cbar = fig.colorbar(a, cax, orientation = 'vertical')
+  cbar.set_label(r'(\%)')
   for sffx in ['.png', '.pdf']:
     filename = string.replace(ff_filename, '.p', sffx)  
     plt.savefig(filename,bbox_inches='tight')
@@ -192,11 +193,10 @@ def camera_image(params, out_dir, camera_filename):
   plt.savefig(filename,bbox_inches='tight')
   plt.clf()
 
-def SurveyInnvar(params, survey_filemane, invvar_filename):
+def plot_survey(params, survey_filename):
   print survey_filename
-  plt.figure(figsize = (fig_width, 0.4*fig_width))
+  plt.figure(figsize = (0.5*fig_width, 0.5*fig_width))
   plt.clf()
-  plt.subplot(121)
   area = (params['sky_limits'][1]-params['sky_limits'][0])*(params['sky_limits'][3]-params['sky_limits'][2])
   survey_dic = pickle.load(open(survey_filename))
   mag = survey_dic['mag']
@@ -209,9 +209,14 @@ def SurveyInnvar(params, survey_filemane, invvar_filename):
   plt.bar(hist_mag[:-1], np.histogram(mag, bins = hist_mag)[0] / (area) , width = 0.5, hatch = '/', color = 'k', alpha =0.3)
   plt.xlabel(r'Source Magnitude (AB)')
   plt.ylabel(r'Density of Sources ((0.5 mag)$^{-1})$')
-  
+  filename = string.replace(survey_filename, '.p', '.pdf')
+  plt.savefig(filename,bbox_inches='tight')
+  plt.clf()
+
+def plot_invvar(params, invvar_filename):
   print invvar_filename
-  plt.subplot(122)
+  plt.figure(figsize = (0.5*fig_width, 0.5*fig_width))
+  plt.clf()
   pickle_dic = pickle.load(open(invvar_filename))
   counts = pickle_dic['counts']
   true_invvar = pickle_dic['true_invvar']
@@ -223,8 +228,8 @@ def SurveyInnvar(params, survey_filemane, invvar_filename):
   sort = sort[sort[:,0].argsort(),:]
   sort_reported_invvar = sort[:,1]
   sort_counts = sort[:,0]
-  plt.plot(np.log10(counts), np.log10((1/true_invvar)/counts**2),'k.', markersize = 2., label = "Actual Variance", alpha = 0.01)
-  plt.plot(np.log10(sort_counts), np.log10((1/sort_reported_invvar)/sort_counts**2),'k', label = "Assumed Variance")
+  plt.plot(np.log10(counts), np.log10((1/true_invvar)/counts**2),'k.', markersize = 2., label = r"Actual Variance", alpha = 0.01)
+  plt.plot(np.log10(sort_counts), np.log10((1/sort_reported_invvar)/sort_counts**2),'k', label = r"Assumed Variance")
   plt.xlabel(r'$\log_{10}(c_i)$')
   plt.ylabel(ur'$\log_{10}(\frac{{\sigma_i}^2}{c_i^2})$')
   plt.xlim(np.min(np.log10(counts)), np.max(np.log10(counts)))
@@ -332,8 +337,10 @@ if __name__ == "__main__":
       # Plot Inverse Invariance 
       survey_filename = dir_path+'/source_catalog.p'
       invvar_filename = dir_path + '/invvar.p'
-      if os.path.isfile(survey_filename) and os.path.isfile(invvar_filename): SurveyInnvar(params, dir_path, invvar_filename)
-    
+      if os.path.isfile(survey_filename): 
+        plot_survey(params, survey_filename)
+      if os.path.isfile(invvar_filename):
+        plot_invvar(params, invvar_filename)    
     # plot iteration number, badness, rms, chi2 
       solution_path = dir_path + '/solution.p'
       if os.path.isfile(solution_path):

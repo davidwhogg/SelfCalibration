@@ -22,7 +22,7 @@ params = {'backend': 'pdf',
           'text.usetex': True}
           #'font': {'family':'sans-serif','sans-serif':['Helvetica']}}
 plt.rcParams.update(params)
-plt.rc('font', family = 'serif', serif = 'cmr10')
+plt.rc('font', family = 'serif', serif = 'Times')
 
 pdic = p.dic
 FoV = pdic['FoV']
