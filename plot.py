@@ -298,7 +298,7 @@ def thesis_plot_invvar(files):
   for indx in range(2):
     print files[indx], " ... for thesis!"
     plt.subplot(1,2,indx+1)
-    pickle_dic = pickle.load(open(files[indx]))
+    pickle_dic = pickle.load(open(files[1-indx]))
     counts = pickle_dic['counts']
     true_invvar = pickle_dic['true_invvar']
     reported_invvar = pickle_dic['reported_invvar']  
