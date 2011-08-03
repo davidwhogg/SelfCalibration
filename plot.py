@@ -17,8 +17,8 @@ import functions as f
 import copy
 from multiprocessing import Pool
 
-mult_proc = False
-plot_ff = True
+mult_proc = True
+plot_ff = False
 expct_perf = True
 
 alpha = r'Sky Position $\alpha$ (deg$^2$)'
@@ -213,9 +213,9 @@ def plot_survey(params, survey_filename):
   plt.savefig(filename,bbox_inches='tight')
   plt.clf()
 
-def plot_invvar(params, invvar_filename):
+def plot_invvar(invvar_filename):
   print invvar_filename
-  plt.figure(figsize = (0.5*fig_width, 0.5*fig_width))
+  plt.figure(figsize = (fig_width, fig_width))
   plt.clf()
   pickle_dic = pickle.load(open(invvar_filename))
   counts = pickle_dic['counts']
@@ -230,8 +230,8 @@ def plot_invvar(params, invvar_filename):
   sort_counts = sort[:,0]
   plt.plot(np.log10(counts), np.log10((1/true_invvar)/counts**2),'k.', markersize = 2., label = r"Actual Variance", alpha = 0.01)
   plt.plot(np.log10(sort_counts), np.log10((1/sort_reported_invvar)/sort_counts**2),'k', label = r"Assumed Variance")
-  plt.xlabel(r'$\log_{10}(c_i)$')
-  plt.ylabel(ur'$\log_{10}(\frac{{\sigma_i}^2}{c_i^2})$')
+  plt.xlabel(r'$\log_{10}(c_{i})$')
+  plt.ylabel(r'$\log_{10}(\frac{\sigma_{i}^2}{c_i^2})$')
   plt.xlim(np.min(np.log10(counts)), np.max(np.log10(counts)))
   plt.subplots_adjust(wspace=0.3)
   filename = string.replace(invvar_filename, '.p', '.pdf')
@@ -291,8 +291,42 @@ def plot_solution(sln, mod_param, solution_path):
   plt.savefig(solution_path + '/solution.pdf',bbox_inches='tight',pad_inches=0.1)
   plt.clf()
 
+def thesis_plot_invvar(files):
+  plt.clf()
+  plt.figure(figsize = (fig_width, 0.4*fig_width))
+  
+  for indx in range(2):
+    print files[indx], " ... for thesis!"
+    plt.subplot(1,2,indx+1)
+    pickle_dic = pickle.load(open(files[indx]))
+    counts = pickle_dic['counts']
+    true_invvar = pickle_dic['true_invvar']
+    reported_invvar = pickle_dic['reported_invvar']  
+    # Sort true invvar by counts so we can plot as a line
+    sort = np.zeros((len(counts), 2))
+    sort[:,0] = counts[:]
+    sort[:,1] = reported_invvar[:]
+    sort = sort[sort[:,0].argsort(),:]
+    sort_reported_invvar = sort[:,1]
+    sort_counts = sort[:,0]
+    plt.semilogy(counts, (1/true_invvar)/counts**2,'k.', markersize = 2., label = r"Actual Variance", alpha = 0.01)
+    plt.plot(sort_counts, (1/sort_reported_invvar)/sort_counts**2,'k', label = r"Assumed Variance")
+    plt.xlabel(r'Counts $(c_{i})$')
+    #plt.ylim(-5.8,-5.1)
+    plt.xlim(np.min(counts), np.max(counts))
+    if indx == 0: plt.ylabel(r'Normalized Uncertainty Variance $\left(\frac{\sigma_{i}^2}{c_i^2} \right)$')
+    if indx == 1: plt.gca().set_yticklabels([])
+  plt.subplots_adjust(wspace=0.0, hspace = 0.0)
+  
+  for indx in range(2):
+    filename = string.replace(files[indx], '.p', '_two.png')
+    plt.savefig(filename,bbox_inches='tight')
+  plt.clf()  
+  
+  
 if __name__ == "__main__":
   # Find the surveys done
+  invvar_files = []
   surveys = os.listdir(out_dir)
   temp = 1*surveys
   for isfile in temp:
@@ -340,7 +374,8 @@ if __name__ == "__main__":
       if os.path.isfile(survey_filename): 
         plot_survey(params, survey_filename)
       if os.path.isfile(invvar_filename):
-        plot_invvar(params, invvar_filename)    
+        plot_invvar(invvar_filename)
+        invvar_files.append(invvar_filename)
     # plot iteration number, badness, rms, chi2 
       solution_path = dir_path + '/solution.p'
       if os.path.isfile(solution_path):
@@ -349,8 +384,9 @@ if __name__ == "__main__":
         if len(sln) == 0: sln = temp_sln
         else: sln = np.append(sln, temp_sln, axis=0)
     if len(sln.shape) > 1:
-     if len(sln[:,0]) > 1:
+      if len(sln[:,0]) > 1:
        plot_solution(sln, sln_dic['mod_param'], (out_dir + '/' + srvy))
        plot_performance(sln, sln_dic['mod_param'], (out_dir + '/' + srvy))
-
-
+      if (len(invvar_files) == 2) and (sln_dic['mod_param'] == 'epsilon_max'):
+        thesis_plot_invvar(invvar_files)
+      
