@@ -314,7 +314,7 @@ def thesis_plot_invvar(files):
     plt.xlabel(r'Counts $(c_{i})$')
     #plt.ylim(-5.8,-5.1)
     plt.xlim(np.min(counts), np.max(counts))
-    if indx == 0: plt.ylabel(r'Normalized Uncertainty Variance $\left(\frac{\sigma_{i}^2}{c_i^2} \right)$')
+    if indx == 0: plt.ylabel(r'Uncertainty Variance $\left(\frac{\sigma_{i}^2}{c_i^2} \right)$')
     if indx == 1: plt.gca().set_yticklabels([])
   plt.subplots_adjust(wspace=0.0, hspace = 0.0)
   
