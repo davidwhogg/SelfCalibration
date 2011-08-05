@@ -21,6 +21,9 @@ mult_proc = True
 plot_ff = False
 expct_perf = True
 
+# Change nice level to 10
+os.nice(10)
+
 alpha = r'Sky Position $\alpha$ (deg$^2$)'
 beta = r'Sky Position $\beta$ (deg$^2$)'
 xlab = r'Focal Plane Position $x$ (deg$^2$)'

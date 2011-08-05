@@ -21,9 +21,13 @@ import default_parameters
 import functions as f
 import god
 
-plotdata = True
+plotdata = False
 verbosemode = False
 mult_proc = True
+
+# Change nice level to 10
+os.nice(10)
+
 
 def run_sim(map_dic):
   params = map_dic['params']
