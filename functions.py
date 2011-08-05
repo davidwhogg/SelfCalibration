@@ -260,9 +260,11 @@ def bestfit_ff(params, out_dir):
 
 def badness(params, q):
   FoV = params['FoV']
-  nalpha, nbeta = params['ff_samples']
-  x = np.linspace(-FoV[0]/2,FoV[0]/2,nalpha)
-  y = np.linspace(-FoV[1]/2,FoV[1]/2,nbeta)
+  nx, ny = params['ff_samples']
+  dx = FoV[0]/(nx-1)
+  dy = FoV[1]/(ny-1)
+  x = np.arange(-FoV[0]/2+dx/2,FoV[0]/2,dx)
+  y = np.arange(-FoV[1]/2+dy/2,FoV[1]/2,dy)
   X, Y = np.meshgrid(x, y)
   temp_x = np.reshape(X,-1)
   temp_y = np.reshape(Y,-1)
@@ -272,9 +274,11 @@ def badness(params, q):
 
 def badness_bestinbasis(params, q, out_dir):
   FoV = params['FoV']
-  nalpha, nbeta = params['ff_samples']
-  x = np.linspace(-FoV[0]/2,FoV[0]/2,nalpha)
-  y = np.linspace(-FoV[1]/2,FoV[1]/2,nbeta)
+  nx, ny = params['ff_samples']
+  dx = FoV[0]/(nx-1)
+  dy = FoV[1]/(ny-1)
+  x = np.arange(-FoV[0]/2+dx/2,FoV[0]/2,dx)
+  y = np.arange(-FoV[1]/2+dy/2,FoV[1]/2,dy)
   X, Y = np.meshgrid(x, y)
   temp_x = np.reshape(X,-1)
   temp_y = np.reshape(Y,-1)
