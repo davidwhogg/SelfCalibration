@@ -267,7 +267,7 @@ def badness(params, q):
   temp_x = np.reshape(X,-1)
   temp_y = np.reshape(Y,-1)
   our_ff = evaluate_flat_field(params, temp_x, temp_y, q)
-  god_ff = god.flat_field(params,temp_x, temp_y, god.flat_field_parameters())
+  god_ff = god.flat_field(params,temp_x, temp_y)
   return 100*np.sqrt(np.mean(((our_ff-god_ff)/god_ff)**2))
 
 def badness_bestinbasis(params, q, out_dir):
