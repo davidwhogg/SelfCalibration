@@ -71,13 +71,13 @@ class MeasuredCatalog:
       return flux2mag(self.counts)
       
     def reported_invvar(self, params):
-      sky_unc = 0.1*mag2flux(params['mag_at_ten_sigma'])
+      sky_unc = params['alpha']#0.1*mag2flux(params['mag_at_ten_sigma'])
       var = (sky_unc**2 + (params['eta']**2) * self.counts**2)
       return 1. / var
 
     def true_invvar(self, params, camera_catalog, inside_FoV, flat):
       epsilon = camera_catalog.epsilon[inside_FoV]
-      sky_unc = 0.1*mag2flux(params['mag_at_ten_sigma'])
+      sky_unc = params['alpha']#0.1*mag2flux(params['mag_at_ten_sigma'])
       flux = camera_catalog.flux[inside_FoV]
       var = (sky_unc**2 * (1. + epsilon**2) + (params['eta']**2) * flat**2 * flux**2)
       return 1. / var

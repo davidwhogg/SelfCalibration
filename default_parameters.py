@@ -4,11 +4,13 @@
 import numpy as np
 
 dic = {
-  'survey_strategies'     :     ['deep'], #['D', 'C', 'B', 'A']
+  'survey_strategies'   :     ['deep'], #['D', 'C', 'B', 'A']
   
-  'mag_at_ten_sigma'    :     22.,
+  #'mag_at_ten_sigma'    :     22.,
 
-  'eta'                 :     0.001,
+  'eta'                 :     0.00173214,
+  
+  'alpha'               :     0.1584655417,
   
   'm_min'               :     17,
   
