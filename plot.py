@@ -4,7 +4,7 @@
 # Rory Holmes 2011
 # Script to plot all the output generated in the cross-calibration simulation
 # Must call with the output directory from cross-cal, e.g: "./plot.py dir"
-
+# If two output directories are specified then script also makes performance comparison plots.   
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
@@ -48,10 +48,21 @@ plt.rcParams.update(params)
 # plt.rc('font', family = 'serif', serif = 'Computer Modern Roman')
 plt.rc('font', family = 'serif', serif = 'Times')
 
+dirs = np.array([])
+
 if len(sys.argv) == 2:
   print "Running plotting routine..."
-  out_dir = sys.argv[1]
-  if out_dir[-1] == '/': out_dir = out_dir[:-1]
+  directory = sys.argv[1]
+  if directory[-1] == '/': directory = directory[:-1]
+  dirs = np.append(dirs, directory)
+  
+elif len(sys.argv) == 3:
+  directory = sys.argv[1]
+  if directory[-1] == '/': directory = directory[:-1]
+  dirs = np.append(dirs, directory)
+  directory = sys.argv[2]
+  if directory[-1] == '/': directory = directory[:-1]
+  dirs = np.append(dirs, directory)
 else:
   print "Error - no plotting directory given!"
   sys.exit()
@@ -242,7 +253,7 @@ def plot_invvar(invvar_filename):
   plt.clf()
 
 def plot_performance(sln, mod_param, solution_path):
-  print "Plotting Solution: ", solution_path
+  print "Plotting Performance: ", solution_path
   sln = sln[sln[:,0].argsort(),:]
   if mod_param == 'density_of_stars':
     mod_param = r'Density of Sources (deg$^{-2}$)'
@@ -328,70 +339,103 @@ def thesis_plot_invvar(files):
     plt.savefig(filename,bbox_inches='tight')
   plt.clf()  
   
+def thesis_plot_performance(performance_dictionary):
+  mksz = 5
+  plt.figure(figsize = (1.1*fig_width, 0.5*fig_width))
+  indx = 0.
+  for path in performance_dictionary:
+    print "Plotting Thesis Performance': ", path 
+    sln = performance_dictionary[path]
+    sln = sln[sln[:,0].argsort(),:]
+    plt.subplot(121)
+    if indx == 0: kwargs = {}
+    if indx == 1: kwargs = {'markeredgewidth':1, 'markeredgecolor':'k', 'markerfacecolor':'None'}
+    plt.loglog(sln[:,0], sln[:,3], 'ks',  label = r'True $B_\textrm{true}$', markersize = mksz, **kwargs)
+    plt.loglog(sln[:,0], sln[:,4], 'ko', label = r'Best-in-Basis Badness $B_\textrm{best}$', markersize = mksz, **kwargs)
+    if expct_perf: plt.loglog(sln[:,0], (0.04*(sln[:,0])**-0.5), 'k:')
+    plt.ylim(ymax = 1.)
+    if indx == 0: plt.legend(loc = 'upper right')
+    plt.ylabel(r"Badness (percent)")
+    plt.xlabel(r"Density of Sources $d$ (deg$^2$)")
+
+    plt.subplot(122)
+    plt.loglog(sln[:,0], sln[:,2], 'kv', markersize = mksz, **kwargs)
+    plt.ylim(ymax = 1.)
+    plt.ylabel(r"Source Error $S_\textrm{\small{RMS}}$ (percent)")
+    plt.xlabel(r"Density of Sources $d$ (deg$^2$)")
+    indx += 1
+  plt.subplots_adjust(wspace=0.3)
+  for path in performance_dictionary:
+    plt.savefig(path + '/thesis_performance.pdf',bbox_inches='tight')
+  plt.clf()
   
 if __name__ == "__main__":
   # Find the surveys done
-  invvar_files = []
-  surveys = os.listdir(out_dir)
-  temp = 1*surveys
-  for isfile in temp:
-    if os.path.isfile(out_dir+ '/' + isfile):
-      surveys.remove(isfile)
-  for srvy in surveys:
-    # Find Modified Parameter Directories
-    modified_value_dir = os.listdir(out_dir + '/' + srvy)
-    temp = 1*modified_value_dir
-    sln = np.array([])
+  performance_dictionary = {}
+  for out_dir in dirs:
+    os.system('rm %s/*.pdf' % out_dir)
+    invvar_files = []
+    surveys = os.listdir(out_dir)
+    temp = 1*surveys
     for isfile in temp:
-      if os.path.isfile(out_dir+ '/' + srvy + '/' + isfile):
-	modified_value_dir.remove(isfile)
-    for mod_val_dir in modified_value_dir:
-      dir_path = out_dir + '/' + srvy + '/' + mod_val_dir
-      # Import Simulation Parameters
-      params = pickle.load(open(('./%s/parameters.p' % dir_path)))
-      # Plot Flat-Fields
-      if plot_ff:
-        ff_path = dir_path + '/FF'
-        os.system("rm -r %s/*.png" % ff_path)
-        os.system("rm -r %s/*.pdf" % ff_path)
-        FFs = os.listdir(ff_path)
-        map_dictionaries = []
-        for ff in FFs:
-          map_dic = {}
-          map_dic['params'] = params
-          map_dic['out_dir'] = out_dir
-          map_dic['ff_filename'] = (ff_path + '/' + ff)
-          map_dic['survey'] = srvy
-          map_dictionaries.append(copy.deepcopy(map_dic))
-        if mult_proc:
-          p = Pool(8)
-          p.map(plot_flat_fields,map_dictionaries)      
-        else: map(plot_flat_fields,map_dictionaries)
-        # Create Animations
-        png_dir = ff_path
-        command = ('convert -delay 50 -loop 0 %s/*.png %s/ff_animation.gif' % (png_dir, dir_path))
-        os.system(command)
-      # Plot Camera Image
-      if os.path.isfile((dir_path + '/camera_image.p')): camera_image(params, out_dir, (dir_path + '/camera_image.p'))
-      # Plot Inverse Invariance 
-      survey_filename = dir_path+'/source_catalog.p'
-      invvar_filename = dir_path + '/invvar.p'
-      if os.path.isfile(survey_filename): 
-        plot_survey(params, survey_filename)
-      if os.path.isfile(invvar_filename):
-        plot_invvar(invvar_filename)
-        invvar_files.append(invvar_filename)
-    # plot iteration number, badness, rms, chi2 
-      solution_path = dir_path + '/solution.p'
-      if os.path.isfile(solution_path):
-        sln_dic = pickle.load(open(solution_path))
-        temp_sln = np.array([[sln_dic['mod_value'], sln_dic['iter_no'], sln_dic['rms'], sln_dic['badness'], sln_dic['badness_bestfit'], sln_dic['chi2']]])
-        if len(sln) == 0: sln = temp_sln
-        else: sln = np.append(sln, temp_sln, axis=0)
-    if len(sln.shape) > 1:
-      if len(sln[:,0]) > 1:
-       plot_solution(sln, sln_dic['mod_param'], (out_dir + '/' + srvy))
-       plot_performance(sln, sln_dic['mod_param'], (out_dir + '/' + srvy))
-      if (len(invvar_files) == 2) and (sln_dic['mod_param'] == 'epsilon_max'):
-        thesis_plot_invvar(invvar_files)
-      
+      if os.path.isfile(out_dir+ '/' + isfile):
+        surveys.remove(isfile)
+    for srvy in surveys:
+      # Find Modified Parameter Directories
+      modified_value_dir = os.listdir(out_dir + '/' + srvy)
+      temp = 1*modified_value_dir
+      sln = np.array([])
+      for isfile in temp:
+        if os.path.isfile(out_dir+ '/' + srvy + '/' + isfile):
+	  modified_value_dir.remove(isfile)
+      for mod_val_dir in modified_value_dir:
+        dir_path = out_dir + '/' + srvy + '/' + mod_val_dir
+        # Import Simulation Parameters
+        params = pickle.load(open(('./%s/parameters.p' % dir_path)))
+        # Plot Flat-Fields
+        if plot_ff:
+          ff_path = dir_path + '/FF'
+          os.system("rm -r %s/*.png" % ff_path)
+          os.system("rm -r %s/*.pdf" % ff_path)
+          FFs = os.listdir(ff_path)
+          map_dictionaries = []
+          for ff in FFs:
+            map_dic = {}
+            map_dic['params'] = params
+            map_dic['out_dir'] = out_dir
+            map_dic['ff_filename'] = (ff_path + '/' + ff)
+            map_dic['survey'] = srvy
+            map_dictionaries.append(copy.deepcopy(map_dic))
+          if mult_proc:
+            p = Pool(8)
+            p.map(plot_flat_fields,map_dictionaries)      
+          else: map(plot_flat_fields,map_dictionaries)
+          # Create Animations
+          png_dir = ff_path
+          command = ('convert -delay 50 -loop 0 %s/*.png %s/ff_animation.gif' % (png_dir, dir_path))
+          os.system(command)
+        # Plot Camera Image
+        if os.path.isfile((dir_path + '/camera_image.p')): camera_image(params, out_dir, (dir_path + '/camera_image.p'))
+        # Plot Inverse Invariance 
+        survey_filename = dir_path+'/source_catalog.p'
+        invvar_filename = dir_path + '/invvar.p'
+        if os.path.isfile(survey_filename): 
+          plot_survey(params, survey_filename)
+        if os.path.isfile(invvar_filename):
+          plot_invvar(invvar_filename)
+          invvar_files.append(invvar_filename)
+      # plot iteration number, badness, rms, chi2 
+        solution_path = dir_path + '/solution.p'
+        if os.path.isfile(solution_path):
+          sln_dic = pickle.load(open(solution_path))
+          temp_sln = np.array([[sln_dic['mod_value'], sln_dic['iter_no'], sln_dic['rms'], sln_dic['badness'], sln_dic['badness_bestfit'], sln_dic['chi2']]])
+          if len(sln) == 0: sln = temp_sln
+          else: sln = np.append(sln, temp_sln, axis=0)
+      if len(sln.shape) > 1:
+        if len(sln[:,0]) > 1:
+         plot_solution(sln, sln_dic['mod_param'], (out_dir + '/' + srvy))
+         plot_performance(sln, sln_dic['mod_param'], (out_dir + '/' + srvy))
+        if (len(invvar_files) == 2) and (sln_dic['mod_param'] == 'epsilon_max'):
+          thesis_plot_invvar(invvar_files)
+      performance_dictionary[out_dir] = sln
+      if len(performance_dictionary) == 2: thesis_plot_performance(performance_dictionary)

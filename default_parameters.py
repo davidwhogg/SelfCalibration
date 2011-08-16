@@ -30,7 +30,7 @@ dic = {
   
   'flat_field_order'    :     8,
   
-  'epsilon_max'         :     1,
+  'epsilon_max'         :     1.,
   
   'sky_limits'          :     [-4.0, 4.0, -4.0, 4.0], #[α_min, α_max, β_min, β_max]
   
