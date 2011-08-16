@@ -340,6 +340,7 @@ def thesis_plot_invvar(files):
   plt.clf()  
   
 def thesis_plot_performance(performance_dictionary):
+  plt.rcParams.update({'legend.fontsize': 9*scale})
   mksz = 5
   plt.figure(figsize = (1.1*fig_width, 0.5*fig_width))
   indx = 0.
@@ -350,8 +351,8 @@ def thesis_plot_performance(performance_dictionary):
     plt.subplot(121)
     if indx == 0: kwargs = {}
     if indx == 1: kwargs = {'markeredgewidth':1, 'markeredgecolor':'k', 'markerfacecolor':'None'}
-    plt.loglog(sln[:,0], sln[:,3], 'ks',  label = r'True $B_\textrm{true}$', markersize = mksz, **kwargs)
-    plt.loglog(sln[:,0], sln[:,4], 'ko', label = r'Best-in-Basis Badness $B_\textrm{best}$', markersize = mksz, **kwargs)
+    plt.loglog(sln[:,0], sln[:,3], 'ks',  label = r'$B_\textrm{\small{true}}$', markersize = mksz, **kwargs)
+    plt.loglog(sln[:,0], sln[:,4], 'ko', label = r' $B_\textrm{\small{best}}$', markersize = mksz, **kwargs)
     if expct_perf: plt.loglog(sln[:,0], (0.04*(sln[:,0])**-0.5), 'k:')
     plt.ylim(ymax = 1.)
     if indx == 0: plt.legend(loc = 'upper right')
