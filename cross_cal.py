@@ -143,6 +143,7 @@ if __name__ == '__main__':
       god.saveout_god_ff(params, out_dir)
     if mod_param in params:
       param_range = np.logspace(np.log10(mod_value_low), np.log10(mod_value_high), num=no_mod_value, endpoint=True)
+      param_range = param_range[::-1] # Reorder to big density of stars 1st (should be quicker)
       if (mod_param == 'flat_field_order'): param_range = param_range.astype('int') 
       for strategy in params['survey_strategies']:
         os.system('mkdir -p %s/%s' % (out_dir, strategy)) # create directory for survey
