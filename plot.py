@@ -38,7 +38,7 @@ fig_height =fig_width*golden_mean       # height in inches
 params = {'backend': 'pdf',
           'axes.labelsize': scale*10,
           'text.fontsize': scale*10,
-          'legend.fontsize': scale*10,
+          'legend.fontsize': scale*9,
           'xtick.labelsize': scale*9,
           'ytick.labelsize': scale*9,
           'linewidth' : scale*1,
@@ -341,26 +341,28 @@ def thesis_plot_invvar(files):
   
 def thesis_plot_performance(performance_dictionary):
   plt.rcParams.update({'legend.fontsize': 9*scale})
-  mksz = 5
+  mksz = 3
   plt.figure(figsize = (1.1*fig_width, 0.5*fig_width))
   indx = 0.
   for path in performance_dictionary:
-    print "Plotting Thesis Performance': ", path 
+    print "Plotting Thesis Performance': ", path, len(performance_dictionary[path])
     sln = performance_dictionary[path]
     sln = sln[sln[:,0].argsort(),:]
     plt.subplot(121)
-    if indx == 0: kwargs = {}
-    if indx == 1: kwargs = {'markeredgewidth':1, 'markeredgecolor':'k', 'markerfacecolor':'None'}
-    plt.loglog(sln[:,0], sln[:,3], 'ks',  label = r'$B_\textrm{\small{true}}$', markersize = mksz, **kwargs)
+    if indx == 0: kwargs = {'alpha': 0.5}
+    if indx == 1: kwargs = {'markeredgewidth':1, 'markeredgecolor':'k', 'markerfacecolor':'None', 'alpha': 0.3}
+    if indx == 0: plt.loglog(sln[:,0], sln[:,3], 'k',  label = r'$B_\textrm{\small{true}}$ ')
+    if indx == 1: plt.loglog(sln[:,0], sln[:,3], 'k',  label = r'$B_\textrm{\small{true}}$', alpha = 0.3)
+    
     plt.loglog(sln[:,0], sln[:,4], 'ko', label = r' $B_\textrm{\small{best}}$', markersize = mksz, **kwargs)
     if expct_perf: plt.loglog(sln[:,0], (0.04*(sln[:,0])**-0.5), 'k:')
-    plt.ylim(ymax = 1.)
-    if indx == 0: plt.legend(loc = 'upper right')
+    plt.ylim(ymax = 0.)
+    if indx == 0: plt.legend(loc = 'upper right', ncol=1)
     plt.ylabel(r"Badness (percent)")
     plt.xlabel(r"Density of Sources $d$ (deg$^2$)")
-
+    plt.ylim(0.003, 0.3)
     plt.subplot(122)
-    plt.loglog(sln[:,0], sln[:,2], 'kv', markersize = mksz, **kwargs)
+    plt.loglog(sln[:,0], sln[:,2], 'kv', markersize = mksz+1, **kwargs)
     plt.ylim(ymax = 1.)
     plt.ylabel(r"Source Error $S_\textrm{\small{RMS}}$ (percent)")
     plt.xlabel(r"Density of Sources $d$ (deg$^2$)")
