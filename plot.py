@@ -359,13 +359,13 @@ def thesis_plot_performance(performance_dictionary):
     plt.ylim(ymax = 0.)
     if indx == 0: plt.legend(loc = 'upper right', ncol=1)
     plt.ylabel(r"Badness (percent)")
-    plt.xlabel(r"Density of Sources $d$ (deg$^2$)")
+    plt.xlabel(r"Density of Sources $d$ (deg$^{-2}$)")
     plt.ylim(0.003, 0.3)
     plt.subplot(122)
     plt.loglog(sln[:,0], sln[:,2], 'kv', markersize = mksz+1, **kwargs)
     plt.ylim(ymax = 1.)
     plt.ylabel(r"Source Error $S_\textrm{\small{RMS}}$ (percent)")
-    plt.xlabel(r"Density of Sources $d$ (deg$^2$)")
+    plt.xlabel(r"Density of Sources $d$ (deg$^{-2}$)")
     indx += 1
   plt.subplots_adjust(wspace=0.3)
   for path in performance_dictionary:
