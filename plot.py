@@ -222,7 +222,7 @@ def plot_survey(params, survey_filename):
   plt.bar(hist_mag[:-1], np.histogram(all_mag, bins = hist_mag)[0] / (area) , width = 0.5, color = 'w')
   plt.bar(hist_mag[:-1], np.histogram(mag, bins = hist_mag)[0] / (area) , width = 0.5, hatch = '/', color = 'k', alpha =0.3)
   plt.xlabel(r'Source Magnitude (AB)')
-  plt.ylabel(r'Density of Sources ((0.5 mag)$^{-1})$')
+  plt.ylabel(r'Density of Sources ((0.5 mag)$^{-1}$ deg$^{-2}$)')
   filename = string.replace(survey_filename, '.p', '.pdf')
   plt.savefig(filename,bbox_inches='tight')
   plt.clf()
