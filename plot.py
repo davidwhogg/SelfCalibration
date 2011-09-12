@@ -17,8 +17,8 @@ import functions as f
 import copy
 from multiprocessing import Pool
 
-mult_proc = False
-plot_ff = True
+mult_proc = True
+plot_ff = False
 expct_perf = True
 
 # Change nice level to 10
@@ -309,12 +309,13 @@ def plot_solution(sln, mod_param, solution_path):
 
 def thesis_plot_invvar(files):
   plt.clf()
-  plt.figure(figsize = (fig_width, 0.4*fig_width))
+  plt.figure(figsize = (fig_width, 0.45*fig_width))
   
   for indx in range(2):
     print files[indx], " ... for thesis!"
     plt.subplot(1,2,indx+1)
     pickle_dic = pickle.load(open(files[1-indx]))
+    epsilon_value = pickle.load(open(string.replace(files[indx-1], 'invvar', 'parameters')))['epsilon_max']
     counts = pickle_dic['counts']
     true_invvar = pickle_dic['true_invvar']
     reported_invvar = pickle_dic['reported_invvar']  
@@ -325,18 +326,26 @@ def thesis_plot_invvar(files):
     sort = sort[sort[:,0].argsort(),:]
     sort_reported_invvar = sort[:,1]
     sort_counts = sort[:,0]
-    plt.semilogy(counts, (1/true_invvar)/counts**2,'k.', markersize = 2., label = r"Actual Variance", alpha = 0.01)
+    plt.plot(counts, (1/true_invvar)/counts**2, 'k.', alpha = 0.01, markersize = 2., label = r"Actual Variance")#, alpha = 0.01)
     plt.plot(sort_counts, (1/sort_reported_invvar)/sort_counts**2,'k', label = r"Assumed Variance")
     plt.xlabel(r'Counts $(c_{i})$')
-    #plt.ylim(-5.8,-5.1)
+    
     plt.xlim(np.min(counts), np.max(counts))
     if indx == 0: plt.ylabel(r'Uncertainty Variance $\left(\frac{\sigma_{i}^2}{c_i^2} \right)$')
-    if indx == 1: plt.gca().set_yticklabels([])
+    if indx == 0: 
+      plt.annotate(r'Black Line: Assumed', (0,0), xytext=(0.45,0.9), xycoords='figure fraction', textcoords='axes fraction', arrowprops=None, va = 'bottom', ha = 'left', fontsize = scale*9)
+      plt.annotate(r'Gray Points: True', (0,0), xytext=(0.45,0.8), xycoords='figure fraction', textcoords='axes fraction', arrowprops=None, va = 'bottom', ha = 'left', fontsize = scale*9) 
+      plt.gca().ticklabel_format(style='sci', scilimits=(0,0), axis='y')
+    if indx == 1:
+      plt.gca().set_yticklabels([])
+    print epsilon_value
+    plt.annotate((r'$\epsilon_\textrm{\small{max}} = $ %.1f' % epsilon_value), (0,0), xytext=(0.2,0.1), xycoords='axes fraction', textcoords='axes fraction', arrowprops=None, va = 'center', ha = 'center', fontsize = scale*10)
+    
+    #plt.ylim(2.5e-6,1e-5)
   plt.subplots_adjust(wspace=0.0, hspace = 0.0)
-  
   for indx in range(2):
     filename = string.replace(files[indx], '.p', '_two.png')
-    plt.savefig(filename,bbox_inches='tight')
+    plt.savefig(filename,bbox_inches='tight', pad_inches = 0.2)
   plt.clf()  
   
 def thesis_plot_performance(performance_dictionary):
