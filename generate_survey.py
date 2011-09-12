@@ -120,8 +120,8 @@ def generate_random_survey(N):
 if __name__ == "__main__":
   plt.clf()
   number_passes = 12
-  alpha = r'Sky Position $\alpha$ (deg$^2$)'
-  beta = r'Sky Position $\beta$ (deg$^2$)'
+  alpha = r'Sky Position $\alpha$ (deg)'
+  beta = r'Sky Position $\beta$ (deg)'
   
   plt.figure(figsize=(fig_width,fig_width*0.97))
   plt.subplot(221)

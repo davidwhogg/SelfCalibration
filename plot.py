@@ -17,17 +17,17 @@ import functions as f
 import copy
 from multiprocessing import Pool
 
-mult_proc = True
-plot_ff = False
+mult_proc = False
+plot_ff = True
 expct_perf = True
 
 # Change nice level to 10
 os.nice(10)
 
-alpha = r'Sky Position $\alpha$ (deg$^2$)'
-beta = r'Sky Position $\beta$ (deg$^2$)'
-xlab = r'Focal Plane Position $x$ (deg$^2$)'
-ylab = r'Focal Plane Position $y$ (deg$^2$)'
+alpha = r'Sky Position $\alpha$ (deg)'
+beta = r'Sky Position $\beta$ (deg)'
+xlab = r'Focal Plane Position $x$ (deg)'
+ylab = r'Focal Plane Position $y$ (deg)'
 
 scale = 2
 fig_width_pt = scale*415.55  # Get this from LaTeX using \showthe\columnwidth
@@ -146,7 +146,7 @@ def plot_flat_fields(map_dic):
   plt.subplots_adjust(wspace=0.0,hspace=0.0)
   # Add Colorbar
   cbar = fig.colorbar(a, cax, orientation = 'vertical')
-  cbar.set_label(r'(\%)')
+  cbar.set_label(r'Residuals  (\%)')
   for sffx in ['.png', '.pdf']:
     filename = string.replace(ff_filename, '.p', sffx)  
     plt.savefig(filename,bbox_inches='tight')
@@ -187,8 +187,8 @@ def camera_image(params, out_dir, camera_filename):
   plt.subplot(122)
   plt.plot(x,y,'k.', markersize=6)
   plt.plot(fp_x, fp_y, 'k', linewidth=3)
-  plt.xlabel(ur'Focal Plane Position $x$ (deg$^2$)')
-  plt.ylabel(ur'Focal Plane Position $y$ (deg$^2$)')
+  plt.xlabel(ur'Focal Plane Position $x$ (deg)')
+  plt.ylabel(ur'Focal Plane Position $y$ (deg)')
   fp_buffer = 0.1
   dx = np.max(fp_x) - np.min(fp_x)
   dy = np.max(fp_y) - np.min(fp_y)

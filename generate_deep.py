@@ -113,8 +113,8 @@ def plot_survey(survey, survey_name):
   print (r"Strategy %s: %i Pointings" % (survey_name, len(survey[:,0])))
   return
 
-alpha = r'Sky Position $\alpha$ (deg$^2$)'
-beta = r'Sky Position $\beta$ (deg$^2$)'
+alpha = r'Sky Position $\alpha$ (deg)'
+beta = r'Sky Position $\beta$ (deg)'
 
 plt.figure(figsize = (fig_width, fig_height))
 plt.subplot(121)
