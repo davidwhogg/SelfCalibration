@@ -367,12 +367,12 @@ def thesis_plot_performance(performance_dictionary):
     if expct_perf: plt.loglog(sln[:,0], (0.04*(sln[:,0])**-0.5), 'k:')
     plt.ylim(ymax = 0.)
     if indx == 0: 
-    	plt.legend(loc = 'upper right', ncol=1)
+    	#plt.legend(loc = 'upper right', ncol=1)
     	plt.ylabel(r"Badness (percent)")
     	plt.xlabel(r"Density of Sources $d$ (deg$^{-2}$)")
     plt.ylim(0.003, 0.3)
-    plt.annotate(r'Lines: True Badnesses $B_\textrm{\small{true}}$', (0,0), xytext=(0.3,0.9), xycoords='axes fraction', textcoords='axes fraction', arrowprops=None, va = 'bottom', ha = 'left', fontsize = scale*9)
-    plt.annotate(r'Circles: Best-in-Basis Badnesses $B_\textrm{\small{best}}$', (0,0), xytext=(0.3,0.8), xycoords='axes fraction', textcoords='axes fraction', arrowprops=None, va = 'bottom', ha = 'left', fontsize = scale*9)
+    plt.annotate(r'Lines: True Badnesses $B_\textrm{\small{true}}$', (0,0), xytext=(0.2,0.85), xycoords='axes fraction', textcoords='axes fraction', arrowprops=None, va = 'bottom', ha = 'left', fontsize = scale*8)
+    plt.annotate(r'Circles: Best-in-Basis Badnesses $B_\textrm{\small{best}}$', (0,0), xytext=(0.2,0.92), xycoords='axes fraction', textcoords='axes fraction', arrowprops=None, va = 'bottom', ha = 'left', fontsize = scale*8)
     
     plt.subplot(122)
     plt.loglog(sln[:,0], sln[:,2], 'kv', markersize = mksz+1, **kwargs)
