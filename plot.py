@@ -328,7 +328,7 @@ def thesis_plot_invvar(files):
     sort_counts = sort[:,0]
     plt.plot(counts, (1/true_invvar)/counts**2, 'k.', alpha = 0.01, markersize = 2., label = r"Actual Variance")#, alpha = 0.01)
     plt.plot(sort_counts, (1/sort_reported_invvar)/sort_counts**2,'k', label = r"Assumed Variance")
-    plt.xlabel(r'Counts $(c_{i})$')
+    plt.xlabel(r'Count Rate $(c_{i})$')
     
     plt.xlim(np.min(counts), np.max(counts))
     if indx == 0: plt.ylabel(r'Uncertainty Variance $\left(\frac{\sigma_{i}^2}{c_i^2} \right)$')
@@ -344,7 +344,7 @@ def thesis_plot_invvar(files):
     #plt.ylim(2.5e-6,1e-5)
   plt.subplots_adjust(wspace=0.0, hspace = 0.0)
   for indx in range(2):
-    filename = string.replace(files[indx], '.p', '_two.png')
+    filename = string.replace(files[indx], '.p', '_two.pdf')
     plt.savefig(filename,bbox_inches='tight', pad_inches = 0.2)
   plt.clf()  
   
