@@ -1,0 +1,218 @@
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.7.18)  11 OCT 2011 16:21
+entering extended mode
+ %&-line parsing enabled.
+**self_calibration_I.tex
+(./self_calibration_I.tex
+LaTeX2e <2009/09/24>
+Babel <v3.8l> and hyphenation patterns for english, usenglishmax, dumylang, noh
+yphenation, farsi, arabic, croatian, bulgarian, ukrainian, russian, czech, slov
+ak, danish, dutch, finnish, french, basque, ngerman, german, german-x-2009-06-1
+9, ngerman-x-2009-06-19, ibycus, monogreek, greek, ancientgreek, hungarian, san
+skrit, italian, latin, latvian, lithuanian, mongolian2a, mongolian, bokmal, nyn
+orsk, romanian, irish, coptic, serbian, turkish, welsh, esperanto, uppersorbian
+, estonian, indonesian, interlingua, icelandic, kurmanji, slovenian, polish, po
+rtuguese, spanish, galician, catalan, swedish, ukenglish, pinyin, loaded.
+(/usr/share/texmf-texlive/tex/latex/aastex/aastex.cls
+Document Class: aastex 2005/06/22 5.2/AAS markup document class
+Class aastex Info: Original \LaTeX2.09 style by Chris Biemesderfer (chris@seago
+at.com). Adapted to \LaTeXe by A. Ogawa (ogawa@teleport.com) on input line 83.
+(/usr/share/texmf-texlive/tex/latex/base/article.cls
+Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
+(/usr/share/texmf-texlive/tex/latex/base/size12.clo
+File: size12.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+(/usr/share/texmf-texlive/tex/latex/base/latexsym.sty
+Package: latexsym 1998/08/17 v2.2e Standard LaTeX package (lasy symbols)
+\symlasy=\mathgroup4
+LaTeX Font Info:    Overwriting symbol font `lasy' in version `bold'
+(Font)                  U/lasy/m/n --> U/lasy/b/n on input line 47.
+)
+(/usr/share/texmf-texlive/tex/latex/graphics/graphicx.sty
+Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/usr/share/texmf-texlive/tex/latex/graphics/keyval.sty
+Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
+\KV@toks@=\toks14
+)
+(/usr/share/texmf-texlive/tex/latex/graphics/graphics.sty
+Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
+
+(/usr/share/texmf-texlive/tex/latex/graphics/trig.sty
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+)
+(/etc/texmf/tex/latex/config/graphics.cfg
+File: graphics.cfg 2009/08/28 v1.8 graphics configuration of TeX Live
+)
+Package graphics Info: Driver file: pdftex.def on input line 91.
+
+(/usr/share/texmf-texlive/tex/latex/pdftex-def/pdftex.def
+File: pdftex.def 2010/03/12 v0.04p Graphics/color for pdfTeX
+\Gread@gobject=\count87
+))
+\Gin@req@height=\dimen103
+\Gin@req@width=\dimen104
+)
+(/usr/share/texmf-texlive/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2009/06/22 v3.00
+
+(/usr/share/texmf-texlive/tex/latex/amsfonts/amsfonts.sty
+Package: amsfonts 2009/06/22 v3.00 Basic AMSFonts support
+\@emptytoks=\toks15
+\symAMSa=\mathgroup5
+\symAMSb=\mathgroup6
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 96.
+))
+(/usr/share/texmf-texlive/tex/latex/natbib/natbib.sty
+Package: natbib 2009/07/16 8.31 (PWD, AO)
+\bibhang=\skip43
+\bibsep=\skip44
+LaTeX Info: Redefining \cite on input line 694.
+\c@NAT@ctr=\count88
+)
+(/usr/share/texmf-texlive/tex/latex/tools/verbatim.sty
+Package: verbatim 2003/08/22 v1.5q LaTeX2e package for verbatim enhancements
+\every@verbatim=\toks16
+\verbatim@line=\toks17
+\verbatim@in@stream=\read1
+)
+\@slugcmmntwidth=\dimen105
+\abstract@box=\box26
+\c@editornote=\count89
+\c@cureqno=\count90
+\tnotemarkskip=\skip45
+\@abovenoteskip=\dimen106
+\pt@box=\box27
+\pt@width=\dimen107
+\pt@line=\count91
+\pt@column=\count92
+\pt@nlines=\count93
+\pt@ncol=\count94
+\pt@page=\count95
+\tabbaseskip=\dimen108
+\pt@tmpcapwidth=\dimen109
+\spew@tblnotesbox=\box28
+\restof@tblnotesbox=\box29
+\noteheight=\dimen110
+\pt@tabnoteminht=\dimen111
+\firsttabskip=\dimen112
+\captionbox=\box30
+\pt@reduceline=\dimen113
+\extra@vspace=\dimen114
+\c@plate=\count96
+\my@footins=\box31
+)
+(./self_calibration_I.aux)
+\openout1 = `self_calibration_I.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+ (/usr/share/texmf/tex/context/base/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count97
+\scratchdimen=\dimen115
+\scratchbox=\box32
+\nofMPsegments=\count98
+\nofMParguments=\count99
+\everyMPshowfont=\toks18
+\MPscratchCnt=\count100
+\MPscratchDim=\dimen116
+\MPnumerator=\count101
+\everyMPtoPDFconversion=\toks19
+)
+AAS manuscript substyle, v5.2 <12 Dec 2003>.
+LaTeX Font Info:    Try loading font information for U+lasy on input line 70.
+(/usr/share/texmf-texlive/tex/latex/base/ulasy.fd
+File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
+)
+LaTeX Font Info:    Try loading font information for U+msa on input line 70.
+
+(/usr/share/texmf-texlive/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2009/06/22 v3.00 AMS symbols A
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 70.
+
+(/usr/share/texmf-texlive/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2009/06/22 v3.00 AMS symbols B
+) [1
+
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2
+
+] [3
+
+] [4] [5] [6] [7
+
+] [8] [9] [10]
+Table 2 has been set to width 556.13776pt
+[11] [12]
+Page 1 of table 4 has been set to width 419.97124pt with 24 lines per page 
+[13]
+Page 2 of table 4 has been set to width 427.58516pt with 24 lines per page 
+[14]
+Page 3 of table 4 has been set to width 425.86989pt with 24 lines per page 
+[15]
+Underfull \vbox (badness 10000) detected at line 668
+ []
+
+Table 4 has been set to width 421.76845pt
+[16] [17
+
+
+
+
+
+
+
+
+
+] (./self_calibration_I.aux) ) 
+Here is how much of TeX's memory you used:
+ 2222 strings out of 493848
+ 26143 string characters out of 1152823
+ 88741 words of memory out of 3000000
+ 5498 multiletter control sequences out of 15000+50000
+ 14425 words of font info for 58 fonts, out of 3000000 for 9000
+ 714 hyphenation exceptions out of 8191
+ 32i,12n,34p,1593b,311s stack positions out of 5000i,500n,10000p,200000b,50000s
+</usr/share/texmf-texlive/fonts/type1/public/amsf
+onts/cm/cmbx12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cme
+x10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi12.pfb></u
+sr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/tex
+mf-texlive/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texmf-texlive/f
+onts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texmf-texlive/fonts/type1/p
+ublic/amsfonts/cm/cmr10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfon
+ts/cm/cmr12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr6.p
+fb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/shar
+e/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf-texli
+ve/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-texlive/fonts/ty
+pe1/public/amsfonts/cm/cmsy8.pfb></usr/share/texmf-texlive/fonts/type1/public/a
+msfonts/cm/cmti10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/
+cmti12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmti8.pfb>
+Output written on self_calibration_I.pdf (17 pages, 222313 bytes).
+PDF statistics:
+ 121 PDF objects out of 1000 (max. 8388607)
+ 0 named destinations out of 1000 (max. 500000)
+ 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+
