@@ -33,7 +33,7 @@
 
 
 \begin{abstract}
-In this paper we show that, with due care given to the observing strategy, it will be possible to accurately constrain the relative photometric calibration of instruments used in large imaging surveys with the science data alone. We create end-to-end simulations of an imaging survey, which produces simulated datasets from mock observations of a synthetic sky -- with realistic measurement uncertainties and a complex instrument response -- according to defined survey strategies. We then use a self-calibration technique to recover the relative instrument response by fitting an model that best explains the survey dataset, based on the multiple observations of (non-varying) sources at different focal plane positions. By considering four simple survey strategies we find that, with a correct redundancy built into the survey strategy, it is possible to accurately constrain the relative photometric response of an imaging instrument, and therefore the relative calibration of the resulting dataset. The majority of the remaining post self-calibration errors are due to the limitations in the basis used to model the relative instrument response. We find that returning the same sources to very different focal plane positions is the key property of a survey strategy that is required for an accurate calibration. From the results of this study, we are able to highlight an important point for those considering the design of large scale imaging surveys: depart from a regular tiling of the sky and return the same sources to very different focal plane positions. 
+In this paper we show that, with due care given to the observing strategy, it will be possible to accurately constrain the relative photometric calibration of instruments used in large imaging surveys with their science data alone. We create end-to-end simulations of an imaging survey, which produces simulated datasets from mock observations of a synthetic sky according to a defined survey strategy. These catalog based simulations include realistic measurement uncertainties and a complex, position dependent instrument response. We then use a self-calibration technique to recover the relative instrument response by fitting an model that best explains the survey dataset, based on the multiple observations of (non-varying) sources at different focal plane positions. By considering four simple survey strategies we find that, with a correct redundancy built into the survey strategy, it is possible to accurately constrain the relative photometric response of an imaging instrument, and therefore the relative calibration of the resulting dataset. The majority of the remaining post self-calibration errors are due to the limitations in the basis used to model the relative instrument response. We find that returning the same sources to very different focal plane positions is the key property of a survey strategy that is required for an accurate calibration. From the results of this work, we are able to highlight an important point for those considering the design of large scale imaging surveys: depart from a regular tiling of the sky and return the same sources to very different focal plane positions.
 \end{abstract}
 
 \keywords{Relative Photometric Calibration: Imaging Survey: Euclid}
@@ -64,7 +64,19 @@ In this paper we show that, with due care given to the observing strategy, it wi
 %%  Otherwise, LaTeX will issue an error. 
 
 \section{Introduction}
-Astronomers tend to think in terms of taking science data and calibration data separately. The former is used for science and the latter is used to set instrument parameters like flat-field, bias and so-on. But typically far more photons are collected during science exposures; are these not incredibly constraining on the calibration themselves? Indeed, in the retrospective photometric calibration of the Sloan Digital Sky Survey data (XX ref) (SDSS) much more calibration information was obtained from the science data than the calibration data. But, of course, the SDSS imaging strategy had to be adjusted to make this calibration work: good redundancy is required in the data stream, and a redundancy of a very specific kind.
+Astronomers tend to think in terms of taking science data and calibration data separately. The former is used for science and the latter is used to constrain instrument parameters like the flat-field, the dark currents and so-on. But typically far more photons are collected during science exposures; are these not incredibly constraining on the calibration themselves? Indeed, in the retrospective photometric calibration of the Sloan Digital Sky Survey data (SDSS) \citep{pad08} much more calibration information was obtained from the science data than the calibration data. But, of course, the SDSS imaging strategy had to be adjusted to make this calibration work: good redundancy is required in the data stream, and a redundancy of a very specific kind.
+
+In this paper, we argue that the next generation of large surveys should have their observation strategies optimized from the very start with calibration in mind. 
+
+The question then just becomes: what makes a survey strategy good for the retrospective self-calibration of the dataset? In this paper, we focus on the relative photometric calibration of a typical imaging instrument only. For instrument parameters, we consider an instrument similar to the near-infrared photometric channel proposed for the European Space Agency's Euclid Dark Energy Mission. 
+
+and not just as an afterthought (as with SDSS), it will be possible to constrain calibration parameters to a high degree of accuracy. 
+
+turn to the planning of large imaging surveys, and not the retrospective 
+
+We feel, an
+
+Why survey mission is unique etc
 
 In this paper we summarize the end-to-end simulation used
 
@@ -72,192 +84,12 @@ In this paper we will show that this distinction between science and calibration
 
 We concentrate on catalog level simulations of different survey strategies and assess how well the resultant dataset can be used to constrain the relative response of the imaging instrument it came from. Although we do not model the imaging instrument on a pixel scale, we do include realistic measurement uncertainties within the simulations. 
 
-Although the results we present here are general to all large scale imaging surveys, in Section XX we focus on the proposed Euclid Deep Field Survey. This survey has been optimized, within other constraints, based on the results from this work. 
+\section{Discussion}
+In this paper, we have considered the optimization of survey strategies for calibrating the relative photometric response of an instrument, but we feel there are many more calibration parameters that can be constrained for this method. For example, the optical distortion of an instrument could also be constrained with such a method, although we concede that the properties of a survey strategy that makes them good for one calibration, may not be the same as that for another; ultimately a trade-off would need to be performed. 
 
 
 
-\section{Observations}
 
-%% In a manner similar to \objectname authors can provide links to dataset
-%% hosted at participating data centers via the \dataset{} command.  The
-%% second curly bracket argument is printed in the text while the first
-%% parentheses argument serves as the valid data set identifier.  Large
-%% lists of data set are best provided in a table (see Table 3 for an example).
-%% Valid data set identifiers should be obtained from the data center that
-%% is currently hosting the data.
-%%
-%% Note that AASTeX interprets everything between the curly braces in the 
-%% macro as regular text, so any special characters, e.g. "#" or "_," must be 
-%% preceded by a backslash. Otherwise, you will get a LaTeX error when you 
-%% compile your manuscript.  Special characters do not 
-%% need to be escaped in the optional, square-bracket argument.
-
-All our observations were short direct exposures with CCD's.  We also have
-a random {\it Chandra} data set \dataset{ADS/Sa.ASCA\#X/86008020} and a
-neat \dataset[ADS/Sa.HST#Y0Q70101T]{HST FOS spectrum} that readers can access
-via the links in the electronic edition.  Unfortunately this has nothing 
-whatsoever to do with this research.  At Lick Observatory we used a TI 500$\times$500 
-chip and a GEC 575$\times$385, on the 1-m Nickel reflector.  The only
-filter available at Lick was red.  At CTIO we used a GEC 575$\times$385, with
-$B, V,$ and $R$ filters, and an RCA 512$\times$320, with $U, B, V, R,$ and $I$
-filters, on the 1.5-m reflector. In the CTIO observations we tried to
-concentrate on the shortest practicable wavelengths; but faintness, reddening,
-and poor short-wavelength sensitivity often kept us from observing in $U$ or
-even in $B$. All four cameras had scales of the order of 0.4 arcsec/pixel, and
-our field sizes were around 3 arcmin.
-
-The CCD images are unfortunately not always suitable, for very poor
-clusters or for clusters with large cores.  Since the latter are easily
-studied by other means, we augmented our own CCD profiles by collecting
-from the literature a number of star-count profiles 
-\citep{kin68,pet76,har84,ort85}, as well as photoelectric profiles 
-\citep{kin66,kin75} and electronographic profiles \citep{kro84}.
-In a few cases we judged normality by eye estimates on one of the Sky
-Surveys.
-
-%% In this section, we use  the \subsection command to set off
-%% a subsection.  \footnote is used to insert a footnote to the text.
-
-%% Observe the use of the LaTeX \label
-%% command after the \subsection to give a symbolic KEY to the
-%% subsection for cross-referencing in a \ref command.
-%% You can use LaTeX's \ref and \label commands to keep track of
-%% cross-references to sections, equations, tables, and figures.
-%% That way, if you change the order of any elements, LaTeX will
-%% automatically renumber them.
-
-%% This section also includes several of the displayed math environments
-%% mentioned in the Author Guide.
-
-\section{Helicity Amplitudes}
-
-It has been realized that helicity amplitudes provide a convenient means
-for Feynman diagram\footnote{Footnotes can be inserted like this.}
-evaluations.  These amplitude-level techniques
-are particularly convenient for calculations involving many Feynman
-diagrams, where the usual trace techniques for the amplitude
-squared becomes unwieldy.  Our calculations use the helicity techniques
-developed by other authors \cite[]{hag86}; we briefly summarize below.
-
-\subsection{Formalism} \label{bozomath}
-
-%% The equation environment wil produce a numbered display equation.
-
-A tree-level amplitude in $e^+e^-$ collisions can be expressed in
-terms of fermion strings of the form
-\begin{equation}
-\bar v(p_2,\sigma_2)P_{-\tau}\hat a_1\hat a_2\cdots
-\hat a_nu(p_1,\sigma_1) ,
-\end{equation}
-where $p$ and $\sigma$ label the initial $e^{\pm}$ four-momenta
-and helicities $(\sigma = \pm 1)$, $\hat a_i=a^\mu_i\gamma_\nu$
-and $P_\tau=\frac{1}{2}(1+\tau\gamma_5)$ is a chirality projection
-operator $(\tau = \pm1)$.  The $a^\mu_i$ may be formed from particle
-four-momenta, gauge-boson polarization vectors or fermion strings with
-an uncontracted Lorentz index associated with final-state fermions.
-
-%% The \notetoeditor{TEXT} command allows the author to communicate
-%% information to the copy editor.  This information will appear as a
-%% footnote on the printed copy for the manuscript style file.  Nothing will
-%% appear on the printed copy if the preprint or
-%% preprint2 style files are used.
-
-%% The eqnarray environment produces multi-line display math. The end of
-%% each line is marked with a \\. Lines will be numbered unless the \\
-%% is preceded by a \nonumber command.
-%% Alignment points are marked by ampersands (&). There should be two
-%% ampersands (&) per line.
-
-In the chiral \notetoeditor{Figures 1 and 2 should appear side-by-side in
-print} representation the $\gamma$ matrices are expressed
-in terms of $2\times 2$ Pauli matrices $\sigma$ and the unit matrix 1 as
-\begin{eqnarray}
-\gamma^\mu  & = &
- \left(
-\begin{array}{cc}
-0 & \sigma^\mu_+ \\
-\sigma^\mu_- & 0
-\end{array}     \right) ,
- \gamma^5= \left(
-\begin{array}{cc}
--1 &   0\\
-0 &   1
-\end{array}     \right)  , \nonumber \\
-\sigma^\mu_{\pm}  & = &   ({\bf 1} ,\pm \sigma) , \nonumber
-\end{eqnarray}
-giving
-\begin{equation}
-\hat a= \left(
-\begin{array}{cc}
-0 & (\hat a)_+\\
-(\hat a)_- & 0
-\end{array}\right), (\hat a)_\pm=a_\mu\sigma^\mu_\pm ,
-\end{equation}
-The spinors are expressed in terms of two-component Weyl spinors as
-\begin{equation}
-u=\left(
-\begin{array}{c}
-(u)_-\\
-(u)_+
-\end{array}\right), v={\bf (}\vdag_+{\bf ,}   \vdag_-{\bf )} .
-\end{equation}
-
-%% Putting eqnarrays or equations inside the mathletters environment groups
-%% the enclosed equations by letter. For instance, the eqnarray below, instead
-%% of being numbered, say, (4) and (5), would be numbered (4a) and (4b).
-%% LaTeX the paper and look at the output to see the results.
-
-The Weyl spinors are given in terms of helicity eigenstates
-$\chi_\lambda(p)$ with $\lambda=\pm1$ by
-\begin{mathletters}
-\begin{eqnarray}
-u(p,\lambda)_\pm & = & (E\pm\lambda|{\bf p}|)^{1/2}\chi_\lambda(p) , \\
-v(p,\lambda)_\pm & = & \pm\lambda(E\mp\lambda|{\bf p}|)^{1/2}\chi
-_{-\lambda}(p)
-\end{eqnarray}
-\end{mathletters}
-
-%% This section contains more display math examples, including unnumbered
-%% equations (displaymath environment). The last paragraph includes some
-%% examples of in-line math featuring a couple of the AASTeX symbol macros.
-
-\section{Floating material and so forth}
-
-%% The displaymath environment will produce the same sort of equation as
-%% the equation environment, except that the equation will not be numbered
-%% by LaTeX.
-
-Consider a task that computes profile parameters for a modified
-Lorentzian of the form
-\begin{equation}
-I = \frac{1}{1 + d_{1}^{P (1 + d_{2} )}}
-\end{equation}
-where
-\begin{displaymath}
-d_{1} = \sqrt{ \left( \begin{array}{c} \frac{x_{1}}{R_{maj}}
-\end{array} \right) ^{2} +
-\left( \begin{array}{c} \frac{y_{1}}{R_{min}} \end{array} \right) ^{2} }
-\end{displaymath}
-\begin{displaymath}
-d_{2} = \sqrt{ \left( \begin{array}{c} \frac{x_{1}}{P R_{maj}}
-\end{array} \right) ^{2} +
-\left( \begin{array}{c} \case{y_{1}}{P R_{min}} \end{array} \right) ^{2} }
-\end{displaymath}
-\begin{displaymath}
-x_{1} = (x - x_{0}) \cos \Theta + (y - y_{0}) \sin \Theta
-\end{displaymath}
-\begin{displaymath}
-y_{1} = -(x - x_{0}) \sin \Theta + (y - y_{0}) \cos \Theta
-\end{displaymath}
-
-In these expressions $x_{0}$,$y_{0}$ is the star center, and $\Theta$ is the
-angle with the $x$ axis.  Results of this task are shown in table~\ref{tbl-1}.
-It is not clear how these sorts of analyses may affect determination of
- $M_{\sun}$, but the assumption is that the alternate results
-should be less than 90\degr\ out of phase with previous values.
-We have no observations of \ion{Ca}{2}.
-Roughly \slantfrac{4}{5} of the electronically submitted abstracts
-for AAS meetings are error-free.
 
 %% If you wish to include an acknowledgments section in your paper,
 %% separate it off from the body of the text using the \acknowledgments
@@ -270,13 +102,8 @@ for AAS meetings are error-free.
 %% text to be printed in the second.
 
 \acknowledgments
-
-We are grateful to V. Barger, T. Han, and R. J. N. Phillips for
-doing the math in section~\ref{bozomath}.
-More information on the AASTeX macros package is available \\ at
-\url{http://www.aas.org/publications/aastex}.
-For technical support, please write to
-\email{aastex-help@aas.org}.
+\section{Acknowledgments}
+We are grateful to 
 
 %% To help institutions obtain information on the effectiveness of their
 %% telescopes, the AAS Journals has created a group of keywords for telescope
@@ -293,8 +120,6 @@ For technical support, please write to
 %% copy editing.  Individual instruments or configurations can be provided 
 %% in parentheses, after the keyword, but they will not be verified.
 
-{\it Facilities:} \facility{Nickel}, \facility{HST (STIS)}, \facility{CXO (ASIS)}.
-
 %% Appendix material should be preceded with a single \appendix command.
 %% There should be a \section command for each appendix. Mark appendix
 %% subsections with the same markup you use in the main body of the paper.
@@ -304,36 +129,6 @@ For technical support, please write to
 %% command and will number appendix equations (A1), (A2), etc.
 
 \appendix
-
-\section{Appendix material}
-
-Consider once again a task that computes profile parameters for a modified
-Lorentzian of the form
-\begin{equation}
-I = \frac{1}{1 + d_{1}^{P (1 + d_{2} )}}
-\end{equation}
-where
-\begin{mathletters}
-\begin{displaymath}
-d_{1} = \frac{3}{4} \sqrt{ \left( \begin{array}{c} \frac{x_{1}}{R_{maj}}
-\end{array} \right) ^{2} +
-\left( \begin{array}{c} \frac{y_{1}}{R_{min}} \end{array} \right) ^{2} }
-\end{displaymath}
-\begin{equation}
-d_{2} = \case{3}{4} \sqrt{ \left( \begin{array}{c} \frac{x_{1}}{P R_{maj}}
-\end{array} \right) ^{2} +
-\left( \begin{array}{c} \case{y_{1}}{P R_{min}} \end{array} \right) ^{2} }
-\end{equation}
-\begin{eqnarray}
-x_{1} & = & (x - x_{0}) \cos \Theta + (y - y_{0}) \sin \Theta \\
-y_{1} & = & -(x - x_{0}) \sin \Theta + (y - y_{0}) \cos \Theta
-\end{eqnarray}
-\end{mathletters}
-
-For completeness, here is one last equation.
-\begin{equation}
-e = mc^2
-\end{equation}
 
 %% The reference list follows the main body and any appendices.
 %% Use LaTeX's thebibliography environment to mark up your reference list.
@@ -361,41 +156,11 @@ e = mc^2
 %% See the natbib documentation for more details and options.
 
 \begin{thebibliography}{}
-\bibitem[Auri\`ere(1982)]{aur82} Auri\`ere, M.  1982, \aap,
-    109, 301
-\bibitem[Canizares et al.(1978)]{can78} Canizares, C. R.,
-    Grindlay, J. E., Hiltner, W. A., Liller, W., \&
-    McClintock, J. E.  1978, \apj, 224, 39
-\bibitem[Djorgovski \& King(1984)]{djo84} Djorgovski, S.,
-    \& King, I. R.  1984, \apjl, 277, L49
-\bibitem[Hagiwara \& Zeppenfeld(1986)]{hag86} Hagiwara, K., \&
-    Zeppenfeld, D.  1986, Nucl.Phys., 274, 1
-\bibitem[Harris \& van den Bergh(1984)]{har84} Harris, W. E.,
-    \& van den Bergh, S.  1984, \aj, 89, 1816
-\bibitem[H\`enon(1961)]{hen61} H\'enon, M.  1961, Ann.d'Ap., 24, 369
-\bibitem[Heiles \& Troland(2003)]{heiles03} Heiles, C. \& Troland, T. H., 2003, \apjs, preprint doi:10.1086/381753
-\bibitem[Kim, Ostricker, \& Stone(2003)]{kim03} Kim, W.-T.,  Ostriker, E., \& Stone, J. M., 2003, \apj, 599, 1157
-\bibitem[King(1966)]{kin66}  King, I. R.  1966, \aj, 71, 276
-\bibitem[King(1975)]{kin75}  King, I. R.  1975, Dynamics of
-    Stellar Systems, A. Hayli, Dordrecht: Reidel, 1975, 99
-\bibitem[King et al.(1968)]{kin68}  King, I. R., Hedemann, E.,
-    Hodge, S. M., \& White, R. E.  1968, \aj, 73, 456
-\bibitem[Kron et al.(1984)]{kro84} Kron, G. E., Hewitt, A. V.,
-    \& Wasserman, L. H.  1984, \pasp, 96, 198
-\bibitem[Lynden-Bell \& Wood(1968)]{lyn68} Lynden-Bell, D.,
-    \& Wood, R.  1968, \mnras, 138, 495
-\bibitem[Newell \& O'Neil(1978)]{new78} Newell, E. B.,
-    \& O'Neil, E. J.  1978, \apjs, 37, 27
-\bibitem[Ortolani et al.(1985)]{ort85} Ortolani, S., Rosino, L.,
-    \& Sandage, A.  1985, \aj, 90, 473
-\bibitem[Peterson(1976)]{pet76} Peterson, C. J.  1976, \aj, 81, 617
-\bibitem[Rudnick et al.(2003)]{rudnick03} Rudnick, G. et al., 2003, \apj, 599, 847
-\bibitem[Spitzer(1985)]{spi85} Spitzer, L.  1985, Dynamics of
-    Star Clusters, J. Goodman \& P. Hut, Dordrecht: Reidel, 109
-\bibitem[Treu et al.(2003)]{treu03} Treu, T. et al., 2003, \apj, 591, 53
+\bibitem[Padmanabhan et al.(2008)]{pad08} {Padmanabhan, N., Schlegel, D.~J., Finkbeiner, D.~P., Barentine, J.~C., Blanton, M.~R., Brewington, H.~J., Gunn, J.~E., Harvanek, M., Hogg, D.~W., Ivezi{\'c}, {\v Z}., Johnston, D., Kent, S.~M., Kleinman, S.~J., Knapp, G.~R., Krzesinski, J., Long, D., Neilsen, Jr., E.~H., Nitta, A., Loomis, C., Lupton, R.~H., Roweis, S., Snedden, S.~A., Strauss, M.~A., \& Tucker, D.~L. 2008, \apj, 674, 1217}
 \end{thebibliography}
-
 \clearpage
+
+
 
 %% Use the figure environment and \plotone or \plottwo to include
 %% figures and captions in your electronic submission.
@@ -420,38 +185,16 @@ e = mc^2
 %% has been written to indicate that additional figure parts will be
 %% available in the electronic journal.
 
-\begin{figure}
-\epsscale{.80}
-%\plotone{f1.eps}
-\caption{Derived spectra for 3C138 \citep[see][]{heiles03}. Plots for all sources are available
-in the electronic edition of {\it The Astrophysical Journal}.\label{fig1}}
-\end{figure}
-
-\clearpage
-
 %% Here we use \plottwo to present two versions of the same figure,
 %% one in black and white for print the other in RGB color
 %% for online presentation. Note that the caption indicates
 %% that a color version of the figure will be available online.
 %%
 
-\begin{figure}
-%\plottwo{f2.eps}{f2_color.eps}
-\caption{A panel taken from Figure 2 of \citet{rudnick03}. 
-See the electronic edition of the Journal for a color version 
-of this figure.\label{fig2}}
-\end{figure}
 
 %% This figure uses \includegraphics to scale and rotate the still frame
 %% for an mpeg animation.
 
-\begin{figure}
-%\includegraphics[angle=90,scale=.50]{f3.eps}
-\caption{Animation still frame taken from \citet{kim03}.
-This figure is also available as an mpeg
-animation in the electronic edition of the
-{\it Astrophysical Journal}.}
-\end{figure}
 
 %% If you are not including electonic art with your submission, you may
 %% mark up your captions using the \figcaption command. See the
@@ -534,32 +277,6 @@ with the deluxetable environment}
 
 \clearpage
 
-\begin{table}
-\begin{center}
-\caption{More terribly relevant tabular information.\label{tbl-2}}
-\begin{tabular}{crrrrrrrrrrr}
-\tableline\tableline
-Star & Height & $d_{x}$ & $d_{y}$ & $n$ & $\chi^2$ & $R_{maj}$ & $R_{min}$ &
-\multicolumn{1}{c}{$P$\tablenotemark{a}} & $P R_{maj}$ & $P R_{min}$ &
-\multicolumn{1}{c}{$\Theta$\tablenotemark{b}} \\
-\tableline
-1 &33472.5 &-0.1 &0.4  &53 &27.4 &2.065  &1.940 &3.900 &68.3 &116.2 &-27.639\\
-2 &27802.4 &-0.3 &-0.2 &60 &3.7  &1.628  &1.510 &2.156 &6.8  &7.5 &-26.764\\
-3 &29210.6 &0.9  &0.3  &60 &3.4  &1.622  &1.551 &2.159 &6.7  &7.3 &-40.272\\
-4 &32733.8 &-1.2\tablenotemark{c} &-0.5 &41 &54.8 &2.282  &2.156 &4.313 &117.4 &78.2 &-35.847\\
-5 & 9607.4 &-0.4 &-0.4 &60 &1.4  &1.669\tablenotemark{c}  &1.574 &2.343 &8.0  &8.9 &-33.417\\
-6 &31638.6 &1.6  &0.1  &39 &315.2 & 3.433 &3.075 &7.488 &92.1 &25.3 &-12.052\\
-\tableline
-\end{tabular}
-%% Any table notes must follow the \end{tabular} command.
-\tablenotetext{a}{Sample footnote for table~\ref{tbl-2} that was
-generated with the \LaTeX\ table environment}
-\tablenotetext{b}{Yet another sample footnote for table~\ref{tbl-2}}
-\tablenotetext{c}{Another sample footnote for table~\ref{tbl-2}}
-\tablecomments{We can also attach a long-ish paragraph of explanatory
-material to a table.}
-\end{center}
-\end{table}
 
 %% If the table is more than one page long, the width of the table can vary
 %% from page to page when the default \tablewidth is used, as below.  The
