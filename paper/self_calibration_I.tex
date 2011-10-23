@@ -1,6 +1,14 @@
 \documentclass[manuscript]{aastex}
 \newcommand{\vdag}{(v)^\dagger}
 
+\usepackage{mathtools}
+\usepackage{upgreek}
+
+\newcommand{\true}{\text{true}}
+\newcommand{\fit}{\text{fit}}
+\newcommand{\basis}{\text{best}}
+\newcommand{\dd}{\text{d}}
+
 \shorttitle{Optimizing Large Scale Imaging Surveys for Relative Photometric Calibration}
 \shortauthors{Holmes et al.}
 
@@ -64,25 +72,36 @@ In this paper we show that, with due care given to the observing strategy, it wi
 %%  Otherwise, LaTeX will issue an error. 
 
 \section{Introduction}
-Astronomers tend to think in terms of taking science data and calibration data separately. The former is used for science and the latter is used to constrain instrument parameters like the flat-field, the dark currents and so-on. But typically far more photons are collected during science exposures; are these not incredibly constraining on the calibration themselves? Indeed, in the retrospective photometric calibration of the Sloan Digital Sky Survey data (SDSS) \citep{pad08} much more calibration information was obtained from the science data than the calibration data. But, of course, the SDSS imaging strategy had to be adjusted to make this calibration work: good redundancy is required in the data stream, and a redundancy of a very specific kind.
+Astronomers tend to think in terms of taking science data and calibration data separately. The former is used for science and the latter is used to constrain instrument parameters like the flat-field, the dark currents and so-on. But typically far more photons are collected during science exposures; are these not incredibly constraining on the calibration themselves? Indeed, in the retrospective photometric calibration of the Sloan Digital Sky Survey data (SDSS) much more calibration information was obtained from the science data than the calibration data \citep{pad08}. But, of course, the SDSS imaging strategy had to be adjusted to make this calibration work: good redundancy is required in the data stream, and a redundancy of a very specific kind.
 
-In this paper, we argue that the next generation of large surveys should have their observation strategies optimized from the very start with calibration in mind. 
+In this paper, we argue that the next generation of large surveys should have their observation strategies optimized from the very start with this ``self-calibration'' in mind. We focus here on the relative photometric calibration of a typical imaging instrument only, although we also suspect that similar techniques could be used to constrain many other calibration parameters. This technique utilizes the multiple measurements of (non-varying) sources at different focal plane positions and at different times within the survey to constrain the relative instrument response by requiring that they yield the same count values. Through end-to-end -- catalog level -- survey simulations\footnote{All of the code used in this work is publicly available at XX.}, we aim to identify the important properties of survey strategies that makes them advantageous for this kind of self-calibration. 
 
-The question then just becomes: what makes a survey strategy good for the retrospective self-calibration of the dataset? In this paper, we focus on the relative photometric calibration of a typical imaging instrument only. For instrument parameters, we consider an instrument similar to the near-infrared photometric channel proposed for the European Space Agency's Euclid Dark Energy Mission. 
+These simulations include a complex, position dependent instrument response; through mock observations of a synthetic sky, according to a defined survey strategy, we construct a realistic survey dataset. We then fit a (different) instrument response model that best describes this dataset. By comparing the \textit{fitted} instrument response to the \textit{true} instrument response we are able to assess the performance of the self-calibration procedure with different survey strategies. There is a degeneracy in this problem: the self-calibration procedure is only able to fit for a \textit{relative} instrument response. We have no way of know, for example, if all the sources are uniformly fainter, or if the instrument sensitivity is uniformly lower. 
 
-and not just as an afterthought (as with SDSS), it will be possible to constrain calibration parameters to a high degree of accuracy. 
+In Section \ref{sec:survey} we introduce the simulation chain constructed to produce the realistic survey datasets. Section \ref{sec:self_cal} goes onto to detail the self-calibration procedure. In Section \ref{sec:simple} we focus on four simple survey strategies, which allow us to draw conclusions on the performance of the self-calibration procedure with different survey properties. We do not produced pixelated images; instead we concentrate on catalog level simulations with realistic measurement uncertainties. Complex effects are included in the simulations that are not  precisely modeled at the analysis stage, in order to simulate the effects of unknown systematic errors within the dataset.
 
-turn to the planning of large imaging surveys, and not the retrospective 
+\section{Survey Dataset Simulations}
+\label{sec:survey}
+We have constructed an end-to-end simulation chain that produces a realistic imaging dataset from a specified survey strategy. Simulation parameters are kept intentionally flexible, so that the sensitivity of the self-calibration procedure to different parameters can be investigated. The simulations are split into a number of steps. First, a synthetic sky is generated based on the specified simulation parameters (density of sources, magnitude ranges). With a given pointing, single mock observations are performed on this sky, again here with tunable simulation parameters, such as the instrument response model and the the noise model. The final step is the build up of the survey wide dataset from multiple single observations taken according to the prescribed survey strategy. In this section, we detail the assumptions and methods used in each of these steps. 
 
-We feel, an
+\subsection{The Synthetic Sky}
+We generate a representative synthetic sky based on realistic object densities in the AB magnitude range $m_\text{min} = 17$ to $m_\text{max} = 22$~mag$_\text{AB}$, with these limits chosen to be consistent with the saturation and $10\upsigma{}$ limits of deep, space-based, near-infrared survey. Sources are generated with random coordinates (uniformly distributed within the sky region being investigated) and with random magnitudes $m$ distributed according to
+\begin{eqnarray}
+\log_{10} \frac{\dd N}{\dd m \, \dd \Omega} = a + b\,m + c\,m^2 \label{eqn:power_law} \quad , 
+\end{eqnarray}
+where $\dfrac{\dd N}{\dd m \, \dd  \Omega}$  is the density of sources $N$ per unit magnitude $m$ and per unit solid angle $\Omega$, and $a$, $b$ and $c$ are model parameters. Even though our simulations make no distinction between galaxies and stars, the values of the parameters are found from fitting the Y-band galaxy populations reported in Windhorst et al. (2011) \cite{source_densities} only. These parameters were $a = -13.05$, $b = 1.25$ and $c = -0.02$. We intentionally omit the stellar population, so that the conclusions drawn from these simulations are independent of the final position of the survey area on the sky. The source magnitudes $m$ are related to the source fluxes $s$ simply by: $m = 22.5 - 2.5\log_{10}(s)$, where the 22.5 puts the fluxes in units of nanomaggies (nmgy).
 
-Why survey mission is unique etc
+\subsection{A Single Exposure}
+FoV
 
-In this paper we summarize the end-to-end simulation used
+\subsection{The Complete Survey}
 
-In this paper we will show that this distinction between science and calibration data no longer applies in the large survey mission, both ground and space based, currently being planned and developed. We show that, as long as the survey strategy is designed appropriately, the calibration information within the science data can be used to accurately constrain the relative photometric response of an imaging instrument. This retrospective, cross-calibration of the dataset is a very powerful calibration method; future large scale imaging surveys should be optimized with this in mind. 
 
-We concentrate on catalog level simulations of different survey strategies and assess how well the resultant dataset can be used to constrain the relative response of the imaging instrument it came from. Although we do not model the imaging instrument on a pixel scale, we do include realistic measurement uncertainties within the simulations. 
+\section{The Self-Calibration Technique}
+\label{sec:self_cal}
+
+\section{The Simple Survey Strategies}
+\label{sec:simple}
 
 \section{Discussion}
 In this paper, we have considered the optimization of survey strategies for calibrating the relative photometric response of an instrument, but we feel there are many more calibration parameters that can be constrained for this method. For example, the optical distortion of an instrument could also be constrained with such a method, although we concede that the properties of a survey strategy that makes them good for one calibration, may not be the same as that for another; ultimately a trade-off would need to be performed. 
