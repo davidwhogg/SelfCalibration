@@ -21,8 +21,7 @@
 %% one line. However, you may use \\ to force a line break if
 %% you desire.
 
-\title{Optimizing Large Scale Imaging Surveys for Relative Photometric Calibration, \\
-    the Euclid Dark Energy Mission as an Example}
+\title{Optimizing Large Scale Imaging Surveys for Relative Photometric Calibration}
 
 %% Use \author, \affil, and the \and command to format
 %% author and affiliation information.
@@ -89,24 +88,149 @@ We generate a representative synthetic sky based on realistic object densities i
 \begin{eqnarray}
 \log_{10} \frac{\dd N}{\dd m \, \dd \Omega} = a + b\,m + c\,m^2 \label{eqn:power_law} \quad , 
 \end{eqnarray}
-where $\dfrac{\dd N}{\dd m \, \dd  \Omega}$  is the density of sources $N$ per unit magnitude $m$ and per unit solid angle $\Omega$, and $a$, $b$ and $c$ are model parameters. Even though our simulations make no distinction between galaxies and stars, the values of the parameters are found from fitting the Y-band galaxy populations reported in Windhorst et al. (2011) \cite{source_densities} only. These parameters were $a = -13.05$, $b = 1.25$ and $c = -0.02$. We intentionally omit the stellar population, so that the conclusions drawn from these simulations are independent of the final position of the survey area on the sky. The source magnitudes $m$ are related to the source fluxes $s$ simply by: $m = 22.5 - 2.5\log_{10}(s)$, where the 22.5 puts the fluxes in units of nanomaggies (nmgy).
+where $\dfrac{\dd N}{\dd m \, \dd  \Omega}$  is the density of sources $N$ per unit magnitude $m$ and per unit solid angle $\Omega$, and $a$, $b$ and $c$ are model parameters. Even though our simulations make no distinction between galaxies and stars, the values of the parameters are found from fitting the Y-band galaxy populations reported in Windhorst et al. (2011) \citep{win11} only. These parameters were $a = -13.05$, $b = 1.25$ and $c = -0.02$. We intentionally omit the stellar population, so that the conclusions drawn from these simulations are independent of the final position of the survey area on the sky. The source magnitudes $m$ are related to the source fluxes $s$ simply by: $m = 22.5 - 2.5\log_{10}(s)$, where the 22.5 puts the fluxes in units of nanomaggies (nmgy). Due to computational reasons, we only select the brightest sources within the survey area, up to a source density $d$, for the self-calibration procedure.
 
 \subsection{A Single Exposure}
-FoV
+\label{sec:single_exposure}
+With a camera pointing $(\alpha, \beta)$ and camera orientation $\theta$ this synthetic sky is transformed into focal plane coordinates and all of the sources falling within the instrument's field-of-view are found. In our simulations, we use a large instrument field-of-view of $0.76~ \text{deg} \times 0.72~\text{deg}$; a size consistent with the next generation of large survey imagers. An example of a single pointing exposure is shown in Figure \ref{fig:single_image}.
+
+\subsubsection{Measured Count Rates}
+We do not consider pixelated images in these simulations; instead the true source fluxes $s_\true$ are converted into measured count rates $c$ with an complex, position dependent instrument response model $f_\true$ and a measurement noise model. For a measurement $i$ the count rate $c_i$ recorded from a source $k$ depends on the \textit{true} instrument response $f_{\true}(\vec{x_i} | \vec{q}_\true)$, which is a function of focal plane position $\vec{x_i}$, and the source's true flux $s_{k,\true}$ 
+\begin{eqnarray*}
+c_i = f_{\true}(\vec{x_i} | \vec{q}_\true) \, s_{k, \true} + e_{i} \quad ,
+\end{eqnarray*}
+where $\vec{q}_\true$ are the parameters defining the \textit{true} instrument response, and $e_i$ is a noise contribution drawn from the Normal Distribution $N(e|0,{\sigma_\true}^2)$. 
+
+\subsubsection{Noise Model}
+\label{sec:noise}
+To construct the noise model, the simulated exposures are assumed to be background limited and that, for systematic reasons, there is an upper limit on the signal-to-noise ratio of 500 for bright sources. The noise model is complicated further by applying an extra term $\epsilon_i$ to the count rates' uncertainty variance, which we intentionally do not take into account in the analysis in order to simulate systematic problems with the instrument noise model. The \textit{true} noise model is therefore
+\begin{eqnarray}
+\sigma_{i, \true}^{2} = (1 + \epsilon_i) \, \alpha^{2} + \eta^{2}\, [ f_\true(\vec{x_i} | \vec{q}_\true) \, s_{k, \true} ]^2 \quad , \label{eqn:noise}
+\end{eqnarray}
+where $\alpha$ and $\eta$ are both constants and $\epsilon_i$ is a random number, in the range [0.0, $\epsilon_{max}$), generated for each measurement $i$. The $m = 22$ mag 10$\upsigma$ detection limit introduced previously and the 500 limit on the signal-to-noise ratio are used to set $\alpha = 0.1585$ and $\eta = 0.0017$. The $\epsilon_i$ contribution is not taken into account in the analysis stage and therefore the uncertainty variances on the count rates are assumed to be
+\begin{eqnarray*}
+\sigma_{{i}}^{2} = \alpha^{2} + \eta^{2} \, c^{2}_i \quad 
+\end{eqnarray*}
+during the analysis stage. 
+
+\subsubsection{The True Instrument Response Model}
+\label{sec:instrument_response_model}
+We construct a complex, position independent instrument response model $f_\true(\vec{x_i} | \vec{q}_{\true})$ from a superposition of large and small-scale variations:
+\begin{eqnarray*}
+f_\true(\vec{x_i} | \vec{q}_{\true, 1 \ldots 260}) = f_\text{large}(\vec{x_i} | \vec{q}_{\true, 1 \ldots 6}) + f_\text{small}(\vec{x_i} | \vec{q}_{\true, 7 \ldots 260}) \quad ,
+\end{eqnarray*}
+where $\vec{x_i} = (x_i, y_i)$ is the focal plane position that the $k$th source falls at during the $i^\text{th}$ measurement and $\vec{q}_\true$ are the parameters defining the instrument response model. The large-scale instrument response $f_\text{large}(\vec{x_i} | \vec{q}_{\true, 1 \ldots 6})$ is modeled as a second order polynomial:
+\begin{eqnarray*}
+f_\text{large}(\vec{x_i} | \vec{q}_{\true, 1 \ldots 6}) = q_{\true, 1} + q_{\true, 2} \, x_i + q_{\true, 3} \, y_i + q_{\true, 4} \, x_i^2 + q_{\true, 5} \, x_i \, y_i  + q_{\true, 6} \, y_i^2  \quad .
+\end{eqnarray*}
+The small-scale instrument response, which is constructed from sine and cosine contributions, is superimposed on this large-scale instrument response. The small-scale instrument response $f_\text{small}(\vec{x_i} | \vec{q}_{\true, 7 \ldots 260})$ is modeled as
+\begin{eqnarray*}
+f_\text{small}(\vec{x_i} | \vec{q}_{\true, 7\ldots 260})  & = &  \sum_{a=0}^6 \sum_{b=0}^a \left[ q_{\true, 7+4b} \cos (k_x \, x_i) + q_{\true, 8+4b} \sin (k_x \, x_i) \right] \\
+& & \qquad \qquad \times \left[ q_{\true, 9+4b} \cos (k_y \, y_i) + q_{\true, 10+4b} \sin (k_y \, y_i) \right] \quad ,
+\end{eqnarray*}
+where
+\begin{eqnarray*}
+k_x & = & \dfrac{a \, \pi}{X} \quad ,\\
+k_y & = & \dfrac{b \, \pi}{Y} \quad ,\\
+\end{eqnarray*}
+with the physical focal plane dimensions $X$ and $Y$. In total, the instrument response model is parameterized with 260 parameters; an example can be seen in Figure \ref{fig:single_image}(right). It is this instrument response that we try and recover with the self-calibration procedure. Our final assumption in these simulations is that the instrument response is temporally stable. 
 
 \subsection{The Complete Survey}
+In this work we are interested in simulating complete surveys, in order to identify the crucial characteristics of survey strategies that allows for the relative instrument response model to be accurately constrained from the resulting dataset. We therefore apply the single exposure procedure introduced in the previous section for each pointing specified in a defined survey strategy. The resultant source measurements are collaged into a survey wide dataset. 
 
-
-\section{The Self-Calibration Technique}
+\section{Self-Calibrating the Survey Wide Dataset}
 \label{sec:self_cal}
+We self-calibrate the dataset generated in the survey simulations to recover the true instrument response applied and the true source fluxes. This self-calibration procedure has been successfully applied to ground based imaging surveys, such as the Sloan Digital Sky Survey \citep{pad08}\footnote{Here this procedure is dubbed ``uber-calibration.''}. This iterative procedure comprises two steps: (1) a refinement of the source flux estimates based on the latest instrument response model and (2) a refinement of the instrument response model based on the updated source flux estimates. These steps are iterated until the system converges, or until it is clear that the system will not converge. There is a degeneracy in the problem, as both the true instrument response and the true source magnitudes are unknown. It is therefore only possible to calibrate the \textit{relative} instrument response and the \textit{relative} source fluxes. It is not possible to know, for example, if the sources are all fainter or if the instrument response is uniformly lower. This degeneracy can be broken through observations of standard absolute sources.
+
+\subsection{Fitted Measurement Model}
+To complicate the simulations, we use the self-calibration procedure to fit a model that is \textit{incomplete} in two ways. Firstly, the \textit{fitted} instrument response is modeled as an eighth order polynomial, and not the second order polynomial superimposed with sine and cosine contributions used to model the \textit{true} instrument response. Secondly, the assumed measurement uncertainty variances do not include the additional random measurement error $\epsilon_{i}$ introduced in Subsection \ref{sec:noise}. The incomplete measurement model is
+\begin{eqnarray*}
+c_i = f(\vec{x_i} | \vec{q}) \, s_{k} + e_{i} \quad ,
+\end{eqnarray*}
+where $c_i$ is the recorded count rate, $f(\vec{x_i} | \vec{q})$ is the fitted instrument response model at a focal plane position $\vec{x}_i$, $\vec{q}$ is a vector parameterizing the eighth order polynomial instrument response model, $s_k$ is the model source flux estimate and the error $e_i$ is drawn from the Normal Distribution $N(e|0,{\sigma_i}^2)$, such that
+\begin{eqnarray*}
+\sigma_{{i}}^{2} = \alpha^{2} + \eta^{2}\, c^{2}_i \quad ,
+\end{eqnarray*} 
+where $\alpha$ and $\eta$ are the parameters set by the instruments $10\upsigma$ and saturation limits. The $\epsilon_i$ error contribution is intentionally not included in order to simulate systematic problems with the instrument noise model. 
+
+\subsection{Step 1: Source Flux Refinement}
+The sources are considered individually in the first step of the self-calibration procedure; their flux estimates are refined based on the latest fitted instrument response parameters $\vec{q}$. An error function $\chi^2_{k}$ for all the measurements $i$ of a source $k$ ($i \in \mathcal{O}(k)$) is constructed:
+\begin{eqnarray*}
+\chi^2_{k} = \sum_{i \in \mathcal{O}(k)} \frac{(c_i-f_{i}(\vec{x_i} | \vec{q}) \, s_{k})^2}{{\sigma_i}^2} \quad ,
+\end{eqnarray*}
+where $c_i$ are the measured count rates, $f(\vec{x_i} | \vec{q})$ is the fitted instrument response model at a focal plane position $\vec{x}_i$ and $\sigma_i$ is the assumed noise model. A new estimate of the model source flux $s'_{k}$ is then found by minimizing the error function with respect to the old model source flux $s_{k}$:
+\begin{eqnarray*}
+\frac{d\chi^2_{k}}{d s_{k}} = \sum_{i \in \mathcal{O}(k)} \frac{-2 f_{i}(\vec{x_i} | \vec{q}) \, (c_i-f_{i}(\vec{x_i} | \vec{q}) \, s'_{k})}{{\sigma_i}^2} = 0 \quad ,
+\end{eqnarray*}
+\begin{eqnarray*}
+s'_{k} \leftarrow \left[{\sum_{i \in \mathcal{O}(k)}  \frac{f_{i}(\vec{x_i} | \vec{q})^2}{{\sigma_i}^2}} \right]^{-1}  \left[ {\sum_{i \in \mathcal{O}(k)} \frac{f_{i}(\vec{x_i} | \vec{q}) \, c_i}{{\sigma_i}^2}} \right] \quad .
+\end{eqnarray*}
+The standard uncertainty variance on the new source flux estimate $s'_{k}$ is given by
+\begin{eqnarray*}
+\sigma'^2_k = \left[{\sum_{i \in \mathcal{O}(k)}  \frac{f_{i}(\vec{x_i} | \vec{q})^2}{{\sigma_i}^2}} \right] \quad .
+\end{eqnarray*}
+
+
+\subsection{Step 2: Instrument Response Refinement}
+The instrument response parameters can now be refined with the latest source flux estimates. A error function for all the measurements of all the sources is constructed
+\begin{eqnarray*}
+\chi^2 = \sum_{k} \chi'^2_k \quad ,
+\end{eqnarray*}
+where
+\begin{eqnarray*}
+\chi'^2_k = \sum_{i \in \mathcal{O}(k)} \frac{(c_i-f_{i}(\vec{x_i} | \vec{q}) \, s'_{k})^2}{{\sigma_i}^2}  \quad .
+\end{eqnarray*}
+Recall that the fitted instrument response $f_{i}(\vec{x_i} | \vec{q})$ is modeled as an eight order polynomial. This can be expressed as
+\begin{eqnarray*}
+f_{i}(\vec{x_i} | \vec{q}) = \sum_{l = 1}^L q_{l} \, g_l(\vec{x_i})  \quad ,
+\end{eqnarray*}
+where $L = 45$ in this case. The total error function $\chi^2$ can be rewritten as
+\begin{eqnarray*}
+\chi^2 =\sum_{k} \sum_{i \in \mathcal{O}(k)} \frac{(c_i- s'_{k} \sum_{l = 1}^L q_{l} g_l(\vec{x_i}))^2}{{\sigma_i}^2}   \quad .
+\end{eqnarray*}
+To refine the instrument response model fit, this error function is minimized with respect to the instrument response model parameters $q_{l}$
+\begin{eqnarray*}
+\frac{d\chi^2}{dq_{l}} = \sum_{k} \sum_{i \in \mathcal{O}(k)} \frac{-2 g_l(\vec{x_i}) s'_{k} (c_i- s'_{k} \sum_{l' = 1}^{L'} q'_{l'} g_{l'}(\vec{x_i}))}{{\sigma_i}^2} = 0  \quad ,
+\end{eqnarray*}
+\begin{eqnarray*}
+\sum_{k} \sum_{i \in \mathcal{O}(k)} \frac{g_l(\vec{x_i}) s'_{k} c_i}{{\sigma_i}^2} = \sum_{k} \sum_{i \in \mathcal{O}(k)} \frac{g_l (\vec{x_i}) s'^2_{k} \sum_{l' = 1}^{L'} q'_{l'} g_{l'} (\vec{x_i})} {{\sigma_i}^2}   \quad .
+\end{eqnarray*}
+It is now simpler to proceed in matrix notation. The following substitutions can be made
+\begin{eqnarray}
+b_l & = & \sum_{k} \sum_{i \in \mathcal{O}(k)} \frac{g_l(\vec{x_i}) s'_{k} c_i}{\sigma_i^2}    \quad ,\\
+G_{ll'} & = & \sum_{k} \sum_{i \in \mathcal{O}(k)} \frac{{s'}_{k}^2}{\sigma_i^2} g_l(x_i) g_{l'}(x_i)   \quad .
+\end{eqnarray}
+The matrix equation is then
+\begin{eqnarray*}
+\vec{b} = G \cdot \vec{q'}    \quad .
+\end{eqnarray*}
+The refined instrument response parameters are then found by
+\begin{eqnarray*}
+\vec{q'} \leftarrow G^{-1}  \cdot \vec{b}   \quad .
+\end{eqnarray*}
+These two steps are iterated until the solution converges to a final fit of the instrument response $f_\fit(\vec{x} | \vec{q_\fit})$ and the source fluxes $s_{k,\fit}$, or until it is clear that a solution will not be found. 
+
+\section{Metrics}
+\label{sec:metrics}
+To assess the performance of the self-calibration procedure with different survey strategies, it is necessary to quantify the quality of the final fitted solution. To do this we defined three quantities. The first is the root-mean-squared (RMS) error $S_\text{RMS}$ in the final fitted source fluxes $s_{k,\fit}$ compared to the true source fluxes $s_{k,\true}$ for all the $K$ sources:
+\begin{equation}
+S_\text{RMS} = \sqrt{\dfrac{1}{K} \sum_k^K \left( \dfrac{s_{k,\fit} - s_{k,\true}}{s_{k,\true}} \right)^2}   \quad .
+\end{equation}
+The other two metrics, called ``badnesses'', are defined as the RMS error between the final fitted instrument response and a reference instrument response sampled on a regular $500 \times 500$ grid across the focal plane. For the ``True Badness'' $B_\true$, the \textit{fitted} instrument response $f_\fit(\vec{x} | \vec{q_\fit})$ is compared to the \textit{true} instrument response $f_\true(\vec{x} | \vec{q_\true})$ at the $J$ sample points  
+\begin{equation}
+B_\true = \sqrt{\dfrac{1}{J} \sum_j^J \left(\dfrac{f_\fit(\vec{x_j} | \vec{q_\fit}) - f_\true(\vec{x_j} | \vec{q_\true})}{f_\true(\vec{x_j} | \vec{q_\true})}\right)^2}   \quad .
+\end{equation}
+The ``Best-in-Basis Badness'' $B_\basis$ compares the \textit{fitted} instrument response $f_\fit(\vec{x_j} | \vec{q_\fit})$ to the \textit{best instrument response fit possible} $f_\basis(\vec{x_j} | \vec{q_\basis})$ with the basis used to describe the fitted model (in this case an eight order polynomial) at the $J$ sample points
+\begin{equation}
+B_\basis = \sqrt{\dfrac{1}{J} \sum_j^J \left( \dfrac{f_\fit(\vec{x_j} | \vec{q_\fit}) - f_\basis(\vec{x_j} | \vec{q_\basis})}{f_\basis(\vec{x_j} | \vec{q_\basis})} \right)^2}   \quad .
+\end{equation}
+The badnesses provide a more complete description of the self-calibration performance than the RMS error on the fitted sources' fluxes, as the RMS source error only applies to the bright sources within the survey selected for the self-calibration procedure.
 
 \section{The Simple Survey Strategies}
 \label{sec:simple}
 
 \section{Discussion}
 In this paper, we have considered the optimization of survey strategies for calibrating the relative photometric response of an instrument, but we feel there are many more calibration parameters that can be constrained for this method. For example, the optical distortion of an instrument could also be constrained with such a method, although we concede that the properties of a survey strategy that makes them good for one calibration, may not be the same as that for another; ultimately a trade-off would need to be performed. 
-
-
 
 
 
@@ -175,7 +299,8 @@ We are grateful to
 %% See the natbib documentation for more details and options.
 
 \begin{thebibliography}{}
-\bibitem[Padmanabhan et al.(2008)]{pad08} {Padmanabhan, N., Schlegel, D.~J., Finkbeiner, D.~P., Barentine, J.~C., Blanton, M.~R., Brewington, H.~J., Gunn, J.~E., Harvanek, M., Hogg, D.~W., Ivezi{\'c}, {\v Z}., Johnston, D., Kent, S.~M., Kleinman, S.~J., Knapp, G.~R., Krzesinski, J., Long, D., Neilsen, Jr., E.~H., Nitta, A., Loomis, C., Lupton, R.~H., Roweis, S., Snedden, S.~A., Strauss, M.~A., \& Tucker, D.~L. 2008, \apj, 674, 1217}
+\bibitem[Padmanabhan et al. (2008)]{pad08} {Padmanabhan, N., Schlegel, D.~J., Finkbeiner, D.~P., Barentine, J.~C., Blanton, M.~R., Brewington, H.~J., Gunn, J.~E., Harvanek, M., Hogg, D.~W., Ivezi{\'c}, {\v Z}., Johnston, D., Kent, S.~M., Kleinman, S.~J., Knapp, G.~R., Krzesinski, J., Long, D., Neilsen, Jr., E.~H., Nitta, A., Loomis, C., Lupton, R.~H., Roweis, S., Snedden, S.~A., Strauss, M.~A., \& Tucker, D.~L., An Improved Photometric Calibration of the Sloan Digital Sky Survey Imaging Data, 2008, \apj, 674, 1217}
+\bibitem[Windhorst et al. (2011)]{win11}{Windhorst, R.~A., Cohen, S.~H., Hathi, N.~P., McCarthy, P.~J., Ryan, Jr., R.~E., Yan, H., Baldry, I.~K., Driver, S.~P., Frogel, J.~A., Hill, D.~T., Kelvin, L.~S., Koekemoer, A.~M., Mechtley, M., O'Connell, R.~W., Robotham, A.~S.~G., Rutkowski, M.~J., Seibert, M., Straughn, A.~N.,Tuffs, R.~J., Balick, B., Bond, H.~E., Bushouse, H., Calzetti, D., Crockett, M., Disney, M.~J., Dopita, M.~A., Hall, D.~N.~B., Holtzman, J.~A., Kaviraj, S., Kimble, R.~A., MacKenty, J.~W., Mutchler, M., Paresce, F., Saha, A., Silk, J.~I., Trauger, J.~T., Walker, A.~R., Whitmore, B.~C., Young, E.~T., The Hubble Space Telescope Wide Field Camera 3 Early Release Science Data: Panchromatic Faint Object Counts for 0.2-2 $\upmu$m Wavelength, 2011, XX.}
 \end{thebibliography}
 \clearpage
 
@@ -246,6 +371,33 @@ We are grateful to
 %% This table also includes a table comment indicating that the full
 %% version will be available in machine-readable format in the electronic
 %% edition.
+
+
+\begin{figure}[ht]
+\begin{center}
+\includegraphics[width=\textwidth]{./single_image.pdf}
+\end{center}
+\caption[A single camera pointing from the self-calibration simulations.]{A single exposure of the synthetic sky. Left: A plot of the bright sources within the synthetic sky used in the self-calibration procedure with the focal plane footprint overlaid. Right: The resultant distribution of the sources on the instrument's focal plane. The \textit{true} instrument model $f_{\true}(\vec{x_i} | \vec{q}_\true)$ is shown as contours.\label{fig:single_image}}
+\end{figure}
+
+\clearpage
+\begin{deluxetable}{lc}
+\tablewidth{0pt}
+\tablecaption{A summary of the tuneable parameters in these simulations and their fiducial values.\label{tab:parameters}}
+\tablehead{
+\colhead{Parameter} & \colhead{Fiducial Value}
+}
+\startdata
+Source Density -- Eqn. \ref{eqn:power_law} (deg$^{-2}$) & $a=-13.05, b=1.25, c=-0.02$ \\
+Survey Area (deg$^2$)& $8 \times 8$ \\
+Source Density (deg$^{-2}$) & $ d = 100 $ \\
+Saturation Limit (mag) & $m_\text{min} = 17$\\
+10$\upsigma$ Detection Limit (mag)& $m_\text{max} = 22$\\
+Field-of-View (deg$^{2}$)& $0.76 \times 0.72$ \\
+Noise Model -- Eqn. \ref{eqn:noise} & $\alpha = 0.1585$, $\eta = 0.0017$, $\epsilon_\text{max} = 1.0$\\
+Fitted Instrument Response Model & 8$^{\text{th}}$ order polynomial\\
+\enddata
+\end{deluxetable}
 
 \clearpage
 

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.10.17)  20 OCT 2011 21:54
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.10.17)  24 OCT 2011 21:52
 entering extended mode
  %&-line parsing enabled.
 **self_calibration_I.tex
@@ -223,16 +223,16 @@ LaTeX Font Info:    ... okay on input line 18.
 \everyMPtoPDFconversion=\toks24
 )
 AAS manuscript substyle, v5.2 <12 Dec 2003>.
-LaTeX Font Info:    Try loading font information for U+lasy on input line 74.
+LaTeX Font Info:    Try loading font information for U+lasy on input line 73.
 (/usr/share/texmf-texlive/tex/latex/base/ulasy.fd
 File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
 )
-LaTeX Font Info:    Try loading font information for U+msa on input line 74.
+LaTeX Font Info:    Try loading font information for U+msa on input line 73.
 
 (/usr/share/texmf-texlive/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2009/06/22 v3.00 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 74.
+LaTeX Font Info:    Try loading font information for U+msb on input line 73.
 
 (/usr/share/texmf-texlive/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2009/06/22 v3.00 AMS symbols B
@@ -242,35 +242,43 @@ File: umsb.fd 2009/06/22 v3.00 AMS symbols B
 
 ] [3
 
-] [4]
+] [4] [5] [6] [7] [8] [9] [10] [11]
+[12] [13] [14
 
-Package natbib Warning: Citation `source_densities' on page 5 undefined on inpu
-t line 92.
+] <./single_image.pdf, id=59, 709.80582pt x 335.12578pt>
+File: ./single_image.pdf Graphic file (type pdf)
 
-[5] [6] [7
+<use ./single_image.pdf> [15
 
-]
+ <./single_image.pdf>]
+Table 2 has been set to width 380.93137pt
 
-Package natbib Warning: Citation `treu03' on page 8 undefined on input line 263
-.
-
-
-Package natbib Warning: Citation `treu03' on page 8 undefined on input line 263
-.
-
-Table 2 has been set to width 556.13776pt
-[8]
-Page 1 of table 3 has been set to width 420.30467pt with 24 lines per page 
-[9]
-Page 2 of table 3 has been set to width 427.9186pt with 24 lines per page 
-[10]
-Page 3 of table 3 has been set to width 426.20332pt with 24 lines per page 
-[11]
-Underfull \vbox (badness 10000) detected at line 409
+Overfull \hbox (469.75499pt too wide) in paragraph at lines 390--400
+ [][][] 
  []
 
-Table 3 has been set to width 422.10188pt
-[12] [13
+[16]
+
+Package natbib Warning: Citation `treu03' on page 17 undefined on input line 41
+5.
+
+
+Package natbib Warning: Citation `treu03' on page 17 undefined on input line 41
+5.
+
+Table 3 has been set to width 556.13776pt
+[17]
+Page 1 of table 4 has been set to width 420.30467pt with 24 lines per page 
+[18]
+Page 2 of table 4 has been set to width 427.9186pt with 24 lines per page 
+[19]
+Page 3 of table 4 has been set to width 426.20332pt with 24 lines per page 
+[20]
+Underfull \vbox (badness 10000) detected at line 561
+ []
+
+Table 4 has been set to width 422.10188pt
+[21] [22
 
 
 
@@ -285,28 +293,32 @@ Package natbib Warning: There were undefined citations.
 
 (./self_calibration_I.aux) ) 
 Here is how much of TeX's memory you used:
- 3221 strings out of 495061
- 39349 string characters out of 1182620
- 106646 words of memory out of 3000000
- 6371 multiletter control sequences out of 15000+50000
+ 3236 strings out of 495061
+ 39604 string characters out of 1182620
+ 106754 words of memory out of 3000000
+ 6385 multiletter control sequences out of 15000+50000
  12743 words of font info for 50 fonts, out of 3000000 for 9000
  28 hyphenation exceptions out of 8191
- 33i,11n,32p,1642b,332s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 33i,12n,32p,1642b,334s stack positions out of 5000i,500n,10000p,200000b,50000s
 </usr/share/texmf-texlive/fonts/type1/public/amsfon
-ts/cm/cmbx12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi1
-2.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/
-share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-
-texlive/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-texlive/font
-s/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texmf-texlive/fonts/type1/publi
-c/amsfonts/cm/cmr8.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm
-/cmsy10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
-</usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share
-/texmf-texlive/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texmf-texl
-ive/fonts/type1/public/amsfonts/cm/cmti8.pfb></usr/share/texmf-texlive/fonts/ty
-pe1/public/amsfonts/euler/eurm10.pfb>
-Output written on self_calibration_I.pdf (13 pages, 174684 bytes).
+ts/cm/cmbx12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmex1
+0.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr
+/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texm
+f-texlive/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texmf-texlive/fo
+nts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-texlive/fonts/type1/pu
+blic/amsfonts/cm/cmr12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfont
+s/cm/cmr6.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr8.pfb
+></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/shar
+e/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texmf-texl
+ive/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texmf-texlive/fonts/ty
+pe1/public/amsfonts/cm/cmti10.pfb></usr/share/texmf-texlive/fonts/type1/public/
+amsfonts/cm/cmti12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm
+/cmti8.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/euler/eurm10.p
+fb></usr/share/texmf-texlive/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf
+-texlive/fonts/type1/urw/times/utmri8a.pfb>
+Output written on self_calibration_I.pdf (22 pages, 531545 bytes).
 PDF statistics:
- 97 PDF objects out of 1000 (max. 8388607)
+ 163 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 6 words of extra memory for PDF output out of 10000 (max. 10000000)
 
