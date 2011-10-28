@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.10.17)  24 OCT 2011 21:52
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.10.17)  28 OCT 2011 15:00
 entering extended mode
  %&-line parsing enabled.
 **self_calibration_I.tex
@@ -242,83 +242,78 @@ File: umsb.fd 2009/06/22 v3.00 AMS symbols B
 
 ] [3
 
-] [4] [5] [6] [7] [8] [9] [10] [11]
-[12] [13] [14
+]
 
-] <./single_image.pdf, id=59, 709.80582pt x 335.12578pt>
+LaTeX Warning: Reference `sec:survey' on page 4 undefined on input line 80.
+
+
+LaTeX Warning: Reference `sec:simple' on page 4 undefined on input line 80.
+
+[4] [5] [6] [7] [8] [9] [10] [11] [12] [13] [14] [15
+
+]
+<./single_image.pdf, id=62, 709.80582pt x 335.12578pt>
 File: ./single_image.pdf Graphic file (type pdf)
 
-<use ./single_image.pdf> [15
+<use ./single_image.pdf> [16
 
  <./single_image.pdf>]
 Table 2 has been set to width 380.93137pt
 
-Overfull \hbox (469.75499pt too wide) in paragraph at lines 390--400
+Overfull \hbox (469.75499pt too wide) in paragraph at lines 395--405
  [][][] 
  []
 
-[16]
-
-Package natbib Warning: Citation `treu03' on page 17 undefined on input line 41
-5.
-
-
-Package natbib Warning: Citation `treu03' on page 17 undefined on input line 41
-5.
-
-Table 3 has been set to width 556.13776pt
 [17]
-Page 1 of table 4 has been set to width 420.30467pt with 24 lines per page 
-[18]
-Page 2 of table 4 has been set to width 427.9186pt with 24 lines per page 
-[19]
-Page 3 of table 4 has been set to width 426.20332pt with 24 lines per page 
-[20]
-Underfull \vbox (badness 10000) detected at line 561
+Missing character: There is no Â in font cmr12!
+Missing character: There is no § in font cmr12!
+Missing character: There is no Â in font cmr12!
+Missing character: There is no § in font cmr12!
+
+Overfull \hbox (15.69833pt too wide) detected at line 420
+ [] 
  []
 
-Table 4 has been set to width 422.10188pt
-[21] [22
+Table 3 has been set to width 485.45332pt
 
+Overfull \hbox (469.75499pt too wide) in paragraph at lines 413--421
+ [][][] 
+ []
 
+<simple_surveys.pdf, id=96, 709.80582pt x 700.01485pt>
+File: simple_surveys.pdf Graphic file (type pdf)
 
+<use simple_surveys.pdf> [18] [19 <./simple_surveys.pdf>]
+(./self_calibration_I.aux)
 
+LaTeX Warning: There were undefined references.
 
-
-
-
-]
-
-Package natbib Warning: There were undefined citations.
-
-(./self_calibration_I.aux) ) 
+ ) 
 Here is how much of TeX's memory you used:
- 3236 strings out of 495061
- 39604 string characters out of 1182620
- 106754 words of memory out of 3000000
+ 3232 strings out of 495061
+ 39684 string characters out of 1182620
+ 99779 words of memory out of 3000000
  6385 multiletter control sequences out of 15000+50000
- 12743 words of font info for 50 fonts, out of 3000000 for 9000
+ 11357 words of font info for 44 fonts, out of 3000000 for 9000
  28 hyphenation exceptions out of 8191
- 33i,12n,32p,1642b,334s stack positions out of 5000i,500n,10000p,200000b,50000s
-</usr/share/texmf-texlive/fonts/type1/public/amsfon
-ts/cm/cmbx12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmex1
-0.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr
-/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texm
-f-texlive/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texmf-texlive/fo
-nts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-texlive/fonts/type1/pu
-blic/amsfonts/cm/cmr12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfont
-s/cm/cmr6.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr8.pfb
-></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/shar
-e/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texmf-texl
-ive/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texmf-texlive/fonts/ty
-pe1/public/amsfonts/cm/cmti10.pfb></usr/share/texmf-texlive/fonts/type1/public/
-amsfonts/cm/cmti12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm
-/cmti8.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/euler/eurm10.p
-fb></usr/share/texmf-texlive/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf
--texlive/fonts/type1/urw/times/utmri8a.pfb>
-Output written on self_calibration_I.pdf (22 pages, 531545 bytes).
+ 33i,12n,26p,1642b,294s stack positions out of 5000i,500n,10000p,200000b,50000s
+</usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/sha
+re/texmf-texlive/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texmf-te
+xlive/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-texlive/fonts
+/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texmf-texlive/fonts/type1/publ
+ic/amsfonts/cm/cmmi8.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/
+cm/cmr10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr12.pfb
+></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/
+texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-texli
+ve/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texmf-texlive/fonts/typ
+e1/public/amsfonts/cm/cmsy8.pfb></usr/share/texmf-texlive/fonts/type1/public/am
+sfonts/cm/cmti10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/c
+mti12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/euler/eurm10.pf
+b></usr/share/texmf-texlive/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf-
+texlive/fonts/type1/urw/times/utmri8a.pfb>
+Output written on self_calibration_I.pdf (19 pages, 723457 bytes).
 PDF statistics:
- 163 PDF objects out of 1000 (max. 8388607)
+ 158 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 6 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 11 words of extra memory for PDF output out of 10000 (max. 10000000)
 
