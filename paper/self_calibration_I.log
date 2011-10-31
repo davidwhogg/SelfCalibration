@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.10.17)  28 OCT 2011 15:00
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.10.17)  31 OCT 2011 15:59
 entering extended mode
  %&-line parsing enabled.
 **self_calibration_I.tex
@@ -242,17 +242,10 @@ File: umsb.fd 2009/06/22 v3.00 AMS symbols B
 
 ] [3
 
-]
+] [4] [5] [6] [7] [8] [9] [10] [11]
+[12] [13] [14] [15
 
-LaTeX Warning: Reference `sec:survey' on page 4 undefined on input line 80.
-
-
-LaTeX Warning: Reference `sec:simple' on page 4 undefined on input line 80.
-
-[4] [5] [6] [7] [8] [9] [10] [11] [12] [13] [14] [15
-
-]
-<./single_image.pdf, id=62, 709.80582pt x 335.12578pt>
+] <./single_image.pdf, id=62, 709.80582pt x 335.12578pt>
 File: ./single_image.pdf Graphic file (type pdf)
 
 <use ./single_image.pdf> [16
@@ -284,34 +277,30 @@ Overfull \hbox (469.75499pt too wide) in paragraph at lines 413--421
 File: simple_surveys.pdf Graphic file (type pdf)
 
 <use simple_surveys.pdf> [18] [19 <./simple_surveys.pdf>]
-(./self_calibration_I.aux)
-
-LaTeX Warning: There were undefined references.
-
- ) 
+(./self_calibration_I.aux) ) 
 Here is how much of TeX's memory you used:
- 3232 strings out of 495061
- 39684 string characters out of 1182620
- 99779 words of memory out of 3000000
- 6385 multiletter control sequences out of 15000+50000
+ 3230 strings out of 495061
+ 39660 string characters out of 1182620
+ 100779 words of memory out of 3000000
+ 6383 multiletter control sequences out of 15000+50000
  11357 words of font info for 44 fonts, out of 3000000 for 9000
  28 hyphenation exceptions out of 8191
  33i,12n,26p,1642b,294s stack positions out of 5000i,500n,10000p,200000b,50000s
-</usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/sha
-re/texmf-texlive/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texmf-te
-xlive/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-texlive/fonts
-/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texmf-texlive/fonts/type1/publ
-ic/amsfonts/cm/cmmi8.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/
-cm/cmr10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr12.pfb
-></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/
-texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-texli
-ve/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texmf-texlive/fonts/typ
-e1/public/amsfonts/cm/cmsy8.pfb></usr/share/texmf-texlive/fonts/type1/public/am
-sfonts/cm/cmti10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/c
-mti12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/euler/eurm10.pf
-b></usr/share/texmf-texlive/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf-
-texlive/fonts/type1/urw/times/utmri8a.pfb>
-Output written on self_calibration_I.pdf (19 pages, 723457 bytes).
+</usr/share/texmf-texlive/fonts/type1/public/amsfon
+ts/cm/cmbx12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmex1
+0.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr
+/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texm
+f-texlive/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texmf-texlive/fo
+nts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-texlive/fonts/type1/pu
+blic/amsfonts/cm/cmr12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfont
+s/cm/cmr8.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy10.p
+fb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/sha
+re/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texmf-tex
+live/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texmf-texlive/fonts/
+type1/public/amsfonts/cm/cmti12.pfb></usr/share/texmf-texlive/fonts/type1/publi
+c/amsfonts/euler/eurm10.pfb></usr/share/texmf-texlive/fonts/type1/urw/times/utm
+r8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/times/utmri8a.pfb>
+Output written on self_calibration_I.pdf (19 pages, 732862 bytes).
 PDF statistics:
  158 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
