@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.11.1)  2 NOV 2011 14:38
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.10.22)  4 NOV 2011 14:57
 entering extended mode
  %&-line parsing enabled.
 **self_calibration_I.tex
@@ -243,77 +243,91 @@ File: umsb.fd 2009/06/22 v3.00 AMS symbols B
 ] [3
 
 ] [4] [5] [6] [7] [8] [9] [10] [11]
-[12]
+[12] [13] [14]
 
-LaTeX Warning: Reference `fig:A_result' on page 13 undefined on input line 238.
-
-
-[13]
-
-LaTeX Warning: Reference `sec:deep_req' on page 14 undefined on input line 244.
+LaTeX Warning: Reference `sec:deep_req' on page 15 undefined on input line 254.
 
 
-[14] [15] [16
+[15] [16] [17
 
-] <./single_image.pdf, id=65, 709.80582pt x 335.12578pt>
+] <./single_image.pdf, id=68, 709.80582pt x 335.12578pt>
 File: ./single_image.pdf Graphic file (type pdf)
 
-<use ./single_image.pdf> [17
+<use ./single_image.pdf> [18
 
  <./single_image.pdf>]
 Table 2 has been set to width 380.93137pt
 
-Overfull \hbox (469.75499pt too wide) in paragraph at lines 404--414
+Overfull \hbox (469.75499pt too wide) in paragraph at lines 414--424
  [][][] 
  []
 
-[18]
+[19]
 Missing character: There is no Â in font cmr12!
 Missing character: There is no § in font cmr12!
 Missing character: There is no Â in font cmr12!
 Missing character: There is no § in font cmr12!
 
-Overfull \hbox (15.69833pt too wide) detected at line 429
+Overfull \hbox (15.69833pt too wide) detected at line 439
  [] 
  []
 
 Table 3 has been set to width 485.45332pt
 
-Overfull \hbox (469.75499pt too wide) in paragraph at lines 422--430
+Overfull \hbox (469.75499pt too wide) in paragraph at lines 432--440
  [][][] 
  []
 
-<simple_surveys.pdf, id=99, 709.80582pt x 700.01485pt>
+<simple_surveys.pdf, id=103, 709.80582pt x 700.01485pt>
 File: simple_surveys.pdf Graphic file (type pdf)
 
-<use simple_surveys.pdf> <D_results.pdf, id=100, 835.14261pt x 669.61134pt>
-File: D_results.pdf Graphic file (type pdf)
+<use simple_surveys.pdf> <A_8192_ff.pdf, id=104, 835.14261pt x 669.61134pt>
+File: A_8192_ff.pdf Graphic file (type pdf)
 
-<use D_results.pdf>
+<use A_8192_ff.pdf>
 
-LaTeX Warning: Float too large for page by 4.71182pt on input line 446.
+LaTeX Warning: Float too large for page by 50.44531pt on input line 456.
 
-[19] [20 <./simple_surveys.pdf>] [21 <./D_results.pdf>]
-Overfull \hbox (129.03906pt too wide) in alignment at lines 453--458
+<B_4160_ff.pdf, id=105, 835.14261pt x 669.61134pt>
+File: B_4160_ff.pdf Graphic file (type pdf)
+ <use B_4160_ff.pdf>
+
+LaTeX Warning: Float too large for page by 27.91191pt on input line 463.
+
+<C_026_ff.pdf, id=106, 835.14261pt x 669.61134pt>
+File: C_026_ff.pdf Graphic file (type pdf)
+ <use C_026_ff.pdf>
+
+LaTeX Warning: Float too large for page by 27.91191pt on input line 470.
+
+<D_009_ff.pdf, id=107, 835.14261pt x 669.61134pt>
+File: D_009_ff.pdf Graphic file (type pdf)
+ <use D_009_ff.pdf>
+
+LaTeX Warning: Float too large for page by 27.91191pt on input line 477.
+
+[20] [21 <./simple_surveys.pdf>] [22 <./A_8192_ff.pdf>] [23 <./B_4160_ff.pdf>]
+[24 <./C_026_ff.pdf>] [25 <./D_009_ff.pdf>]
+Overfull \hbox (127.61852pt too wide) in alignment at lines 484--489
 [][][][][]
  []
 
 Table 4 has been set to width 469.75499pt
 
-Overfull \hbox (469.75499pt too wide) in paragraph at lines 453--459
+Overfull \hbox (469.75499pt too wide) in paragraph at lines 484--490
  [][][] 
  []
 
-[22] (./self_calibration_I.aux)
+[26] (./self_calibration_I.aux)
 
 LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 3240 strings out of 495061
- 39809 string characters out of 1182621
- 100805 words of memory out of 3000000
- 6392 multiletter control sequences out of 15000+50000
+ 3257 strings out of 495061
+ 40079 string characters out of 1182620
+ 101832 words of memory out of 3000000
+ 6406 multiletter control sequences out of 15000+50000
  11357 words of font info for 44 fonts, out of 3000000 for 9000
  28 hyphenation exceptions out of 8191
  33i,12n,26p,1642b,308s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -331,9 +345,9 @@ sfonts/cm/cmti10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/c
 mti12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/euler/eurm10.pf
 b></usr/share/texmf-texlive/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf-
 texlive/fonts/type1/urw/times/utmri8a.pfb>
-Output written on self_calibration_I.pdf (22 pages, 884171 bytes).
+Output written on self_calibration_I.pdf (26 pages, 1359340 bytes).
 PDF statistics:
- 185 PDF objects out of 1000 (max. 8388607)
+ 252 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 16 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 31 words of extra memory for PDF output out of 10000 (max. 10000000)
 
