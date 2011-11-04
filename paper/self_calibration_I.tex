@@ -7,6 +7,7 @@
 \newcommand{\true}{\text{true}}
 \newcommand{\fit}{\text{fit}}
 \newcommand{\basis}{\text{best}}
+\newcommand{\rms}{\text{RMS}}
 \newcommand{\dd}{\text{d}}
 
 \shorttitle{Optimizing Large Scale Imaging Surveys for a Retrospective Relative Photometric Calibration}
@@ -107,11 +108,11 @@ To construct the noise model, the simulated exposures are assumed to be backgrou
 \begin{eqnarray}
 \sigma_{i, \true}^{2} = (1 + \epsilon_i) \, \alpha^{2} + \eta^{2}\, [ f_\true(\vec{x_i} | \vec{q}_\true) \, s_{k, \true} ]^2 \quad , \label{eqn:noise}
 \end{eqnarray}
-where $\alpha$ and $\eta$ are both constants and $\epsilon_i$ is a random number, in the range [0.0, $\epsilon_{max}$), generated for each measurement $i$. The $m = 22$ mag 10$\upsigma$ detection limit introduced previously and the 500 limit on the signal-to-noise ratio are used to set $\alpha = 0.1585$ and $\eta = 0.0017$. The $\epsilon_i$ contribution is not taken into account in the analysis stage and therefore the uncertainty variances on the count rates are assumed to be
+where $\alpha$ and $\eta$ are both constants and $\epsilon_i$ is a random number, in the range [0.0, $\epsilon_{max}$), generated for each measurement $i$. The $m = 22$ mag 10$\upsigma$ detection limit introduced previously and the 500 limit on the signal-to-noise ratio are used to set $\alpha = 0.1585$ and $\eta = 0.0017$. The $\epsilon_i$ contribution is not taken into account in the analysis and therefore the uncertainty variances on the count rates are assumed to be
 \begin{eqnarray*}
 \sigma_{{i}}^{2} = \alpha^{2} + \eta^{2} \, c^{2}_i \quad 
 \end{eqnarray*}
-during the analysis stage. 
+during this stage. 
 
 \subsubsection{The True Instrument Response Model}
 \label{sec:instrument_response_model}
@@ -133,14 +134,14 @@ where
 k_x & = & \dfrac{a \, \pi}{X} \quad ,\\
 k_y & = & \dfrac{b \, \pi}{Y} \quad ,\\
 \end{eqnarray*}
-with the physical focal plane dimensions $X$ and $Y$. In total, the instrument response model is parameterized with 260 parameters; an example can be seen in Figure \ref{fig:single_image}(right). It is this instrument response that we try and recover with the self-calibration procedure. Our final assumption in these simulations is that the instrument response is temporally stable. 
+with the physical focal plane dimensions $X$ and $Y$. In total, the instrument response model is parameterized with 260 parameters; an example can be seen in Figure \ref{fig:single_image}      (right). It is this instrument response that we try and recover with the self-calibration procedure. Our final assumption in these simulations is that the instrument response is temporally stable. 
 
 \subsection{The Complete Survey}
-In this work we are interested in simulating complete surveys, in order to identify the crucial characteristics of survey strategies that allows for the relative instrument response model to be accurately constrained from the resulting dataset. We therefore apply the single exposure procedure introduced in the previous section for each pointing specified in a defined survey strategy. The resultant source measurements are collaged into a survey wide dataset. 
+In this work we are interested in simulating complete surveys, in order to identify the crucial characteristics of survey strategies that allow for the relative instrument response model to be accurately, retrospectively constrained from the resulting dataset. We therefore apply the single exposure procedure introduced in the previous section for each pointing specified in a defined survey strategy. The resultant source measurements are collaged into a survey wide dataset. 
 
 \section{Self-Calibrating the Survey Wide Dataset}
 \label{sec:self_cal}
-We self-calibrate the dataset generated in the survey simulations to recover the true instrument response applied and the true source fluxes. This self-calibration procedure has been successfully applied to ground based imaging surveys, such as the Sloan Digital Sky Survey \citep{pad08}\footnote{Here this procedure is dubbed ``uber-calibration.''}. This iterative procedure comprises two steps: (1) a refinement of the source flux estimates based on the latest instrument response model and (2) a refinement of the instrument response model based on the updated source flux estimates. These steps are iterated until the system converges, or until it is clear that the system will not converge. There is a degeneracy in the problem, as both the true instrument response and the true source magnitudes are unknown. It is therefore only possible to calibrate the \textit{relative} instrument response and the \textit{relative} source fluxes. It is not possible to know, for example, if the sources are all fainter or if the instrument response is uniformly lower. This degeneracy can be broken through observations of standard absolute sources.
+We self-calibrate the dataset generated in the survey simulations to recover the true instrument response applied and the true source fluxes. This self-calibration procedure has been successfully applied to ground based imaging surveys, such as the Sloan Digital Sky Survey \citep{pad08}\footnote{Here this procedure is dubbed ``uber-calibration.''}. This iterative procedure comprises two steps: (1) a refinement of the source flux estimates based on the latest instrument response model and (2) a refinement of the instrument response model based on the updated source flux estimates. These steps are iterated until the system converges, or until it is clear that the system will not converge. There is a degeneracy in the problem, as both the true instrument response and the true source magnitudes are unknown. It is therefore only possible to calibrate the \textit{relative} instrument response and the \textit{relative} source fluxes. It is not possible to know, for example, if the sources are all fainter or if the instrument response is uniformly lower. In practice, this degeneracy can be broken through observations of standard absolute sources.
 
 \subsection{Fitted Measurement Model}
 To complicate the simulations, we use the self-calibration procedure to fit a model that is \textit{incomplete} in two ways. Firstly, the \textit{fitted} instrument response is modeled as an eighth order polynomial, and not the second order polynomial superimposed with sine and cosine contributions used to model the \textit{true} instrument response. Secondly, the assumed measurement uncertainty variances do not include the additional random measurement error $\epsilon_{i}$ introduced in Subsection \ref{sec:noise}. The incomplete measurement model is
@@ -212,11 +213,11 @@ These two steps are iterated until the solution converges to a final fit of the 
 
 \section{Metrics}
 \label{sec:metrics}
-To assess the performance of the self-calibration procedure with different survey strategies, it is necessary to quantify the quality of the final fitted solution. To do this we defined three quantities. The first is the root-mean-squared (RMS) error $S_\text{RMS}$ in the final fitted source fluxes $s_{k,\fit}$ compared to the true source fluxes $s_{k,\true}$ for all the $K$ sources:
+To assess the performance of the self-calibration procedure with different survey strategies, it is necessary to quantify the quality of the final fitted solution. To do this we defined three quantities. The first is the root-mean-squared (RMS) error $S_\text{RMS}$ in the final fitted source fluxes $s_{k,\fit}$ compared to the true source fluxes $s_{k,\true}$ for the $K$ sources used in the self-calibration procedure:
 \begin{equation}
 S_\text{RMS} = \sqrt{\dfrac{1}{K} \sum_k^K \left( \dfrac{s_{k,\fit} - s_{k,\true}}{s_{k,\true}} \right)^2}   \quad .
 \end{equation}
-The other two metrics, called ``badnesses'', are defined as the RMS error between the final fitted instrument response and a reference instrument response sampled on a regular $500 \times 500$ grid across the focal plane. For the ``True Badness'' $B_\true$, the \textit{fitted} instrument response $f_\fit(\vec{x} | \vec{q_\fit})$ is compared to the \textit{true} instrument response $f_\true(\vec{x} | \vec{q_\true})$ at the $J$ sample points  
+The other two metrics, called ``badnesses'', are defined as the RMS error between the final fitted instrument response and a reference instrument response sampled on a regular $300 \times 300$ grid across the focal plane. For the ``True Badness'' $B_\true$, the \textit{fitted} instrument response $f_\fit(\vec{x} | \vec{q_\fit})$ is compared to the \textit{true} instrument response $f_\true(\vec{x} | \vec{q_\true})$ at the $J$ sample points  
 \begin{equation}
 B_\true = \sqrt{\dfrac{1}{J} \sum_j^J \left(\dfrac{f_\fit(\vec{x_j} | \vec{q_\fit}) - f_\true(\vec{x_j} | \vec{q_\true})}{f_\true(\vec{x_j} | \vec{q_\true})}\right)^2}   \quad .
 \end{equation}
@@ -231,9 +232,17 @@ The badnesses provide a more complete description of the self-calibration perfor
 In this paper, we consider four simple but very different survey strategies. We use the end-to-end dataset simulation and self-calibration chain, introduced in Sections \ref{sec:survey_simulations} and \ref{sec:self_cal}, to evaluate the performance of the self-calibration procedure with these strategies. 
 
 \subsection{Survey Description}
-We label the four survey strategies -- which all cover the same patch of sky -- with the letters A to D. These survey strategies are summarized in Table \ref{tab:simple_surveys} and are shown in Figure \ref{fig:simple_surveys}. Strategy A is the simplest strategy; the field is regularly tiled with small overlaps between adjacent pointings ($\sim 5$~\% and $\sim 8$~\% in the camera pointing directions $\alpha$ and $\beta$ respectively). The pointings in the 12 passes over the same field are exactly aligned. Survey B is the same as A, but with each pass over the field the orientation of the telescope is rotated by $30^\circ$. Survey C is more complex. The first pass over the field is the same as in Survey A, with $12 \times 12$ pointings. In the next pass, one of the pointings in the $\alpha$ direction is removed and one is added in the $\beta$, so the resultant pointing grid is $13 \times 11$. In the third pass over the field this change is reversed and the field is measured on a $11 \times 13$ grid. These three passes are then repeated four times. The pointing positions in Survey D are quasi-random: the pointings are the same as with Survey A, but each has a random offset within [-0.35,0.35)~deg applied in both the $\alpha$ and $\beta$ directions. By fixing the pointings within these $0.7~\text{deg} \times 0.7~\text{deg}$ boxes, we ensure that the quasi random strategy has a uniform coverage of the field. The orientations of the pointings in Survey D are completely random.
+We label the four survey strategies -- which all cover the same patch of sky -- with the letters A to D. These survey strategies are summarized in Table \ref{tab:simple_surveys} and are shown in Figure \ref{fig:simple_surveys}. Strategy A is the simplest strategy; the field is regularly tiled with small overlaps between adjacent pointings ($\sim 5$~\% and $\sim 8$~\% in the camera pointing directions $\alpha$ and $\beta$ respectively). The pointings in the 12 passes over the same field are exactly aligned. Survey B is the same as A, but with each pass over the field the orientation of the telescope is rotated by $30^\circ$. Survey C is more complex. The first pass over the field is the same as in Survey A, with $12 \times 12$ pointings. In the next pass, one of the pointings in the $\alpha$ direction is removed and one is added in the $\beta$ and the pointings are respaced uniformly, so the resultant pointing grid is $13 \times 11$. In the third pass over the field this change is reversed and the field is measured on a $11 \times 13$ grid. These three passes are then repeated four times. The pointing positions in Survey D are quasi-random: the pointings are the same as with Survey A, but each has a random offset within [-0.35,0.35)~deg applied in both the $\alpha$ and $\beta$ directions. By fixing the pointings within these $0.7~\text{deg} \times 0.7~\text{deg}$ boxes, we ensure that the quasi random strategy has a uniform coverage of the field. The orientations of the pointings in Survey D are completely random.
 
 \subsection{Self-Calibration Performance}
+The iterative self-calibration procedure converges to a final fitted solution for the Survey B, C and D datasets. With the Survey A dataset it does not converge, even when the system is started close to the optimum fit. The fitted instrument response solutions for the Survey D and A datasets are shown in Figures \ref{fig:D_result} and \ref{fig:A_result} respectively. The corresponding plot for the Survey B and C dataset has been omitted, due to its similarity to the Survey D dataset result. In these plots the final fitted instrument response $f_\fit(\vec{x_j} | \vec{q_\fit})$ is compared to the true instrument response $f_\true(\vec{x} | \vec{q_\true})$ and to the best possible instrument response fit with the basis used $f_\basis(\vec{x_j} | \vec{q_\basis})$ (``best-in-basis''). The accuracy of the final fitted solutions are summarized, with the metrics introduced in Section \ref{sec:metrics}, for each of the Survey strategies in Table \ref{tab:simple_results}.
+
+FROM HERE NEEDS TO BE UPDATED
+
+The difference between the success of the self-calibration procedure with these four survey strategies is clear: with Surveys A no solution can be obtained, but with the Surveys B, C and D datasets the self-calibration procedure converges close to the correct solution. With the Survey C and D datasets the instrument response can be accurately fitted, close to the best fit possible with the basis used. The majority of the remaining errors in the fit come from the limitations of the basis used in the instrument response model. The calibration procedure with the Survey B dataset requires more iteration steps (4270) to converge to a final solution, and is less accurate than those found with the Survey C and D datasets, which require 28 and 10 iteration steps respectively.
+
+The results from this investigation into simple survey strategies can be used to draw conclusions about the properties of surveys that make them good, or bad, for retrospective self-calibration. From these examples, I conclude that regular survey strategies with little overlap between adjacent pointings (Survey A) -- such as the Euclid Wide Survey -- do not allow for the resulting dataset to be self-calibrated effectively. It is therefore necessary to depart from the standard, regularly tiled observing strategies in the Euclid Deep Field. The two best survey strategies (C, D) both return the same sources to very different focal plane positions, and this is the key property which makes their datasets good for self-calibration. By doing so, many different focal plane positions are connected to each other with observations of the same source. This result must be considered when the Deep Field survey strategy is defined and as such I have applied calibration requirements that capture this on the strategy (see Subsection \ref{sec:deep_req}). In addition, I also conclude that if the correct redundancy is built into the survey strategy, the self-calibration procedure will be able to accurately constrain the relative instrument response, and therefore the Deep Field relative photometric calibration could be transfered effectively to the Wide Survey. The majority of the remaining errors will come from the limitations of the basis used to fit the instrument response model.
+
 
 \section{Discussion}
 In this paper, we have considered the optimization of survey strategies for calibrating the relative photometric response of an instrument, but we feel there are many more calibration parameters that can be constrained for this method. For example, the optical distortion of an instrument could also be constrained with such a method, although we concede that the properties of a survey strategy that makes them good for one calibration, may not be the same as that for another; ultimately a trade-off would need to be performed. 
@@ -420,12 +429,35 @@ D   & Quasi-Random  & Random & 1728\\
 \enddata
 \end{deluxetable}
 
+
+
 \begin{figure}[ht]
 \begin{center}
 \includegraphics[width=\textwidth]{simple_surveys.pdf}
 \end{center}
 \caption{Focal plane footprints projected onto the synthetic sky according to the four simple survey strategies described in Section \ref{sec:simple_surveys} and summarized in Table \ref{tab:simple_surveys}. Surveys A, B and D have 1728 pointings and survey C has 1720 pointings.\label{fig:simple_surveys}}
 \end{figure}
+
+\begin{figure}[ht]
+\begin{center}
+\includegraphics[width=\textwidth]{D_results.pdf}
+\end{center}
+\caption{A comparison of the fitted instrument response model $f_\fit(\vec{x_j} | \vec{q_\fit})$ obtained from self-calibrating the Survey D dataset compared to the true $f_\true(\vec{x} | \vec{q_\true})$ and best-in-basis $f_\basis(\vec{x_j} | \vec{q_\basis})$ instrument response models. (a) Contour plot of the fitted (black) compared to the \textit{true} (gray) instrument response. (c) Contour plot of the fitted (black) compared to the \textit{best-in-basis} (gray) instrument response model. The best-in-basis instrument response is the best fit to the true instrument response possible with the basis used to model the instrument response in the self-calibration procedure (in this case an eighth order polynomial). The plots (b) and (d) show the residuals between the two instrument response models plotted in (a) and (c) respectively.\label{fig:D_result}}
+\end{figure}
+
+\clearpage
+\begin{deluxetable}{ccccc}
+\tablecaption{A summary of the quality of the final fit from the self-calibration procedure with the four simple survey strategies summarized in Table \ref{tab:simple_surveys}. The self-calibration procedure was run with only the brightest sources within the survey area; the source error $S_\text{RMS}$ corresponds to the measurements of these sources only and not all those within the survey. *Did not converge.\label{tab:simple_results}}
+\tablehead{
+\colhead{Survey Name} & \colhead{Iterations} & \colhead{Source Error $S_\rms$(\%)} & \colhead{True Badness $B_\true$ (\%)} & \colhead{Best-in-Basis Badness $basis$ (\%)} }
+\startdata
+A*  & 8192 & XX & XX & XX \\
+B  & 4160 & XX & XX & XX \\
+C  & 26 & XX & XX & XX \\
+D  & 9 & XX & XX & XX \\
+\enddata
+\end{deluxetable}
+
 %% If you use the table environment, please indicate horizontal rules using
 %% \tableline, not \hline.
 %% Do not put multiple tabular environments within a single table.
