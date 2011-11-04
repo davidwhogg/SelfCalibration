@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.10.17)  31 OCT 2011 15:59
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.11.1)  2 NOV 2011 14:38
 entering extended mode
  %&-line parsing enabled.
 **self_calibration_I.tex
@@ -197,18 +197,18 @@ LaTeX Font Info:    Overwriting symbol font `ugrf@m' in version `bold'
 ) (./self_calibration_I.aux)
 \openout1 = `self_calibration_I.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 18.
-LaTeX Font Info:    ... okay on input line 18.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 18.
-LaTeX Font Info:    ... okay on input line 18.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 18.
-LaTeX Font Info:    ... okay on input line 18.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 18.
-LaTeX Font Info:    ... okay on input line 18.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 18.
-LaTeX Font Info:    ... okay on input line 18.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 18.
-LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
 (/usr/share/texmf-texlive/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count113
@@ -223,16 +223,16 @@ LaTeX Font Info:    ... okay on input line 18.
 \everyMPtoPDFconversion=\toks24
 )
 AAS manuscript substyle, v5.2 <12 Dec 2003>.
-LaTeX Font Info:    Try loading font information for U+lasy on input line 73.
+LaTeX Font Info:    Try loading font information for U+lasy on input line 74.
 (/usr/share/texmf-texlive/tex/latex/base/ulasy.fd
 File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
 )
-LaTeX Font Info:    Try loading font information for U+msa on input line 73.
+LaTeX Font Info:    Try loading font information for U+msa on input line 74.
 
 (/usr/share/texmf-texlive/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2009/06/22 v3.00 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 73.
+LaTeX Font Info:    Try loading font information for U+msb on input line 74.
 
 (/usr/share/texmf-texlive/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2009/06/22 v3.00 AMS symbols B
@@ -243,66 +243,97 @@ File: umsb.fd 2009/06/22 v3.00 AMS symbols B
 ] [3
 
 ] [4] [5] [6] [7] [8] [9] [10] [11]
-[12] [13] [14] [15
+[12]
 
-] <./single_image.pdf, id=62, 709.80582pt x 335.12578pt>
+LaTeX Warning: Reference `fig:A_result' on page 13 undefined on input line 238.
+
+
+[13]
+
+LaTeX Warning: Reference `sec:deep_req' on page 14 undefined on input line 244.
+
+
+[14] [15] [16
+
+] <./single_image.pdf, id=65, 709.80582pt x 335.12578pt>
 File: ./single_image.pdf Graphic file (type pdf)
 
-<use ./single_image.pdf> [16
+<use ./single_image.pdf> [17
 
  <./single_image.pdf>]
 Table 2 has been set to width 380.93137pt
 
-Overfull \hbox (469.75499pt too wide) in paragraph at lines 395--405
+Overfull \hbox (469.75499pt too wide) in paragraph at lines 404--414
  [][][] 
  []
 
-[17]
+[18]
 Missing character: There is no Â in font cmr12!
 Missing character: There is no § in font cmr12!
 Missing character: There is no Â in font cmr12!
 Missing character: There is no § in font cmr12!
 
-Overfull \hbox (15.69833pt too wide) detected at line 420
+Overfull \hbox (15.69833pt too wide) detected at line 429
  [] 
  []
 
 Table 3 has been set to width 485.45332pt
 
-Overfull \hbox (469.75499pt too wide) in paragraph at lines 413--421
+Overfull \hbox (469.75499pt too wide) in paragraph at lines 422--430
  [][][] 
  []
 
-<simple_surveys.pdf, id=96, 709.80582pt x 700.01485pt>
+<simple_surveys.pdf, id=99, 709.80582pt x 700.01485pt>
 File: simple_surveys.pdf Graphic file (type pdf)
 
-<use simple_surveys.pdf> [18] [19 <./simple_surveys.pdf>]
-(./self_calibration_I.aux) ) 
+<use simple_surveys.pdf> <D_results.pdf, id=100, 835.14261pt x 669.61134pt>
+File: D_results.pdf Graphic file (type pdf)
+
+<use D_results.pdf>
+
+LaTeX Warning: Float too large for page by 4.71182pt on input line 446.
+
+[19] [20 <./simple_surveys.pdf>] [21 <./D_results.pdf>]
+Overfull \hbox (129.03906pt too wide) in alignment at lines 453--458
+[][][][][]
+ []
+
+Table 4 has been set to width 469.75499pt
+
+Overfull \hbox (469.75499pt too wide) in paragraph at lines 453--459
+ [][][] 
+ []
+
+[22] (./self_calibration_I.aux)
+
+LaTeX Warning: There were undefined references.
+
+ ) 
 Here is how much of TeX's memory you used:
- 3230 strings out of 495061
- 39660 string characters out of 1182620
- 100779 words of memory out of 3000000
- 6383 multiletter control sequences out of 15000+50000
+ 3240 strings out of 495061
+ 39809 string characters out of 1182621
+ 100805 words of memory out of 3000000
+ 6392 multiletter control sequences out of 15000+50000
  11357 words of font info for 44 fonts, out of 3000000 for 9000
  28 hyphenation exceptions out of 8191
- 33i,12n,26p,1642b,294s stack positions out of 5000i,500n,10000p,200000b,50000s
-</usr/share/texmf-texlive/fonts/type1/public/amsfon
-ts/cm/cmbx12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmex1
-0.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr
-/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texm
-f-texlive/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texmf-texlive/fo
-nts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-texlive/fonts/type1/pu
-blic/amsfonts/cm/cmr12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfont
-s/cm/cmr8.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy10.p
-fb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/sha
-re/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texmf-tex
-live/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texmf-texlive/fonts/
-type1/public/amsfonts/cm/cmti12.pfb></usr/share/texmf-texlive/fonts/type1/publi
-c/amsfonts/euler/eurm10.pfb></usr/share/texmf-texlive/fonts/type1/urw/times/utm
-r8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/times/utmri8a.pfb>
-Output written on self_calibration_I.pdf (19 pages, 732862 bytes).
+ 33i,12n,26p,1642b,308s stack positions out of 5000i,500n,10000p,200000b,50000s
+</usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/sha
+re/texmf-texlive/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texmf-te
+xlive/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-texlive/fonts
+/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texmf-texlive/fonts/type1/publ
+ic/amsfonts/cm/cmmi8.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/
+cm/cmr10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr12.pfb
+></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/
+texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-texli
+ve/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texmf-texlive/fonts/typ
+e1/public/amsfonts/cm/cmsy8.pfb></usr/share/texmf-texlive/fonts/type1/public/am
+sfonts/cm/cmti10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/c
+mti12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/euler/eurm10.pf
+b></usr/share/texmf-texlive/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf-
+texlive/fonts/type1/urw/times/utmri8a.pfb>
+Output written on self_calibration_I.pdf (22 pages, 884171 bytes).
 PDF statistics:
- 158 PDF objects out of 1000 (max. 8388607)
+ 185 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 11 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 16 words of extra memory for PDF output out of 10000 (max. 10000000)
 
