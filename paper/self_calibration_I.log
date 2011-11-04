@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.10.22)  4 NOV 2011 14:57
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.11.1)  4 NOV 2011 20:36
 entering extended mode
  %&-line parsing enabled.
 **self_calibration_I.tex
@@ -243,14 +243,10 @@ File: umsb.fd 2009/06/22 v3.00 AMS symbols B
 ] [3
 
 ] [4] [5] [6] [7] [8] [9] [10] [11]
-[12] [13] [14]
+[12] [13] [14] [15] [16] [17
 
-LaTeX Warning: Reference `sec:deep_req' on page 15 undefined on input line 254.
-
-
-[15] [16] [17
-
-] <./single_image.pdf, id=68, 709.80582pt x 335.12578pt>
+]
+<./single_image.pdf, id=68, 709.80582pt x 335.12578pt>
 File: ./single_image.pdf Graphic file (type pdf)
 
 <use ./single_image.pdf> [18
@@ -258,7 +254,7 @@ File: ./single_image.pdf Graphic file (type pdf)
  <./single_image.pdf>]
 Table 2 has been set to width 380.93137pt
 
-Overfull \hbox (469.75499pt too wide) in paragraph at lines 414--424
+Overfull \hbox (469.75499pt too wide) in paragraph at lines 405--415
  [][][] 
  []
 
@@ -268,13 +264,13 @@ Missing character: There is no § in font cmr12!
 Missing character: There is no Â in font cmr12!
 Missing character: There is no § in font cmr12!
 
-Overfull \hbox (15.69833pt too wide) detected at line 439
+Overfull \hbox (15.69833pt too wide) detected at line 430
  [] 
  []
 
 Table 3 has been set to width 485.45332pt
 
-Overfull \hbox (469.75499pt too wide) in paragraph at lines 432--440
+Overfull \hbox (469.75499pt too wide) in paragraph at lines 423--431
  [][][] 
  []
 
@@ -286,66 +282,62 @@ File: A_8192_ff.pdf Graphic file (type pdf)
 
 <use A_8192_ff.pdf>
 
-LaTeX Warning: Float too large for page by 50.44531pt on input line 456.
+LaTeX Warning: Float too large for page by 50.44531pt on input line 447.
 
 <B_4160_ff.pdf, id=105, 835.14261pt x 669.61134pt>
 File: B_4160_ff.pdf Graphic file (type pdf)
  <use B_4160_ff.pdf>
 
-LaTeX Warning: Float too large for page by 27.91191pt on input line 463.
+LaTeX Warning: Float too large for page by 27.91191pt on input line 454.
 
 <C_026_ff.pdf, id=106, 835.14261pt x 669.61134pt>
 File: C_026_ff.pdf Graphic file (type pdf)
  <use C_026_ff.pdf>
 
-LaTeX Warning: Float too large for page by 27.91191pt on input line 470.
+LaTeX Warning: Float too large for page by 27.91191pt on input line 461.
 
 <D_009_ff.pdf, id=107, 835.14261pt x 669.61134pt>
 File: D_009_ff.pdf Graphic file (type pdf)
  <use D_009_ff.pdf>
 
-LaTeX Warning: Float too large for page by 27.91191pt on input line 477.
+LaTeX Warning: Float too large for page by 27.91191pt on input line 468.
 
 [20] [21 <./simple_surveys.pdf>] [22 <./A_8192_ff.pdf>] [23 <./B_4160_ff.pdf>]
 [24 <./C_026_ff.pdf>] [25 <./D_009_ff.pdf>]
-Overfull \hbox (127.61852pt too wide) in alignment at lines 484--489
+Overfull \hbox (312.84595pt too wide) in alignment at lines 476--481
 [][][][][]
  []
 
-Table 4 has been set to width 469.75499pt
+Table 4 has been set to width 284.52756pt
 
-Overfull \hbox (469.75499pt too wide) in paragraph at lines 484--490
+Overfull \hbox (469.75499pt too wide) in paragraph at lines 476--482
  [][][] 
  []
 
-[26] (./self_calibration_I.aux)
-
-LaTeX Warning: There were undefined references.
-
- ) 
+[26] (./self_calibration_I.aux) ) 
 Here is how much of TeX's memory you used:
- 3257 strings out of 495061
- 40079 string characters out of 1182620
+ 3256 strings out of 495061
+ 40065 string characters out of 1182621
  101832 words of memory out of 3000000
- 6406 multiletter control sequences out of 15000+50000
+ 6405 multiletter control sequences out of 15000+50000
  11357 words of font info for 44 fonts, out of 3000000 for 9000
  28 hyphenation exceptions out of 8191
- 33i,12n,26p,1642b,308s stack positions out of 5000i,500n,10000p,200000b,50000s
-</usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/sha
-re/texmf-texlive/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texmf-te
-xlive/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-texlive/fonts
-/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texmf-texlive/fonts/type1/publ
-ic/amsfonts/cm/cmmi8.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/
-cm/cmr10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr12.pfb
-></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/
-texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-texli
-ve/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texmf-texlive/fonts/typ
-e1/public/amsfonts/cm/cmsy8.pfb></usr/share/texmf-texlive/fonts/type1/public/am
-sfonts/cm/cmti10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/c
-mti12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/euler/eurm10.pf
-b></usr/share/texmf-texlive/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf-
-texlive/fonts/type1/urw/times/utmri8a.pfb>
-Output written on self_calibration_I.pdf (26 pages, 1359340 bytes).
+ 33i,12n,26p,2402b,314s stack positions out of 5000i,500n,10000p,200000b,50000s
+</usr/share/texmf-texlive/fonts/type1/public/a
+msfonts/cm/cmbx12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/
+cmex10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi10.pfb>
+</usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share
+/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texmf-texli
+ve/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-texlive/fonts/typ
+e1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-texlive/fonts/type1/public/am
+sfonts/cm/cmr8.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cms
+y10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy6.pfb></us
+r/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texm
+f-texlive/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texmf-texlive/f
+onts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texmf-texlive/fonts/type1/
+public/amsfonts/euler/eurm10.pfb></usr/share/texmf-texlive/fonts/type1/urw/time
+s/utmr8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/times/utmri8a.pfb>
+Output written on self_calibration_I.pdf (26 pages, 1360436 bytes).
 PDF statistics:
  252 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
