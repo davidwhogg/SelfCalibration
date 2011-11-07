@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.11.1)  4 NOV 2011 20:36
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.11.1)  7 NOV 2011 11:38
 entering extended mode
  %&-line parsing enabled.
 **self_calibration_I.tex
@@ -282,7 +282,7 @@ File: A_8192_ff.pdf Graphic file (type pdf)
 
 <use A_8192_ff.pdf>
 
-LaTeX Warning: Float too large for page by 50.44531pt on input line 447.
+LaTeX Warning: Float too large for page by 51.112pt on input line 447.
 
 <B_4160_ff.pdf, id=105, 835.14261pt x 669.61134pt>
 File: B_4160_ff.pdf Graphic file (type pdf)
@@ -304,13 +304,13 @@ LaTeX Warning: Float too large for page by 27.91191pt on input line 468.
 
 [20] [21 <./simple_surveys.pdf>] [22 <./A_8192_ff.pdf>] [23 <./B_4160_ff.pdf>]
 [24 <./C_026_ff.pdf>] [25 <./D_009_ff.pdf>]
-Overfull \hbox (312.84595pt too wide) in alignment at lines 476--481
+Overfull \hbox (127.61852pt too wide) in alignment at lines 475--480
 [][][][][]
  []
 
-Table 4 has been set to width 284.52756pt
+Table 4 has been set to width 469.75499pt
 
-Overfull \hbox (469.75499pt too wide) in paragraph at lines 476--482
+Overfull \hbox (469.75499pt too wide) in paragraph at lines 475--481
  [][][] 
  []
 
@@ -322,7 +322,7 @@ Here is how much of TeX's memory you used:
  6405 multiletter control sequences out of 15000+50000
  11357 words of font info for 44 fonts, out of 3000000 for 9000
  28 hyphenation exceptions out of 8191
- 33i,12n,26p,2402b,314s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 33i,12n,26p,2416b,308s stack positions out of 5000i,500n,10000p,200000b,50000s
 </usr/share/texmf-texlive/fonts/type1/public/a
 msfonts/cm/cmbx12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/
 cmex10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi10.pfb>
@@ -337,7 +337,7 @@ f-texlive/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texmf-texlive/f
 onts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texmf-texlive/fonts/type1/
 public/amsfonts/euler/eurm10.pfb></usr/share/texmf-texlive/fonts/type1/urw/time
 s/utmr8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/times/utmri8a.pfb>
-Output written on self_calibration_I.pdf (26 pages, 1360436 bytes).
+Output written on self_calibration_I.pdf (26 pages, 1360396 bytes).
 PDF statistics:
  252 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
