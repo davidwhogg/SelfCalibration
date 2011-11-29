@@ -221,123 +221,25 @@ The Survey A and B datasets also give interesting results. With Survey A, the se
 This, along with the success of the procedure with the Surveys C and D datasets, gives an insight into the key property of a survey that makes it good for self-calibration. Namely, the survey should return the same sources to many, very different focal plane positions. This allows the self-calibration procedure to link the different parts of the focal plane with each other through the observations of the same sources. Surveys C and D do this, and the self-calibration procedure performs well with their dataset. Survey A does not do this; it only connects the outer edges of the focal plane to each other. There are no redundant measurements connecting the majority of the focal plane to other positions. This conclusion in confirmed with Strategy B. Here, positions at the outside of the focal plane are well connected to other positions and therefore the self-calibration procedure can well fit the instrument response in these regions. In the center of the focal plane, on which the same sources always fall, there are insufficient redundant measurements to allow for a good fit. Returning the same sources to very different focal plane positions is critical for the self-calibration to work effectively. 
 
 \section{Discussion}
-From the simulations presented in this paper, we are draw two firm conclusions about the self-calibration of large-scale imaging surveys. The first is that, in agreement with previous work, we show that this technique is very powerful, allowing the relative instrument response of an imaging instrument to be accurately retrospectively constrained from the science images alone. The second is that there must be the correct redundancy built into the survey strategy. The same sources must be imaged at very different focal plane positions; regular tiling of the sky is useless for this kind of calibration. 
+From the simulations presented in this paper\footnote{All of the simulations presented in this paper are publicly available at \url{http://trac.astrometry.net/browser/trunk/projects/euclid}.}, we are draw two firm conclusions about the self-calibration of large-scale imaging surveys. The first is that, in agreement with previous work, we show that this technique is very powerful, allowing the relative instrument response of an imaging instrument to be accurately retrospectively constrained from the science images alone. The second is that there must be the correct redundancy built into the survey strategy. The same sources must be imaged at very different focal plane positions; regular tiling of the sky is useless for this kind of calibration. 
 
 In this paper, we have considered the design of survey strategies for calibrating the relative photometric response of an instrument, but we feel there are many more calibration parameters that can be constrained from this method. For example, the optical distortion of an instrument or the point-spread-function variation could also be constrained with such a method, although we concede that the properties of a survey strategy that makes them good for one calibration, may not be the same as that for another; ultimately a trade-off would need to be performed between the different calibration concerns and the other goals of the survey, such as sky coverage, variability monitoring and so-on. 
 
-All of the code used in this work is publicly available at XX.
+
 
 \acknowledgments
 \section{Acknowledgments}
 We are grateful to 
 
-\appendix
-
-%% The reference list follows the main body and any appendices.
-%% Use LaTeX's thebibliography environment to mark up your reference list.
-%% Note \begin{thebibliography} is followed by an empty set of
-%% curly braces.  If you forget this, LaTeX will generate the error
-%% "Perhaps a missing \item?".
-%%
-%% thebibliography produces citations in the text using \bibitem-\cite
-%% cross-referencing. Each reference is preceded by a
-%% \bibitem command that defines in curly braces the KEY that corresponds
-%% to the KEY in the \cite commands (see the first section above).
-%% Make sure that you provide a unique KEY for every \bibitem or else the
-%% paper will not LaTeX. The square brackets should contain
-%% the citation text that LaTeX will insert in
-%% place of the \cite commands.
-
-%% We have used macros to produce journal name abbreviations.
-%% AASTeX provides a number of these for the more frequently-cited journals.
-%% See the Author Guide for a list of them.
-
-%% Note that the style of the \bibitem labels (in []) is slightly
-%% different from previous examples.  The natbib system solves a host
-%% of citation expression problems, but it is necessary to clearly
-%% delimit the year from the author name used in the citation.
-%% See the natbib documentation for more details and options.
-
 \begin{thebibliography}{}
-\bibitem[Padmanabhan et al. (2008)]{pad08} {Padmanabhan, N. et al., An Improved Photometric Calibration of the Sloan Digital Sky Survey Imaging Data, 2008, \apj, 674, 1217}
-303	\bibitem[Windhorst et al. (2011)]{win11}{Windhorst, R.~A. et al., The Hubble Space Telescope Wide Field Camera 3 Early Release Science Data: Panchromatic Faint Object Counts for 0.2-2 $\upmu$m Wavelength, 2011, XX.}
+\bibitem[Padmanabhan et al. (2008)]{pad08} {Padmanabhan, N. et al., An Improved Photometric Calibration of the Sloan Digital Sky Survey Imaging Data, 2008, \apj~674, p1217.}
+\bibitem[Windhorst et al. (2011)]{win11}{Windhorst, R.~A. et al., The Hubble Space Telescope Wide Field Camera 3 Early Release Science Data: Panchromatic Faint Object Counts for 0.2-2 $\upmu$m Wavelength, 2011, \apjs~193, p27.}
 \end{thebibliography}
 \clearpage
 
-
-
-%% Use the figure environment and \plotone or \plottwo to include
-%% figures and captions in your electronic submission.
-%% To embed the sample graphics in
-%% the file, uncomment the \plotone, \plottwo, and
-%% \includegraphics commands
-%%
-%% If you need a layout that cannot be achieved with \plotone or
-%% \plottwo, you can invoke the graphicx package directly with the
-%% \includegraphics command or use \plotfiddle. For more information,
-%% please see the tutorial on "Using Electronic Art with AASTeX" in the
-%% documentation section at the AASTeX Web site, http://aastex.aas.org/
-%%
-%% The examples below also include sample markup for submission of
-%% supplemental electronic materials. As always, be sure to check
-%% the instructions to authors for the journal you are submitting to
-%% for specific submissions guidelines as they vary from
-%% journal to journal.
-
-%% This example uses \plotone to include an EPS file scaled to
-%% 80% of its natural size with \epsscale. Its caption
-%% has been written to indicate that additional figure parts will be
-%% available in the electronic journal.
-
-%% Here we use \plottwo to present two versions of the same figure,
-%% one in black and white for print the other in RGB color
-%% for online presentation. Note that the caption indicates
-%% that a color version of the figure will be available online.
-%%
-
-
-%% This figure uses \includegraphics to scale and rotate the still frame
-%% for an mpeg animation.
-
-
-%% If you are not including electonic art with your submission, you may
-%% mark up your captions using the \figcaption command. See the
-%% User Guide for details.
-%%
-%% No more than seven \figcaption commands are allowed per page,
-%% so if you have more than seven captions, insert a \clearpage
-%% after every seventh one.
-
-%% Tables should be submitted one per page, so put a \clearpage before
-%% each one.
-
-%% Two options are available to the author for producing tables:  the
-%% deluxetable environment provided by the AASTeX package or the LaTeX
-%% table environment.  Use of deluxetable is preferred.
-%%
-
-%% Three table samples follow, two marked up in the deluxetable environment,
-%% one marked up as a LaTeX table.
-
-%% In this first example, note that the \tabletypesize{}
-%% command has been used to reduce the font size of the table.
-%% We also use the \rotate command to rotate the table to
-%% landscape orientation since it is very wide even at the
-%% reduced font size.
-%%
-%% Note also that the \label command needs to be placed
-%% inside the \tablecaption.
-
-%% This table also includes a table comment indicating that the full
-%% version will be available in machine-readable format in the electronic
-%% edition.
-
-
-\begin{figure}[ht]
-\begin{center}
-\includegraphics[width=\textwidth]{./single_image.pdf}
-\end{center}
-\caption{A single exposure of the synthetic sky. Left: A plot of the bright sources within the synthetic sky used in the self-calibration procedure, with the focal plane footprint overlaid. Right: The resultant distribution of the sources on the instrument's focal plane. The \textit{true} instrument model $f_{\true}(\vec{x_i} | \vec{q}_\true)$ is shown with contours.\label{fig:single_image}}
+\begin{figure}
+\plotone{./single_image.pdf}
+\figcaption{A single exposure of the synthetic sky. Left: A plot of the bright sources within the synthetic sky used in the self-calibration procedure, with the focal plane footprint overlaid. Right: The resultant distribution of the sources on the instrument's focal plane. The \textit{true} instrument model $f_{\true}(\vec{x_i} | \vec{q}_\true)$ is shown with contours.\label{fig:single_image}}
 \end{figure}
 
 \clearpage
@@ -360,8 +262,9 @@ Fitted Instrument Response Model & 8$^{\text{th}}$ order polynomial\\
 
 \clearpage
 \begin{deluxetable}{cccc}
-\tablewidth{0pt}
+\rotate
 \tablecaption{A summary of the four simple survey strategies considered in this paper. \label{tab:simple_surveys}}
+\tablewidth{0pt}
 \tablehead{
 \colhead{Survey Label} & \colhead{Pointing Center} & \colhead{Orientation} & \colhead{Number of Pointings}}
 \startdata
@@ -374,46 +277,36 @@ D   & Quasi-Random  & Random & 1728\\
 \enddata
 \end{deluxetable}
 
-
-
-\begin{figure}[ht]
-\begin{center}
-\includegraphics[width=\textwidth]{simple_surveys.pdf}
-\end{center}
-\caption{Focal plane footprints projected onto the synthetic sky according to the four simple survey strategies described in Section \ref{sec:simple_surveys} and summarized in Table \ref{tab:simple_surveys}. Surveys A, B and D have 1728 pointings and survey C has 1720 pointings.\label{fig:simple_surveys}}
+\begin{figure}
+\plotone{simple_surveys.pdf}
+\figcaption{Focal plane footprints projected onto the synthetic sky according to the four simple survey strategies described in Section \ref{sec:simple_surveys} and summarized in Table \ref{tab:simple_surveys}. Surveys A, B and D have 1728 pointings and survey C has 1720 pointings.\label{fig:simple_surveys}}
 \end{figure}
 
-\begin{figure}[ht]
-\begin{center}
-\includegraphics[width=\textwidth]{A_8192_ff.pdf}
-\end{center}
-\caption{A comparison of the fitted instrument response model $f_\fit(\vec{x_j} | \vec{q_\fit})$ obtained from self-calibrating the Survey A dataset compared to the true $f_\true(\vec{x} | \vec{q_\true})$ and best-in-basis $f_\basis(\vec{x_j} | \vec{q_\basis})$ instrument response models. The self-calibration procedure did not converged to the final solution and the results presented here correspond to the instrument response found after $8192$ iterations. (a) Contour plot of the fitted (black) compared to the \textit{true} (gray) instrument response. (c) Contour plot of the fitted (black) compared to the \textit{best-in-basis} (gray) instrument response model. The best-in-basis instrument response is the best fit to the true instrument response possible with the basis used to model the instrument response in the self-calibration procedure (in this case an eighth order polynomial). The plots (b) and (d) show the residuals between the two instrument response models plotted in (a) and (c) respectively.\label{fig:A_result}}
+\begin{figure}
+\plotone{A_8192_ff.pdf}
+\figcaption{A comparison of the fitted instrument response model $f_\fit(\vec{x_j} | \vec{q_\fit})$ obtained from self-calibrating the Survey A dataset compared to the true $f_\true(\vec{x} | \vec{q_\true})$ and best-in-basis $f_\basis(\vec{x_j} | \vec{q_\basis})$ instrument response models. The self-calibration procedure did not converged to the final solution and the results presented here correspond to the instrument response found after $8192$ iterations. (a) Contour plot of the fitted (black) compared to the \textit{true} (gray) instrument response. (c) Contour plot of the fitted (black) compared to the \textit{best-in-basis} (gray) instrument response model. The best-in-basis instrument response is the best fit to the true instrument response possible with the basis used to model the instrument response in the self-calibration procedure (in this case an eighth order polynomial). The plots (b) and (d) show the residuals between the two instrument response models plotted in (a) and (c) respectively.\label{fig:A_result}}
 \end{figure}
 
-\begin{figure}[ht]
-\begin{center}
-\includegraphics[width=\textwidth]{B_4160_ff.pdf}
-\end{center}
-\caption{A comparison of the fitted instrument response model $f_\fit(\vec{x_j} | \vec{q_\fit})$ obtained from self-calibrating the Survey B dataset compared to the true $f_\true(\vec{x} | \vec{q_\true})$ and best-in-basis $f_\basis(\vec{x_j} | \vec{q_\basis})$ instrument response models. The self-calibration procedure converged to the final solution after 4160 iterations. (a) Contour plot of the fitted (black) compared to the \textit{true} (gray) instrument response. (c) Contour plot of the fitted (black) compared to the \textit{best-in-basis} (gray) instrument response model. The best-in-basis instrument response is the best fit to the true instrument response possible with the basis used to model the instrument response in the self-calibration procedure (in this case an eighth order polynomial). The plots (b) and (d) show the residuals between the two instrument response models plotted in (a) and (c) respectively.\label{fig:B_result}}
+\begin{figure}
+\plotone{B_4160_ff.pdf}
+\figcaption{A comparison of the fitted instrument response model $f_\fit(\vec{x_j} | \vec{q_\fit})$ obtained from self-calibrating the Survey B dataset compared to the true $f_\true(\vec{x} | \vec{q_\true})$ and best-in-basis $f_\basis(\vec{x_j} | \vec{q_\basis})$ instrument response models. The self-calibration procedure converged to the final solution after 4160 iterations. (a) Contour plot of the fitted (black) compared to the \textit{true} (gray) instrument response. (c) Contour plot of the fitted (black) compared to the \textit{best-in-basis} (gray) instrument response model. The best-in-basis instrument response is the best fit to the true instrument response possible with the basis used to model the instrument response in the self-calibration procedure (in this case an eighth order polynomial). The plots (b) and (d) show the residuals between the two instrument response models plotted in (a) and (c) respectively.\label{fig:B_result}}
 \end{figure}
 
-\begin{figure}[ht]
-\begin{center}
-\includegraphics[width=\textwidth]{C_026_ff.pdf}
-\end{center}
-\caption{A comparison of the fitted instrument response model $f_\fit(\vec{x_j} | \vec{q_\fit})$ obtained from self-calibrating the Survey C dataset compared to the true $f_\true(\vec{x} | \vec{q_\true})$ and best-in-basis $f_\basis(\vec{x_j} | \vec{q_\basis})$ instrument response models. The self-calibration procedure converged to the final solution after 26 iterations. (a) Contour plot of the fitted (black) compared to the \textit{true} (gray) instrument response. (c) Contour plot of the fitted (black) compared to the \textit{best-in-basis} (gray) instrument response model. The best-in-basis instrument response is the best fit to the true instrument response possible with the basis used to model the instrument response in the self-calibration procedure (in this case an eighth order polynomial). The plots (b) and (d) show the residuals between the two instrument response models plotted in (a) and (c) respectively.\label{fig:C_result}}
+\begin{figure}
+\plotone{C_026_ff.pdf}
+\figcaption{A comparison of the fitted instrument response model $f_\fit(\vec{x_j} | \vec{q_\fit})$ obtained from self-calibrating the Survey C dataset compared to the true $f_\true(\vec{x} | \vec{q_\true})$ and best-in-basis $f_\basis(\vec{x_j} | \vec{q_\basis})$ instrument response models. The self-calibration procedure converged to the final solution after 26 iterations. (a) Contour plot of the fitted (black) compared to the \textit{true} (gray) instrument response. (c) Contour plot of the fitted (black) compared to the \textit{best-in-basis} (gray) instrument response model. The best-in-basis instrument response is the best fit to the true instrument response possible with the basis used to model the instrument response in the self-calibration procedure (in this case an eighth order polynomial). The plots (b) and (d) show the residuals between the two instrument response models plotted in (a) and (c) respectively.\label{fig:C_result}}
 \end{figure}
 
-\begin{figure}[ht]
-\begin{center}
-\includegraphics[width=\textwidth]{D_009_ff.pdf}
-\end{center}
-\caption{A comparison of the fitted instrument response model $f_\fit(\vec{x_j} | \vec{q_\fit})$ obtained from self-calibrating the Survey D dataset compared to the true $f_\true(\vec{x} | \vec{q_\true})$ and best-in-basis $f_\basis(\vec{x_j} | \vec{q_\basis})$ instrument response models. The self-calibration procedure converged to the final solution after 9 iterations. (a) Contour plot of the fitted (black) compared to the \textit{true} (gray) instrument response. (c) Contour plot of the fitted (black) compared to the \textit{best-in-basis} (gray) instrument response model. The best-in-basis instrument response is the best fit to the true instrument response possible with the basis used to model the instrument response in the self-calibration procedure (in this case an eighth order polynomial). The plots (b) and (d) show the residuals between the two instrument response models plotted in (a) and (c) respectively.\label{fig:D_result}}
+\begin{figure}
+\plotone{D_009_ff.pdf}
+\figcaption{A comparison of the fitted instrument response model $f_\fit(\vec{x_j} | \vec{q_\fit})$ obtained from self-calibrating the Survey D dataset compared to the true $f_\true(\vec{x} | \vec{q_\true})$ and best-in-basis $f_\basis(\vec{x_j} | \vec{q_\basis})$ instrument response models. The self-calibration procedure converged to the final solution after 9 iterations. (a) Contour plot of the fitted (black) compared to the \textit{true} (gray) instrument response. (c) Contour plot of the fitted (black) compared to the \textit{best-in-basis} (gray) instrument response model. The best-in-basis instrument response is the best fit to the true instrument response possible with the basis used to model the instrument response in the self-calibration procedure (in this case an eighth order polynomial). The plots (b) and (d) show the residuals between the two instrument response models plotted in (a) and (c) respectively.\label{fig:D_result}}
 \end{figure}
 
 \clearpage
 \begin{deluxetable}{ccccc}
+\rotate
 \tablecaption{A summary of the quality of the final fit from the self-calibration procedure with the four simple survey strategies summarized in Table \ref{tab:simple_surveys}. The self-calibration procedure was run with only the brightest sources within the survey area; the source error $S_\text{RMS}$ corresponds to the measurements of these sources only and not all those within the survey. *Did not converge.\label{tab:simple_results}}
+\tablewidth{0pt}
 \tablehead{
 \colhead{Survey Name} & \colhead{Iterations} & \colhead{Source Error $S_\rms$(\%)} & \colhead{True Badness $B_\true$ (\%)} & \colhead{Best-in-Basis Badness $B_\basis$ (\%)} }
 \startdata
@@ -424,37 +317,5 @@ D  & 9 & 0.113 & 0.304 & 0.032 \\
 \enddata
 \end{deluxetable}
 
-%% If you use the table environment, please indicate horizontal rules using
-%% \tableline, not \hline.
-%% Do not put multiple tabular environments within a single table.
-%% The optional \label should appear inside the \caption command.
-
-%% If the table is more than one page long, the width of the table can vary
-%% from page to page when the default \tablewidth is used, as below.  The
-%% individual table widths for each page will be written to the log file; a
-%% maximum tablewidth for the table can be computed from these values.
-%% The \tablewidth argument can then be reset and the file reprocessed, so
-%% that the table is of uniform width throughout. Try getting the widths
-%% from the log file and changing the \tablewidth parameter to see how
-%% adjusting this value affects table formatting.
-
-%% The \dataset{} macro has also been applied to a few of the objects to
-%% show how many observations can be tagged in a table.
-
-%% Tables may also be prepared as separate files. See the accompanying
-%% sample file table.tex for an example of an external table file.
-%% To include an external file in your main document, use the \input
-%% command. Uncomment the line below to include table.tex in this
-%% sample file. (Note that you will need to comment out the \documentclass,
-%% \begin{document}, and \end{document} commands from table.tex if you want
-%% to include it in this document.)
-
-%% \input{table}
-
-%% The following command ends your manuscript. LaTeX will ignore any text
-%% that appears after it.
-
 \end{document}
 
-%%
-%% End of file `sample.tex'.
