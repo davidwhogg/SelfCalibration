@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.11.1)  7 NOV 2011 11:38
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.11.1)  29 NOV 2011 13:29
 entering extended mode
  %&-line parsing enabled.
 **self_calibration_I.tex
@@ -223,16 +223,16 @@ LaTeX Font Info:    ... okay on input line 19.
 \everyMPtoPDFconversion=\toks24
 )
 AAS manuscript substyle, v5.2 <12 Dec 2003>.
-LaTeX Font Info:    Try loading font information for U+lasy on input line 74.
+LaTeX Font Info:    Try loading font information for U+lasy on input line 45.
 (/usr/share/texmf-texlive/tex/latex/base/ulasy.fd
 File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
 )
-LaTeX Font Info:    Try loading font information for U+msa on input line 74.
+LaTeX Font Info:    Try loading font information for U+msa on input line 45.
 
 (/usr/share/texmf-texlive/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2009/06/22 v3.00 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 74.
+LaTeX Font Info:    Try loading font information for U+msb on input line 45.
 
 (/usr/share/texmf-texlive/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2009/06/22 v3.00 AMS symbols B
@@ -243,86 +243,86 @@ File: umsb.fd 2009/06/22 v3.00 AMS symbols B
 ] [3
 
 ] [4] [5] [6] [7] [8] [9] [10] [11]
-[12] [13] [14] [15] [16] [17
+[12] [13] [14] [15] [16] [17] [18
 
 ]
-<./single_image.pdf, id=68, 709.80582pt x 335.12578pt>
+<./single_image.pdf, id=71, 709.80582pt x 335.12578pt>
 File: ./single_image.pdf Graphic file (type pdf)
 
-<use ./single_image.pdf> [18
+<use ./single_image.pdf> [19
 
  <./single_image.pdf>]
 Table 2 has been set to width 380.93137pt
 
-Overfull \hbox (469.75499pt too wide) in paragraph at lines 405--415
+Overfull \hbox (469.75499pt too wide) in paragraph at lines 349--359
  [][][] 
  []
 
-[19]
+[20]
 Missing character: There is no Â in font cmr12!
 Missing character: There is no § in font cmr12!
 Missing character: There is no Â in font cmr12!
 Missing character: There is no § in font cmr12!
 
-Overfull \hbox (15.69833pt too wide) detected at line 430
+Overfull \hbox (15.69833pt too wide) detected at line 374
  [] 
  []
 
 Table 3 has been set to width 485.45332pt
 
-Overfull \hbox (469.75499pt too wide) in paragraph at lines 423--431
+Overfull \hbox (469.75499pt too wide) in paragraph at lines 367--375
  [][][] 
  []
 
-<simple_surveys.pdf, id=103, 709.80582pt x 700.01485pt>
+<simple_surveys.pdf, id=106, 709.80582pt x 700.01485pt>
 File: simple_surveys.pdf Graphic file (type pdf)
 
-<use simple_surveys.pdf> <A_8192_ff.pdf, id=104, 835.14261pt x 669.61134pt>
+<use simple_surveys.pdf> <A_8192_ff.pdf, id=107, 835.14261pt x 669.61134pt>
 File: A_8192_ff.pdf Graphic file (type pdf)
 
 <use A_8192_ff.pdf>
 
-LaTeX Warning: Float too large for page by 51.112pt on input line 447.
+LaTeX Warning: Float too large for page by 51.112pt on input line 391.
 
-<B_4160_ff.pdf, id=105, 835.14261pt x 669.61134pt>
+<B_4160_ff.pdf, id=108, 835.14261pt x 669.61134pt>
 File: B_4160_ff.pdf Graphic file (type pdf)
  <use B_4160_ff.pdf>
 
-LaTeX Warning: Float too large for page by 27.91191pt on input line 454.
+LaTeX Warning: Float too large for page by 27.91191pt on input line 398.
 
-<C_026_ff.pdf, id=106, 835.14261pt x 669.61134pt>
+<C_026_ff.pdf, id=109, 835.14261pt x 669.61134pt>
 File: C_026_ff.pdf Graphic file (type pdf)
  <use C_026_ff.pdf>
 
-LaTeX Warning: Float too large for page by 27.91191pt on input line 461.
+LaTeX Warning: Float too large for page by 27.91191pt on input line 405.
 
-<D_009_ff.pdf, id=107, 835.14261pt x 669.61134pt>
+<D_009_ff.pdf, id=110, 835.14261pt x 669.61134pt>
 File: D_009_ff.pdf Graphic file (type pdf)
  <use D_009_ff.pdf>
 
-LaTeX Warning: Float too large for page by 27.91191pt on input line 468.
+LaTeX Warning: Float too large for page by 27.91191pt on input line 412.
 
-[20] [21 <./simple_surveys.pdf>] [22 <./A_8192_ff.pdf>] [23 <./B_4160_ff.pdf>]
-[24 <./C_026_ff.pdf>] [25 <./D_009_ff.pdf>]
-Overfull \hbox (127.61852pt too wide) in alignment at lines 475--480
+[21] [22 <./simple_surveys.pdf>] [23 <./A_8192_ff.pdf>] [24 <./B_4160_ff.pdf>]
+[25 <./C_026_ff.pdf>] [26 <./D_009_ff.pdf>]
+Overfull \hbox (127.61852pt too wide) in alignment at lines 419--424
 [][][][][]
  []
 
 Table 4 has been set to width 469.75499pt
 
-Overfull \hbox (469.75499pt too wide) in paragraph at lines 475--481
+Overfull \hbox (469.75499pt too wide) in paragraph at lines 419--425
  [][][] 
  []
 
-[26] (./self_calibration_I.aux) ) 
+[27] (./self_calibration_I.aux) ) 
 Here is how much of TeX's memory you used:
- 3256 strings out of 495061
- 40065 string characters out of 1182621
- 101832 words of memory out of 3000000
- 6405 multiletter control sequences out of 15000+50000
+ 3255 strings out of 495061
+ 40057 string characters out of 1182621
+ 101829 words of memory out of 3000000
+ 6404 multiletter control sequences out of 15000+50000
  11357 words of font info for 44 fonts, out of 3000000 for 9000
  28 hyphenation exceptions out of 8191
- 33i,12n,26p,2416b,308s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 33i,12n,26p,1617b,308s stack positions out of 5000i,500n,10000p,200000b,50000s
 </usr/share/texmf-texlive/fonts/type1/public/a
 msfonts/cm/cmbx12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/
 cmex10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi10.pfb>
@@ -337,9 +337,9 @@ f-texlive/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texmf-texlive/f
 onts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texmf-texlive/fonts/type1/
 public/amsfonts/euler/eurm10.pfb></usr/share/texmf-texlive/fonts/type1/urw/time
 s/utmr8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/times/utmri8a.pfb>
-Output written on self_calibration_I.pdf (26 pages, 1360396 bytes).
+Output written on self_calibration_I.pdf (27 pages, 1360025 bytes).
 PDF statistics:
- 252 PDF objects out of 1000 (max. 8388607)
+ 255 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  31 words of extra memory for PDF output out of 10000 (max. 10000000)
 
