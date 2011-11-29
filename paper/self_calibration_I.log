@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.11.1)  29 NOV 2011 13:48
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.11.1)  29 NOV 2011 13:57
 entering extended mode
  %&-line parsing enabled.
 **self_calibration_I.tex
@@ -259,7 +259,7 @@ File: ./single_image.pdf Graphic file (type pdf)
 <use ./single_image.pdf> [19 <./single_image.pdf>]
 Table 2 has been set to width 380.93137pt
 
-Overfull \hbox (469.75499pt too wide) in paragraph at lines 251--261
+Overfull \hbox (469.75499pt too wide) in paragraph at lines 252--262
  [][][] 
  []
 
@@ -271,7 +271,7 @@ Missing character: There is no § in font cmr12!
 
 Table 3 has been set to width 485.45332pt
 
-Overfull \hbox (607.06755pt too wide) in paragraph at lines 270--278
+Overfull \hbox (607.06755pt too wide) in paragraph at lines 271--279
  [][][] 
  []
 
@@ -285,43 +285,43 @@ Plotone included the file A_8192_ff.pdf
 File: A_8192_ff.pdf Graphic file (type pdf)
  <use A_8192_ff.pdf>
 
-LaTeX Warning: Float too large for page by 38.112pt on input line 288.
+LaTeX Warning: Float too large for page by 38.112pt on input line 289.
 
 Plotone included the file B_4160_ff.pdf
 <B_4160_ff.pdf, id=108, 835.14261pt x 669.61134pt>
 File: B_4160_ff.pdf Graphic file (type pdf)
  <use B_4160_ff.pdf>
 
-LaTeX Warning: Float too large for page by 14.91191pt on input line 293.
+LaTeX Warning: Float too large for page by 14.91191pt on input line 294.
 
 Plotone included the file C_026_ff.pdf
 <C_026_ff.pdf, id=109, 835.14261pt x 669.61134pt>
 File: C_026_ff.pdf Graphic file (type pdf)
  <use C_026_ff.pdf>
 
-LaTeX Warning: Float too large for page by 14.91191pt on input line 298.
+LaTeX Warning: Float too large for page by 14.91191pt on input line 299.
 
 Plotone included the file D_009_ff.pdf
 <D_009_ff.pdf, id=110, 835.14261pt x 669.61134pt>
 File: D_009_ff.pdf Graphic file (type pdf)
  <use D_009_ff.pdf>
 
-LaTeX Warning: Float too large for page by 14.91191pt on input line 303.
+LaTeX Warning: Float too large for page by 14.91191pt on input line 304.
 
 [21] [22 <./simple_surveys.pdf>] [23 <./A_8192_ff.pdf>] [24 <./B_4160_ff.pdf>]
 [25 <./C_026_ff.pdf>] [26 <./D_009_ff.pdf>]
 Table 4 has been set to width 597.3735pt
 
-Overfull \hbox (607.06755pt too wide) in paragraph at lines 312--318
+Overfull \hbox (607.06755pt too wide) in paragraph at lines 313--319
  [][][] 
  []
 
 [27] (./self_calibration_I.aux) ) 
 Here is how much of TeX's memory you used:
- 3255 strings out of 495061
- 40057 string characters out of 1182621
- 102375 words of memory out of 3000000
- 6404 multiletter control sequences out of 15000+50000
+ 3258 strings out of 495061
+ 40096 string characters out of 1182621
+ 102405 words of memory out of 3000000
+ 6407 multiletter control sequences out of 15000+50000
  11357 words of font info for 44 fonts, out of 3000000 for 9000
  28 hyphenation exceptions out of 8191
  33i,12n,26p,1617b,314s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -339,7 +339,7 @@ f-texlive/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texmf-texlive/f
 onts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texmf-texlive/fonts/type1/
 public/amsfonts/euler/eurm10.pfb></usr/share/texmf-texlive/fonts/type1/urw/time
 s/utmr8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/times/utmri8a.pfb>
-Output written on self_calibration_I.pdf (27 pages, 1360472 bytes).
+Output written on self_calibration_I.pdf (27 pages, 1360553 bytes).
 PDF statistics:
  255 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
