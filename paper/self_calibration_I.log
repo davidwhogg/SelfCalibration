@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.1.4)  4 JAN 2012 17:04
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.12.20)  4 JAN 2012 19:35
 entering extended mode
  %&-line parsing enabled.
 **self_calibration_I.tex
@@ -319,12 +319,12 @@ Overfull \hbox (607.06755pt too wide) in paragraph at lines 313--319
 [27] (./self_calibration_I.aux) ) 
 Here is how much of TeX's memory you used:
  3257 strings out of 495061
- 39972 string characters out of 1182622
+ 39972 string characters out of 1182620
  102405 words of memory out of 3000000
  6407 multiletter control sequences out of 15000+50000
  11357 words of font info for 44 fonts, out of 3000000 for 9000
  28 hyphenation exceptions out of 8191
- 33i,12n,26p,1617b,314s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 33i,12n,26p,1664b,314s stack positions out of 5000i,500n,10000p,200000b,50000s
 </usr/share/texmf-texlive/fonts/type1/public/a
 msfonts/cm/cmbx12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/
 cmex10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi10.pfb>
@@ -339,7 +339,7 @@ f-texlive/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texmf-texlive/f
 onts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texmf-texlive/fonts/type1/
 public/amsfonts/euler/eurm10.pfb></usr/share/texmf-texlive/fonts/type1/urw/time
 s/utmr8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/times/utmri8a.pfb>
-Output written on self_calibration_I.pdf (27 pages, 1361332 bytes).
+Output written on self_calibration_I.pdf (27 pages, 1361087 bytes).
 PDF statistics:
  255 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
