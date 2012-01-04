@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.11.1)  2 DEC 2011 17:26
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.1.4)  4 JAN 2012 17:04
 entering extended mode
  %&-line parsing enabled.
 **self_calibration_I.tex
@@ -6,7 +6,7 @@ entering extended mode
 LaTeX2e <2009/09/24>
 Babel <v3.8l> and hyphenation patterns for english, usenglishmax, dumylang, noh
 yphenation, loaded.
-(/usr/share/texmf-texlive/tex/latex/aastex/aastex.cls
+(./aastex.cls
 Document Class: aastex 2005/06/22 5.2/AAS markup document class
 Class aastex Info: Original \LaTeX2.09 style by Chris Biemesderfer (chris@seago
 at.com). Adapted to \LaTeXe by A. Ogawa (ogawa@teleport.com) on input line 83.
@@ -318,8 +318,8 @@ Overfull \hbox (607.06755pt too wide) in paragraph at lines 313--319
 
 [27] (./self_calibration_I.aux) ) 
 Here is how much of TeX's memory you used:
- 3258 strings out of 495061
- 40096 string characters out of 1182621
+ 3257 strings out of 495061
+ 39972 string characters out of 1182622
  102405 words of memory out of 3000000
  6407 multiletter control sequences out of 15000+50000
  11357 words of font info for 44 fonts, out of 3000000 for 9000
