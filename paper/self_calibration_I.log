@@ -1,11 +1,17 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.1.4)  16 JAN 2012 11:31
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.2.14)  16 FEB 2012 14:21
 entering extended mode
  %&-line parsing enabled.
 **self_calibration_I.tex
 (./self_calibration_I.tex
 LaTeX2e <2009/09/24>
 Babel <v3.8l> and hyphenation patterns for english, usenglishmax, dumylang, noh
-yphenation, loaded.
+yphenation, farsi, arabic, croatian, bulgarian, ukrainian, russian, czech, slov
+ak, danish, dutch, finnish, french, basque, ngerman, german, german-x-2009-06-1
+9, ngerman-x-2009-06-19, ibycus, monogreek, greek, ancientgreek, hungarian, san
+skrit, italian, latin, latvian, lithuanian, mongolian2a, mongolian, bokmal, nyn
+orsk, romanian, irish, coptic, serbian, turkish, welsh, esperanto, uppersorbian
+, estonian, indonesian, interlingua, icelandic, kurmanji, slovenian, polish, po
+rtuguese, spanish, galician, catalan, swedish, ukenglish, pinyin, loaded.
 (./aastex.cls
 Document Class: aastex 2005/06/22 5.2/AAS markup document class
 Class aastex Info: Original \LaTeX2.09 style by Chris Biemesderfer (chris@seago
@@ -259,7 +265,7 @@ File: ./single_image.pdf Graphic file (type pdf)
 <use ./single_image.pdf> [20 <./single_image.pdf>]
 Table 2 has been set to width 380.93137pt
 
-Overfull \hbox (469.75499pt too wide) in paragraph at lines 253--263
+Overfull \hbox (469.75499pt too wide) in paragraph at lines 255--265
  [][][] 
  []
 
@@ -271,7 +277,7 @@ Missing character: There is no § in font cmr12!
 
 Table 3 has been set to width 485.45332pt
 
-Overfull \hbox (607.06755pt too wide) in paragraph at lines 272--280
+Overfull \hbox (607.06755pt too wide) in paragraph at lines 274--282
  [][][] 
  []
 
@@ -285,7 +291,7 @@ Plotone included the file A_8192_ff.pdf
 File: A_8192_ff.pdf Graphic file (type pdf)
  <use A_8192_ff.pdf>
 
-LaTeX Warning: Float too large for page by 14.24522pt on input line 290.
+LaTeX Warning: Float too large for page by 14.24522pt on input line 292.
 
 Plotone included the file B_4160_ff.pdf
 <B_4160_ff.pdf, id=111, 835.14261pt x 669.61134pt>
@@ -303,19 +309,19 @@ File: D_009_ff.pdf Graphic file (type pdf)
 [26 <./C_026_ff.pdf>] [27 <./D_009_ff.pdf>]
 Table 4 has been set to width 597.3735pt
 
-Overfull \hbox (607.06755pt too wide) in paragraph at lines 314--320
+Overfull \hbox (607.06755pt too wide) in paragraph at lines 316--322
  [][][] 
  []
 
 [28] (./self_calibration_I.aux) ) 
 Here is how much of TeX's memory you used:
- 3257 strings out of 495061
- 39972 string characters out of 1182622
- 100863 words of memory out of 3000000
- 6407 multiletter control sequences out of 15000+50000
+ 3257 strings out of 493848
+ 39972 string characters out of 1152823
+ 101843 words of memory out of 3000000
+ 6506 multiletter control sequences out of 15000+50000
  11357 words of font info for 44 fonts, out of 3000000 for 9000
- 28 hyphenation exceptions out of 8191
- 33i,12n,26p,1690b,314s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 714 hyphenation exceptions out of 8191
+ 33i,12n,26p,1598b,312s stack positions out of 5000i,500n,10000p,200000b,50000s
 </usr/share/texmf-texlive/fonts/type1/public/a
 msfonts/cm/cmbx12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/
 cmex10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi10.pfb>
@@ -330,7 +336,7 @@ f-texlive/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texmf-texlive/f
 onts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texmf-texlive/fonts/type1/
 public/amsfonts/euler/eurm10.pfb></usr/share/texmf-texlive/fonts/type1/urw/time
 s/utmr8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/times/utmri8a.pfb>
-Output written on self_calibration_I.pdf (28 pages, 1361609 bytes).
+Output written on self_calibration_I.pdf (28 pages, 1361600 bytes).
 PDF statistics:
  258 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
