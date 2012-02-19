@@ -9,9 +9,11 @@ from __future__ import division, print_function
 
 # Standard Modules
 import numpy as np
-import functions as f
 import god
+import pickle
 
+# Custom Modules
+import self_calibration
 
 def badness(p, q, verbose=False):
 
@@ -26,7 +28,7 @@ def badness(p, q, verbose=False):
     X, Y = np.meshgrid(x, y)
     temp_x = np.reshape(X, -1)
     temp_y = np.reshape(Y, -1)
-    our_ff = f.evaluate_flat_field(p, temp_x, temp_y, q)
+    our_ff = self_calibration.evaluate_flat_field(p, temp_x, temp_y, q)
     god_ff = god.flat_field(p, temp_x, temp_y)
     badness = 100. * np.sqrt(np.mean(((our_ff - god_ff) / god_ff) ** 2))
 
@@ -49,10 +51,10 @@ def best_in_basis(p, q, data_dir, verbose=False):
     X, Y = np.meshgrid(x, y)
     temp_x = np.reshape(X, -1)
     temp_y = np.reshape(Y, -1)
-    our_ff = f.evaluate_flat_field(p, temp_x, temp_y, q)
-    pickle_dic = pickle.load(open(out_dir + '/bestfit_ff.p'))
+    our_ff = self_calibration.evaluate_flat_field(p, temp_x, temp_y, q)
+    pickle_dic = pickle.load(open(data_dir + '/bestfit_ff.p'))
     bestfit_ff_parameters = pickle_dic['fit_parameters']
-    bestfit_ff = evaluate_flat_field(p, temp_x, temp_y, \
+    bestfit_ff = self_calibration.evaluate_flat_field(p, temp_x, temp_y, \
                                                 bestfit_ff_parameters)
     badness = 100. * np.sqrt(
                         np.mean(((our_ff - bestfit_ff) / bestfit_ff) ** 2))

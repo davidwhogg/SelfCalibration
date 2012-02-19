@@ -36,7 +36,7 @@ def survey(params, sky_catalog, survey_file, data_dir, plots=False, \
 
     obs_cat = None
     for i in range(number_pointings):
-        si = single_image.single_image(params, sky_catalog, \
+        si = single_image.measure(params, sky_catalog, \
                     np.array([pointing[i, 1], pointing[i, 2]]), \
                     pointing[i, 3], data_dir, plots=plots, verbose=verbose)
         if obs_cat is None:

@@ -48,7 +48,7 @@ def fitted_flat_field(p, q, it_no, data_dir, verbose=False):
     reshape_y = np.reshape(Y, -1)
     reshape_z = self_calibration.evaluate_flat_field(p, reshape_x,
                                                             reshape_y, q)
-    fitted_ff = np.reshape(reshape_z, len(X[:, 0]), len(X[0, :]))
+    fitted_ff = np.reshape(reshape_z, (len(X[:, 0]), len(X[0, :])))
     dic = {'x': X, 'y': Y, 'fitted_ff': fitted_ff, 'iteration_number': it_no}
     pickle.dump(dic, open(filename, "wb"))
 
@@ -119,7 +119,7 @@ def invvar(obs_cat, data_dir, verbose=False):
     verbose         :   boolean
         True to run function in verbose mode
     '''
-    
+
     filename = data_dir + '/invvar.p'
     if verbose:
         print("Saving out inverse variance to {0}...".format(filename))
@@ -132,23 +132,24 @@ def invvar(obs_cat, data_dir, verbose=False):
         print("...done!")
 
 
-def bestfit_ff(p, out_dir, verbose=False):
+def bestfit_ff(p, data_dir, verbose=False):
     ''' Calculates the best fit possible to God's flat-field with the basis
-    used to model it during the self-calibration procedure. Saves out the 
+    used to model it during the self-calibration procedure. Saves out the
     data at sample points across the focal plane
-    
+
     p                   :   dictionary
         Parameters used in the self-calibration simulation
-    out_dir            :   str
+    data_dir            :   str
         The directory name in which the output data should be stored
     verbose             :   boolean
         True to run function in verbose mode
     '''
-    
-    filename = '%s/bestfit_ff.p' % (out_dir)
+
+    filename = data_dir + '/bestfit_ff.p'
     if verbose:
         print("Saving out the best fit to God's flat-field to {0}"
                                                         .format(filename))
+
     order = p['flat_field_order']
     ff_samples = p['ff_samples']
     temp_x = np.linspace(-0.5 * p['FoV'][0], 0.5 * p['FoV'][0], ff_samples[0])
@@ -164,7 +165,7 @@ def bestfit_ff(p, out_dir, verbose=False):
     a[5] = 0.5
     print("Fitting god's flat-field with basis...")
     fitted_parameters = opt.fmin_bfgs(self_calibration.compare_flats, a,
-                        args=(god_ff, g, x, y), gtol=1e-8, maxiter=1e16)
+                        args=(god_ff, g, x, y), gtol=1e-4, maxiter=1e6)
     print("Done: Fitted Parameters: ", fitted_parameters)
     fitted_parameters = self_calibration.normalize_flat_field(p,
                                                         fitted_parameters)
@@ -173,5 +174,33 @@ def bestfit_ff(p, out_dir, verbose=False):
     dic = {'x': X, 'y': Y, 'bestfit_ff': bestfit_ff,
                 'fit_parameters': fitted_parameters}
     pickle.dump(dic, open(filename, "wb"))
+
+    if verbose:
+        print("...done!")
+
+
+def god_ff(p, data_dir, verbose=False):
+    ''' Saves out the God's flat-field at sample points across the focal plane
+
+    p                   :   dictionary
+        Parameters used in the self-calibration simulation
+    data_dir            :   str
+        The directory name in which the output data should be stored
+    verbose             :   boolean
+        True to run function in verbose mode
+    '''
+
+    filename = '{0}/god_ff.p'.format(data_dir)
+    if verbose:
+        print("Saving out God's flat-field to {0}".format(filename))
+
+    ff_samples = p['ff_samples']
+    x = np.linspace(-0.5 * p['FoV'][0], 0.5 * p['FoV'][0], ff_samples[0])
+    y = np.linspace(-0.5 * p['FoV'][1], 0.5 * p['FoV'][1], ff_samples[1])
+    X, Y = np.meshgrid(x, y)
+    god_ff = god.flat_field(p, X, Y)
+    dic = {'x': X, 'y': Y, 'god_ff': god_ff}
+    pickle.dump(dic, open(filename, "wb"))
+
     if verbose:
         print("...done!")

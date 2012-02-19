@@ -27,6 +27,11 @@ def run_sim(mdic):
     # Dump parameters
     pickle.dump(mdic['params'], open((mdic['data_dir'] + '/parameters.p'),
                                                                          "wb"))
+    
+    if 'bestfit_ff' in mdic:
+        print("Using pre-existing best fit to God's flat-field.")
+    else:
+        save_out.bestfit_ff(mdic['params'], mdic['data_dir']) 
 
     # Only create a sky catalog if not already generated
     if 'sky_catalog' in mdic:
@@ -51,4 +56,4 @@ def run_sim(mdic):
                                             sky_catalog, mdic['data_dir'],
                                             plots=mdic['plotdata'],
                                             verbose=mdic['verbosemode'])
-    np.savetxt(sln, (mdic['data_dir'] + "/result"))
+    np.savetxt((mdic['data_dir'] + "/result"), sln)

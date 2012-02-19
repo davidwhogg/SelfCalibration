@@ -43,9 +43,9 @@ def self_calibration(params, observation_catalog, sky_catalog,
         rms = analysis.rms_error(s[indx], sky_catalog.flux[indx])
         bdness = analysis.badness(params, q)
         bdness_bestfitff = analysis.best_in_basis(params, q, data_dir)
-        print("{0}: RMS = {1:.6f} %%, Badness = {2:.6f} %%,\
-                BestInBasis_Badness = {3:.6f} %%, chi2 = {4:.2f} ({5})"\
-                .format(count, rms, bdness, bdness_bestfitff, chi2,\
+        print(("{0}: RMS = {1:.6f} %, Badness = {2:.6f} %, " 
+                "BestInBasis_Badness = {3:.6f} %, chi2 = {4:.2f} ({5})")
+                .format(count, rms, bdness, bdness_bestfitff, chi2,
                 observation_catalog.size))
         print(q)
         if (plots and (count == next_plot_iteration)) or \
