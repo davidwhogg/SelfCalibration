@@ -1,13 +1,34 @@
-Euclid project
-Rory Holmes (MPIA) & David W. Hogg (NYU)
------
+# SelfCalibration
 
-before editing, type
+A project on survey design for precise self-calibration.
 
-  svn up ; svn st
+## Authors:
 
-after editing is done, type
+* Rory Holmes (MPIA)
+* David W. Hogg (NYU)
 
-  svn ci -m "euclid: wrote code or whatever"
+## License:
 
-if you hit a conflict, proceed with caution.
+Copyright 2012 the authors.  All rights reserved.
+
+If you want to license this code for use or re-use, get in touch.
+
+## Dependencies:
+
+* numpy
+* matplotlib
+* scipy.optimize
+
+## Running the code:
+
+You can make everything happen by running `python something.py` at the
+command line in the top-level directory.  Not sure what `something.py`
+is.
+
+## Known issues:
+
+* The above `something.py` is not right, obviously!
+* The true flat-field is too peaked in the center.
+* The `dev/` subdirectory is really a branch of the code; needs
+  merging.
+* Code-generated `.txt` files are checked in.
