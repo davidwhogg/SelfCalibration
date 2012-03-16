@@ -18,25 +18,25 @@ import transformations as tran
 
 
 def flat_field_parameters():
-    np.random.seed(1)  # same seed => same FF
+    #np.random.seed(1)  # same seed => same FF
     return np.append(np.array([1, -0.02, 0.03, -0.2, 0.01, -0.5]),
                                 (1e-4) * np.random.uniform(size=256))
 
 
-def flat_field(params, x, y, par=flat_field_parameters()):
+def flat_field(p, x, y, par=flat_field_parameters()):
     # Large Scale
     ff = (par[0] + par[1] * x + par[2] * y \
                     + par[3] * x ** 2 + par[4] * x * y + par[5] * y ** 2)
     # Small Scale
+    FoV = p['FoV']
     k = 6
-    fov = params['FoV']
     no_loops = int(np.sqrt((len(par) - 6) / 4))
     for nx in range(no_loops):
-        kx = nx * np.pi / fov[0]
+        kx = nx * np.pi / FoV[0]
         ckx = np.cos(kx * x)
         skx = np.sin(kx * x)
         for ny in range(no_loops):
-            ky = ny * np.pi / fov[1]
+            ky = ny * np.pi / FoV[1]
             cky = np.cos(ky * y)
             sky = np.sin(ky * y)
             ff += par[k] * ckx * cky
@@ -105,15 +105,6 @@ def generate_magnitudes(p, number_sources, data_dir, plots=False):
         difference = power_law(A, mag[ii]) / (power_law(B, mag[ii]) * c)
 
     selected_sources = np.sort(mag)[0:int(number_sources)]
-    # Print out catalog for plotting
-    if plots:
-        survey_dic = {}
-        survey_dic['mag'] = selected_sources
-        survey_dic['all_sources'] = mag
-        survey_dic['fit_mag'] = np.arange(14, 26, 0.01)
-        survey_dic['fit_dens'] = power_law(A, np.arange(14, 26, 0.01)) * area
-        pickle_path = data_dir + '/source_catalog.p'
-        pickle.dump(survey_dic, open(pickle_path, "wb"))
     return selected_sources
 
 
@@ -133,22 +124,16 @@ class SourceCatalog:
                                                         size=number_sources)
 
 
-def create_catalog(p, data_dir, plots=False, verbose=False):
-    if verbose:
+def create_catalog(p):
+    if p["verbose"]:
         print("Generating God's Catalog...")
     # Calculate total number of stars in catalog
     number_sources = p['density_of_stars'] \
                     * (p['sky_limits'][1] - p['sky_limits'][0]) \
                     * (p['sky_limits'][3] - p['sky_limits'][2])
     # Create catalog
-    catalog = SourceCatalog(p, data_dir, number_sources, plots=plots)
-    if verbose:
+    catalog = SourceCatalog(p, p["data_dir"], number_sources, plots=p["plotdata"])
+    if p["verbose"]:
         print("...done!")
-    if plots:
-        pickle_path = data_dir + '/source_catalog.p'
-        survey_dic = pickle.load(open(pickle_path))
-        survey_dic['alpha'] = catalog.alpha
-        survey_dic['beta'] = catalog.beta
-        pickle.dump(survey_dic, open(pickle_path, "wb"))
     return catalog
     # catalog.ID, catalog.mag, catalog.alpha, catalog.beta, catalog.size

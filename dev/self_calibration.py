@@ -66,7 +66,7 @@ def evaluate_flat_field_functions(x, y, order, verbose=False):
     return g
 
 
-def evaluate_flat_field(params, x, y, q, verbose=False):
+def evaluate_flat_field(p, x, y, q, verbose=False):
     # Calculate required order
     order = int(np.around(np.sqrt(0.25 + 2 * len(q)) - 1.5))
     assert(len(q) == ((order + 1) * (order + 2) / 2))
