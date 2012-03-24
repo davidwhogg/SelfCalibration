@@ -32,3 +32,9 @@ is.
 * The `dev/` subdirectory is really a branch of the code; needs
   merging.
 * Code-generated `.txt` files are checked in.
+
+## Migration from svn:
+
+Hogg migrated this from svn using
+
+   dwh2@broiler:~/SelfCal/euclid$ git svn clone svn+ssh://astrometry.net/svn/trunk/projects/euclid/ --no-minimize-url --authors-file ~/authors
