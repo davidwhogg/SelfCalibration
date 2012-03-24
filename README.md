@@ -37,4 +37,4 @@ is.
 
 Hogg migrated this from svn using
 
-   dwh2@broiler:~/SelfCal/euclid$ git svn clone svn+ssh://astrometry.net/svn/trunk/projects/euclid/ --no-minimize-url --authors-file ~/authors
+    dwh2@broiler:~/SelfCal/euclid$ git svn clone svn+ssh://astrometry.net/svn/trunk/projects/euclid/ --no-minimize-url --authors-file ~/authors
