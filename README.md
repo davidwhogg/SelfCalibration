@@ -2,30 +2,34 @@
 
 A project on survey design for precise self-calibration.
 
-## Authors:
+### Authors:
 
 * Rory Holmes (MPIA)
 * David W. Hogg (NYU)
 
-## License:
+### License:
 
-Copyright 2012 the authors.  All rights reserved.
+**Copyright 2012 the authors.  All rights reserved.**
 
 If you want to license this code for use or re-use, get in touch.
 
-## Dependencies:
+### Contributors:
+
+* Hans-Walter Rix (MPIA)
+
+### Dependencies:
 
 * numpy
 * matplotlib
 * scipy.optimize
 
-## Running the code:
+### Running the code:
 
 You can make everything happen by running `python something.py` at the
 command line in the top-level directory.  Not sure what `something.py`
-is.
+is.  Rory?
 
-## Known issues:
+### Known issues:
 
 * The above `something.py` is not right, obviously!
 * The true flat-field is too peaked in the center.
@@ -33,8 +37,12 @@ is.
   merging.
 * Code-generated `.txt` files are checked in.
 
-## Migration from svn:
+### Migration from svn:
 
-Hogg migrated this from svn using
+Hogg migrated this from `svn` with something like
 
-    dwh2@broiler:~/SelfCal/euclid$ git svn clone svn+ssh://astrometry.net/svn/trunk/projects/euclid/ --no-minimize-url --authors-file ~/authors
+    cd
+    git svn clone svn+ssh://astrometry.net/svn/trunk/projects/euclid/ --no-minimize-url --authors-file ~/authors
+    cd euclid
+    git remote add origin git@github.com:davidwhogg/SelfCalibration.git
+    git push origin master
