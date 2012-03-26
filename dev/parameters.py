@@ -10,22 +10,23 @@
     # Programmatic Parameters
     # =======================
     # String: The output directory path for the simulation run
-    'data_dir'            :     'default_output', 
+    'data_dir'            :     'default_output',
     # Boolean: Set to True to save out all the data required for plots
     'plotdata'            :     True,
     # Boolean: Set to True to run the simulation in verbose mode,
-    'verbose'             :     False, 
+    'verbose'             :     False,
 
     # Sky Parameters
     # ==============
-    # Float: the total number of sources (all magnitude) per unit area
-    # on the sky
-    'density_of_stars'    :     50., 
+    # Float: the maximum number of sources (all magnitude) per unit area
+    # on the sky. If more than this number are produced by the magnitude
+    # distribution (see below), only the brightest are selected.
+    'density_of_stars'    :     50.,
     # Float array: The parameters describing the magnitude distribution
     # of the sources in the sky, according to
     # log10(dN/dm) = A + B * mag + C * mag ** 2
-    'powerlaw_constants'  :     [-13.34863146, 1.25429311, -0.02122949], 
-    # Float Array: The area of sky to generate sources in 
+    'powerlaw_constants'  :     [-13.34863146, 1.25429311, -0.02122949],
+    # Float Array: The area of sky to generate sources in
     # [alpha_min, alpha_max, beta_min, beta_max]
     'sky_limits'          :     [-4.0, 4.0, -4.0, 4.0],
 
@@ -36,7 +37,7 @@
     # Float: The saturation limit of the simulated imager
     'm_min'               :     17.,
     # Float: The 10-sigma detection limit of the simulated imager
-    'm_max'               :     22.,   
+    'm_max'               :     22.,
     # Floats: The parameters used in the measurement noise model
     # sigma ** 2 = (1 + epsilon) * delta ** 2 + eta ** 2 * count_rate ** 2
     'eta'                 :     0.00173214,
@@ -59,13 +60,13 @@
     # Integer: The order of the flat-field used to fit the instrument response
     # in the self-calibration procedure
     'flat_field_order'    :     8,
-    # Float: The seed for the random number generator (to ensure repeat runs
-    # get the same answer!)
-    'seed'                :     1.,
+    # Float Array: The seed for the random number generator (to ensure repeat 
+    # runs get the same answer!)
+    'seed'                :     [1.],
     # Float: The stop condition for the self-calibration procedure and the
     # best-in-basis fitting (stop when difference is less than 2 times this)
     'stop_condition'	    :     1e-5,
     # Integer: The maximum number of iterations in the self-calibration
     # procedure and the best-in-basis fitting
     'max_iterations'	    :     1049
-    } 
+    }

@@ -40,9 +40,9 @@ def self_calibration(params, observation_catalog, sky_catalog,
         old_chi2 = temp_chi2
         # Calculate rms error in stars
         indx = [s != 0]
-        rms = analysis.rms_error(s[indx], sky_catalog.flux[indx])
+        rms = analysis.rms_error(params, s[indx], sky_catalog.flux[indx])
         bdness = analysis.badness(params, q)
-        bdness_bestfitff = analysis.best_in_basis(params, q, data_dir)
+        bdness_bestfitff = analysis.best_in_basis(params, q)
         print(("{0}: RMS = {1:.6f} %, Badness = {2:.6f} %, " 
                 "BestInBasis_Badness = {3:.6f} %, chi2 = {4:.2f} ({5})")
                 .format(count, rms, bdness, bdness_bestfitff, chi2,
@@ -66,7 +66,7 @@ def evaluate_flat_field_functions(x, y, order, verbose=False):
     return g
 
 
-def evaluate_flat_field(p, x, y, q, verbose=False):
+def evaluate_flat_field(p, x, y, q):
     # Calculate required order
     order = int(np.around(np.sqrt(0.25 + 2 * len(q)) - 1.5))
     assert(len(q) == ((order + 1) * (order + 2) / 2))
