@@ -9,6 +9,7 @@ import simulation
 import save_out
 import numpy as np
 import god
+import os
 
 dic = eval(open("parameters.py").read())
                                
