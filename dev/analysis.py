@@ -9,12 +9,11 @@ from __future__ import division, print_function
 
 # Standard Modules
 import numpy as np
-import god
 import scipy.optimize as opt
 
 # Custom Modules
 import self_calibration
-
+import god
 
 def badness(p, q, verbose=False):
 

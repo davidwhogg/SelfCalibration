@@ -3,11 +3,11 @@
 {
     # Programmatic Parameters
 
-    'data_dir'            :     'default_output' 
+    'data_dir'            :     'default_output', 
     
-    'plotdata'            :     True
+    'plotdata'            :     True,
     
-    'verbose'             :     False 
+    'verbose'             :     False, 
 
     # Simulation Parameters
 

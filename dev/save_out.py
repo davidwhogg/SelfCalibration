@@ -16,6 +16,7 @@ import self_calibration
 import transformations as tran
 import god
 
+
 def parameters(p):
     ''' Saves out the parameters used in the self-calibration simulation.
 
@@ -24,14 +25,16 @@ def parameters(p):
     p          :   dictionary
         the dictionary containing all the simulation parameters
     '''
+
     filename = "{0}/parameters.p".format(p["data_dir"])
     if p["verbose"]:
         print("Saving out fitted flat-field data to {0}...".format(filename))
-    
+
     pickle.dump(p, open(filename, "wb"))
 
     if p["verbose"]:
         print("...done!")
+
 
 def fitted_flat_field(p, q, it_no, data_dir):
     ''' Saves out data for the fitted flat-field at sample points across the
@@ -58,12 +61,10 @@ def fitted_flat_field(p, q, it_no, data_dir):
     x = np.linspace(-p['FoV'][0] / 2, p['FoV'][0] / 2, p['ff_samples'][0])
     y = np.linspace(-p['FoV'][1] / 2, p['FoV'][1] / 2, p['ff_samples'][1])
     X, Y = np.meshgrid(x, y)
-    # Have to reshape so that evaluate_flat_field() works.
-    reshape_x = np.reshape(X, -1)
-    reshape_y = np.reshape(Y, -1)
-    reshape_z = self_calibration.evaluate_flat_field(p, reshape_x, reshape_y, \
-                                                        q, verbose=False)
-    fitted_ff = np.reshape(reshape_z, (len(X[:, 0]), len(X[0, :])))
+    z = self_calibration.evaluate_flat_field(p, X.flatten(), \
+                        y.flatten(), q, verbose=False)
+    fitted_ff = np.reshape(z, (len(X[:, 0]), len(X[0, :])))
+
     dic = {'x': X, 'y': Y, 'fitted_ff': fitted_ff, 'iteration_number': it_no}
     pickle.dump(dic, open(filename, "wb"))
 
@@ -101,18 +102,21 @@ def camera(p, sky_catalog, measured_catalog, inside_FoV,
     if p["verbose"]:
         print("Saving out camera image to {0}...".format(filename))
 
-    x_min = - p['FoV'][0] / 2
-    y_min = - p['FoV'][1] / 2
-    x_max = p['FoV'][0] / 2
-    y_max = p['FoV'][1] / 2
-    x = np.array([x_min, x_min, x_max, x_max, x_min])
-    y = np.array([y_min, y_max, y_max, y_min, y_min])
+    x = 0.5 * np.array([p['FoV'][0], -p['FoV'][0], p['FoV'][0],
+                            p['FoV'][0], -p['FoV'][0]])
+    y = 0.5 * np.array([-p['FoV'][1], p['FoV'][1], p['FoV'][1],
+                            -p['FoV'][1], -p['FoV'[1]]])
     alpha, beta = tran.fp2sky(x, y, pointing, orientation)
-    dic = {'measured_catalog.x': measured_catalog.x, 'measured_catalog.y':
-            measured_catalog.y, 'sky_catalog.alpha': sky_catalog.alpha,
-            'sky_catalog.beta': sky_catalog.beta, 'pointing': pointing,
-            'orientation': orientation, 'sky': p['sky_limits'], 'fp_x': x,
-            'fp_y': y, 'fp_alpha': alpha, 'fp_beta': beta,
+
+    dic = {'measured_catalog': measured_catalog,
+            'sky_catalog': sky_catalog,
+            'pointing': pointing,
+            'orientation': orientation,
+            'sky': p['sky_limits'],
+            'fp_x': x,
+            'fp_y': y,
+            'fp_alpha': alpha,
+            'fp_beta': beta,
             'inside_FoV': inside_FoV}
     pickle.dump(dic, open(filename, "wb"))
 
@@ -169,11 +173,11 @@ def best_fit_ff(p, data_dir):
     x = np.linspace(-0.5 * p['FoV'][0], 0.5 * p['FoV'][0], ff_samples[0])
     y = np.linspace(-0.5 * p['FoV'][1], 0.5 * p['FoV'][1], ff_samples[1])
     X, Y = np.meshgrid(x, y)
-    reshape_x = np.reshape(X, -1)
-    reshape_y = np.reshape(Y, -1)
-    reshape_z = self_calibration.evaluate_flat_field(p, 
-                                reshape_x, reshape_y, p['best_fit_params'])
-    best_fit_ff = np.reshape(reshape_z, (len(X[:, 0]), len(X[0, :])))
+    z = self_calibration.evaluate_flat_field(p,
+                                x.flatten(), y.flatten(),
+                                p['best_fit_params'])
+    best_fit_ff = np.reshape(z, (len(X[:, 0]), len(X[0, :])))
+
     dic = {'x': X, 'y': Y, 'best_fit_ff': best_fit_ff}
     pickle.dump(dic, open(filename, "wb"))
 
