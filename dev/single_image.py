@@ -13,7 +13,7 @@ import os
 
 # Custom self-cal modules
 import transformations as tran
-import god
+import true
 import save_out
 
 
@@ -34,12 +34,12 @@ class MeasuredCatalog:
         self.k = camera_catalog.k[inside_FoV].astype(int)
         self.x = camera_catalog.x[inside_FoV]
         self.y = camera_catalog.y[inside_FoV]
-        flat = god.flat_field(params, self.x, self.y)
-        self.gods_invvar = self.true_invvar(params, camera_catalog,\
+        flat = true.flat_field(params, self.x, self.y)
+        self.true_invvar = self.true_invvar(params, camera_catalog,\
                                                 inside_FoV, flat)
         self.counts = camera_catalog.flux[inside_FoV] * flat \
                         + np.random.normal(size=self.size) \
-                        / np.sqrt(self.gods_invvar)
+                        / np.sqrt(self.true_invvar)
         self.invvar = self.reported_invvar(params)
 
     def append(self, other):
@@ -49,7 +49,7 @@ class MeasuredCatalog:
         self.y = np.append(self.y, other.y)
         self.counts = np.append(self.counts, other.counts)
         self.invvar = np.append(self.invvar, other.invvar)
-        self.gods_invvar = np.append(self.gods_invvar, other.gods_invvar)
+        self.true_invvar = np.append(self.true_invvar, other.true_invvar)
 
     def mag(self):
         return tran.flux2mag(self.counts)

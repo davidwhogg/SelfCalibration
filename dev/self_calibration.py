@@ -13,7 +13,7 @@ import numpy as np
 # Custom self-cal modules
 import save_out
 import analysis
-import god
+import true
 
 
 def self_calibration(params, observation_catalog, sky_catalog,
@@ -76,9 +76,9 @@ def evaluate_flat_field(p, x, y, q):
 
 def normalize_flat_field(params, q, verbose=False):
     fit_mean = average_over_ff(params, evaluate_flat_field, (q))
-    god_mean = average_over_ff(params, god.flat_field,
-                                            (god.flat_field_parameters()))
-    return (q * god_mean / fit_mean)
+    true_mean = average_over_ff(params, true.flat_field,
+                                            (true.flat_field_parameters()))
+    return (q * true_mean / fit_mean)
 
 
 def average_over_ff(p, func, args, verbose=False):

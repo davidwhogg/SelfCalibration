@@ -93,21 +93,21 @@ def plot_flat_fields(map_dic):
   our_Y = dic['y']
   our_ff = dic['fitted_ff']
   iteration_number = dic['iteration_number']
-  god_dic = pickle.load(open(out_dir+'/god_ff.p'))
-  god_ff = god_dic['god_ff']
-  god_X = god_dic['x']
-  god_Y = god_dic['y']
+  true_dic = pickle.load(open(out_dir+'/true_ff.p'))
+  true_ff = true_dic['true_ff']
+  true_X = true_dic['x']
+  true_Y = true_dic['y']
   bestfit_dic = pickle.load(open(out_dir+'/bestfit_ff.p'))
   bestfit_ff = bestfit_dic['bestfit_ff']
   bestfit_X = bestfit_dic['x']
   bestfit_Y = bestfit_dic['y']
-  # Plot God and Fitted
+  # Plot True and Fitted
   plt.subplot(221)
   # Find parameters for contour plot
-  god_ff_max = np.max(god_ff)
-  god_ff_min = np.min(god_ff)
+  true_ff_max = np.max(true_ff)
+  true_ff_min = np.min(true_ff)
   levels = np.arange(0.5,1.5,0.01)
-  CS = plt.contour(god_X,god_Y,god_ff,levels ,colors='0.6')
+  CS = plt.contour(true_X,true_Y,true_ff,levels ,colors='0.6')
   CS2 = plt.contour(our_X, our_Y, our_ff, levels,colors='k')
   plt.ylabel(ylab)
   plt.clabel(CS2, inline=1)
@@ -116,9 +116,9 @@ def plot_flat_fields(map_dic):
   plt.text(0.5*FoV[0]-0.08,0.5*FoV[1]-0.07, '(a)', fontsize = scale*11, backgroundcolor = 'w')
   #plt.axis('equal')
   plt.gca().set_xticklabels([])
-  # Plot residual in god and fitted
+  # Plot residual in true and fitted
   plt.subplot(222)
-  a = plt.imshow((100*(our_ff-god_ff)/god_ff),extent=(-FoV[0]/2,FoV[0]/2,-FoV[1]/2,FoV[1]/2), vmin = -0.5,vmax = 0.5, cmap='gray')
+  a = plt.imshow((100*(our_ff-true_ff)/true_ff),extent=(-FoV[0]/2,FoV[0]/2,-FoV[1]/2,FoV[1]/2), vmin = -0.5,vmax = 0.5, cmap='gray')
   plt.gca().set_xticklabels([])
   plt.gca().set_yticklabels([])
   plt.text(0.5*FoV[0]-0.08,0.5*FoV[1]-0.07, '(b)', fontsize = scale*11, color = 'k')
@@ -195,12 +195,12 @@ def camera_image(params, out_dir, camera_filename):
   plt.axis('scaled')
   plt.xlim(np.min(fp_x) - dx*fp_buffer, np.max(fp_x) + dx*fp_buffer)
   plt.ylim(np.min(fp_y) - dy*fp_buffer, np.max(fp_y) + dy*fp_buffer)
-  god_dic = pickle.load(open(out_dir+'/god_ff.p'))
-  god_ff = god_dic['god_ff']
-  god_X = god_dic['x']
-  god_Y = god_dic['y'] 
+  true_dic = pickle.load(open(out_dir+'/true_ff.p'))
+  true_ff = true_dic['true_ff']
+  true_X = true_dic['x']
+  true_Y = true_dic['y'] 
   levels = np.arange(0.5,1.5,0.01)
-  CS = plt.contour(god_X,god_Y,god_ff,levels ,colors='0.75')
+  CS = plt.contour(true_X,true_Y,true_ff,levels ,colors='0.75')
   plt.clabel(CS, inline=1,color = '0.75')
   plt.subplots_adjust(wspace=.3,hspace=0.0)  
   filename = string.replace(camera_filename, '.p', '.pdf')

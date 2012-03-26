@@ -14,7 +14,7 @@ import pickle as pickle
 # Custom self-cal modules
 import self_calibration
 import transformations as tran
-import god
+import true
 
 
 def parameters(p):
@@ -85,7 +85,7 @@ def camera(p, sky_catalog, measured_catalog, inside_FoV,
         Object of the sky catalog (*.ID, *.mag, *.alpha, *.beta, *.size)
     measured_catalog    :   object
         Object of measured sources on focal plane in a single pointing
-        (*.size, *.ID, *.x, *.y, *gods_invvar, *.counts, *.invvar)
+        (*.size, *.ID, *.x, *.y, *true_invvar, *.counts, *.invvar)
     inside_FoV          :   np.array
         Boolean array stating if source is inside the camera field-of-view
     pointing            :   np.array
@@ -143,7 +143,7 @@ def invvar(p, obs_cat, data_dir):
     if p["verbose"]:
         print("Saving out inverse variance to {0}...".format(filename))
 
-    dic = {'counts': obs_cat.counts, 'true_invvar': obs_cat.gods_invvar,
+    dic = {'counts': obs_cat.counts, 'true_invvar': obs_cat.true_invvar,
             'reported_invvar': obs_cat.invvar}
     pickle.dump(dic, open(filename, "wb"))
 
@@ -152,7 +152,7 @@ def invvar(p, obs_cat, data_dir):
 
 
 def best_fit_ff(p, data_dir):
-    ''' Calculates the best fit possible to God's flat-field with the basis
+    ''' Calculates the best fit possible to the true flat-field with the basis
     used to model it during the self-calibration procedure. Saves out the
     data at sample points across the focal plane
 
@@ -166,7 +166,7 @@ def best_fit_ff(p, data_dir):
 
     filename = data_dir + '/bestfit_ff.p'
     if p["verbose"]:
-        print("Saving out the best fit to God's flat-field to {0}"
+        print("Saving out the best fit to the true flat-field to {0}"
                                                         .format(filename))
 
     ff_samples = p['ff_samples']
@@ -185,8 +185,8 @@ def best_fit_ff(p, data_dir):
         print("...done!")
 
 
-def god_ff(p, data_dir):
-    ''' Saves out the God's flat-field at sample points across the focal plane
+def true_ff(p, data_dir):
+    ''' Saves out the true flat-field at sample points across the focal plane
 
     p                   :   dictionary
         Parameters used in the self-calibration simulation
@@ -196,16 +196,16 @@ def god_ff(p, data_dir):
         True to run function in verbose mode
     '''
 
-    filename = '{0}/god_ff.p'.format(data_dir)
+    filename = '{0}/true_ff.p'.format(data_dir)
     if p["verbose"]:
-        print("Saving out God's flat-field to {0}".format(filename))
+        print("Saving out the true flat-field to {0}".format(filename))
 
     ff_samples = p['ff_samples']
     x = np.linspace(-0.5 * p['FoV'][0], 0.5 * p['FoV'][0], ff_samples[0])
     y = np.linspace(-0.5 * p['FoV'][1], 0.5 * p['FoV'][1], ff_samples[1])
     X, Y = np.meshgrid(x, y)
-    god_ff = god.flat_field(p, X, Y)
-    dic = {'x': X, 'y': Y, 'god_ff': god_ff}
+    true_ff = true.flat_field(p, X, Y)
+    dic = {'x': X, 'y': Y, 'true_ff': true_ff}
     pickle.dump(dic, open(filename, "wb"))
 
     if p["verbose"]:

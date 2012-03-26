@@ -13,7 +13,7 @@ import scipy.optimize as opt
 
 # Custom Modules
 import self_calibration as self_cal
-import god
+import true
 
 
 def badness(p, q):
@@ -43,9 +43,9 @@ def badness(p, q):
     X, Y = np.meshgrid(x, y)
 
     our_ff = self_cal.evaluate_flat_field(p, x.flatten(), y.flatten(), q)
-    god_ff = god.flat_field(p, x.flatten(), y.flatten())
+    true_ff = true.flat_field(p, x.flatten(), y.flatten())
 
-    badness = 100. * np.sqrt(np.mean(((our_ff - god_ff) / god_ff) ** 2))
+    badness = 100. * np.sqrt(np.mean(((our_ff - true_ff) / true_ff) ** 2))
 
     if p['verbose']:
         print("...done!")
@@ -139,7 +139,7 @@ def best_fit_ff(p):
     '''
 
     if p['verbose']:
-        print("Fitting god's flat-field with basis...")
+        print("Fitting the true flat-field with basis...")
 
     order = p['flat_field_order']
     x = np.linspace(- p['FoV'][0] / 2, p['FoV'][0] / 2, p['ff_samples'][0])
@@ -147,13 +147,13 @@ def best_fit_ff(p):
     X, Y = np.meshgrid(x, y)
 
     g = self_cal.evaluate_flat_field_functions(x.flatten(), y.flatten(), order)
-    god_ff = god.flat_field(p, x.flatten(), y.flatten())
+    true_ff = true.flat_field(p, x.flatten(), y.flatten())
     a = np.zeros((order + 1) * (order + 2) / 2)
     a[0] = 1  # Start roughly near the correct solution
     a[3] = -0.2
     a[5] = 0.5
     fitted_parameters = opt.fmin_bfgs(self_cal.compare_flats, a,
-                        args=(god_ff, g, x.flatten(), y.flatten()), \
+                        args=(true_ff, g, x.flatten(), y.flatten()), \
                         gtol=p['stop_condition'], maxiter=p['max_iterations'])
     fitted_parameters = self_cal.normalize_flat_field(p, fitted_parameters)
 

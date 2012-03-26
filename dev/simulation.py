@@ -13,7 +13,7 @@ import os
 
 # Custom self-cal modules
 import self_calibration
-import god
+import true
 import survey
 import save_out
 import analysis
@@ -27,9 +27,9 @@ def run_sim(dic):
 
     save_out.parameters(dic)  # Dump parameters
     
-    # Only find best fit to God's flat-field if not already done
+    # Only find best fit to the true flat-field if not already done
     if 'best_fit_params' in dic:
-        print("Using pre-existing best fit to God's flat-field.")
+        print("Using pre-existing best fit to the true flat-field.")
     else:
         dic['best_fit_params'] = analysis.best_fit_ff(dic)
 
@@ -38,7 +38,7 @@ def run_sim(dic):
         print("Using pre-existing sky catalog.")
         sky_catalog = dic['sky_catalog']
     else:
-        sky_catalog = god.create_catalog(dic)
+        sky_catalog = true.create_catalog(dic)
     if dic["plotdata"]:
         save_out.source_catalog(dic, sky_catalog)
     
