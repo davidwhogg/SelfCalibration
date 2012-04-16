@@ -32,7 +32,7 @@
 
     # Instrument Parameters
     # =====================
-    # Float Array: The simulate imager's field-of-view [alpha, beta]
+    # Float Array: The simulate imager's field-of-view in degrees [alpha, beta]
     'FoV'                 :     [0.76, 0.72],
     # Float: The saturation limit of the simulated imager
     'm_min'               :     17.,
@@ -49,7 +49,8 @@
     # Simulation Parameters
     # =====================
     # String: The file path to the survey strategy to be performed
-    # during the simulation run.
+    # during the simulation run. The file has the format: 
+    #       observation_number, RA (deg), Dec (deg), Orientation (deg)
     'survey_strategies'   :     ['survey'],
     # Float: The fraction of the bright sources to be used by the
     # self-calibration simulations. Reduce to increase simulation time.

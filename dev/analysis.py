@@ -13,124 +13,32 @@ import scipy.optimize as opt
 
 # Custom Modules
 import self_calibration as self_cal
-import true
+import true_functions
 
 
-def badness(p, q):
-    ''' Calculates the 'badness' of the instrument response fit. The
-    'badness' is defined as the root-mean-square difference between
-    the true instrument response and the fitted instrument response
-    measured on a regular grid of sample points across the focal plane.
-
-    Parameters
-    ----------
-    p          :   dictionary
-        the dictionary containing all the simulation parameters
-    q          :   numpy array
-        the fitted instrument response parameters
-
-    Returns
-    -------
-    out        :   float
-        the calculated badness
-    '''
-
-    if p['verbose']:
-        print("Calculating best-in-basis badness of fitted flat-field...")
-
-    x = np.linspace(- p['FoV'][0] / 2, p['FoV'][0] / 2, p['ff_samples'][0])
-    y = np.linspace(- p['FoV'][1] / 2, p['FoV'][1] / 2, p['ff_samples'][1])
-    X, Y = np.meshgrid(x, y)
-
-    our_ff = self_cal.evaluate_flat_field(p, x.flatten(), y.flatten(), q)
-    true_ff = true.flat_field(p, x.flatten(), y.flatten())
-
-    badness = 100. * np.sqrt(np.mean(((our_ff - true_ff) / true_ff) ** 2))
-
-    if p['verbose']:
-        print("...done!")
-
-    return badness
-
-
-def best_in_basis(p, q):
-    ''' Calculates the 'best-in-basis badness' of the instrument response fit.
-    This is defined as the root-mean-square difference between the fitted
-    instrument response and the *best fit possible* with the model basis used
-    for the fit (on a regular grid of sample points across the focal plane).
-
-    Parameters
-    ----------
-    p          :   dictionary
-        the dictionary containing all the simulation parameters
-    q          :   numpy array
-        the fitted instrument response parameters
-
-    Returns
-    -------
-    out        :   float
-        the calculated best-in-basis badness
-    '''
-    if p['verbose']:
-        print("Calculating best-in-basis badness of fitted flat-field...")
-
-    x = np.linspace(- p['FoV'][0] / 2, p['FoV'][0] / 2, p['ff_samples'][0])
-    y = np.linspace(- p['FoV'][1] / 2, p['FoV'][1] / 2, p['ff_samples'][1])
-    X, Y = np.meshgrid(x, y)
-
-    our_ff = self_cal.evaluate_flat_field(p, x.flatten(), y.flatten(), q)
-    bf_ff = self_cal.evaluate_flat_field(
-                            p, x.flatten(), y.flatten(), p['best_fit_params'])
-
-    best_in_basis_badness = \
-                    100. * np.sqrt(np.mean(((our_ff - bf_ff) / bf_ff) ** 2))
-
-    if p['verbose']:
-        print("...done!")
-
-    return best_in_basis_badness
-
-
-def rms_error(p, flux, true_flux):
-    ''' Calculates the root-mean-square error between the estimated source
-    fluxes and the true source fluxes. This only applies to the bright sources
-    selected for the self-calibration procedure and not necessarily all the
-    sources on the sky.
-
-    Parameters
-    ----------
-    p           :   dictionary
-        the dictionary containing all the simulation parameters
-    flux        :   numpy array
-        containing all the source flux estimates
-    true_flux   :   numpy array
-        containing all the true fluxes for the sources
-
-    Returns
-    -------
-    out        :   float
-        the calculated root-mean-square error
-    '''
-
-    if p['verbose']:
-        print("Calculating RMS Error of fitted sources...")
-
-    rms = 100 * np.sqrt(np.mean(((flux - true_flux) / true_flux) ** 2))
-
-    if p['verbose']:
-        print("...done!")
-
-    return rms
-
-
-def best_fit_ff(p):
+def best_fit_ff(FoV, ff_samples, order, stop_condition, max_iterations,
+                            verbose=False):
     ''' Calculates the best fit possible to true flat-field with the basis
     used to model it during the self-calibration procedure.
 
     Parameters
     ----------
-    p       :   dictionary
-        simulation parameters
+    FoV             :   Float Array
+        The simulate imager's field-of-view in degrees [alpha, beta]
+    ff_samples      :   Integer Array
+        The number of sample points on the focal plane for the best-in-basis
+        fitting and all of the badness measures
+    order           :   Integer
+        The order of the polynomial flat-field used to fit the instrument
+        response in the self-calibration procedure
+    stop_condition  :   Float
+        The stop condition for the self-calibration procedure and the
+        best-in-basis fitting (stop when difference is less than 2 times this)
+    max_iterations  :   Integer
+        The maximum number of iterations in the self-calibration procedure and
+        the best-in-basis fitting
+    verbose         :   Boolean
+        Set to true to run the simulations in verbose mode
 
     Returns
     -------
@@ -138,27 +46,47 @@ def best_fit_ff(p):
         the fitted parameter
     '''
 
-    if p['verbose']:
+    if verbose:
         print("Fitting the true flat-field with basis...")
 
-    order = p['flat_field_order']
-    x = np.linspace(- p['FoV'][0] / 2, p['FoV'][0] / 2, p['ff_samples'][0])
-    y = np.linspace(- p['FoV'][1] / 2, p['FoV'][1] / 2, p['ff_samples'][1])
+    x = np.linspace(- FoV[0] / 2, FoV[0] / 2, ff_samples[0])
+    y = np.linspace(- FoV[1] / 2, FoV[1] / 2, ff_samples[1])
     X, Y = np.meshgrid(x, y)
 
-    g = self_cal.evaluate_flat_field_functions(x.flatten(), y.flatten(), order)
-    true_ff = true.flat_field(p, x.flatten(), y.flatten())
+    g = self_cal.evaluate_flat_field_functions(X.flatten(), Y.flatten(), order)
+    true_ff = true_functions.flat_field(X.flatten(), Y.flatten(), FoV)
     a = np.zeros((order + 1) * (order + 2) / 2)
-    a[0] = 1  # Start roughly near the correct solution
-    a[3] = -0.2
-    a[5] = 0.5
-    fitted_parameters = opt.fmin_bfgs(self_cal.compare_flats, a,
-                        args=(true_ff, g, x.flatten(), y.flatten()), \
-                        gtol=p['stop_condition'], maxiter=p['max_iterations'])
-    fitted_parameters = self_cal.normalize_flat_field(p, fitted_parameters)
-
-    if p['verbose']:
+    fitted_parameters = opt.fmin_bfgs(compare_flats, a,
+                        args=(true_ff, g), \
+                        gtol=stop_condition, maxiter=max_iterations)
+    fitted_parameters = self_cal.normalize_flat_field(fitted_parameters, FoV,
+                            ff_samples)
+    if verbose:
         print("...done!")
         print("Fitted Parameters: ", fitted_parameters)
 
     return fitted_parameters
+
+
+def compare_flats(a, true_ff, g):
+    ''' This is the error function used in the best-in-basis flat-field
+    fitting function.
+
+    Parameters
+    ----------
+    a             :     np.array
+        The simulate imager's field-of-view in degrees [alpha, beta]
+    ff_samples      :   Float Array
+        The number of sample points on the focal plane
+    func            :   function
+        The function describing the flat-field model
+    ff_params       :   np.array
+        The parameters describing the flat-field model
+
+    Returns
+    -------
+    out     :   numpy.array
+        the mean of the flat-field at the given sample points
+    '''
+    error = np.sum((true_ff - np.dot(g, a)) ** 2)
+    return error
