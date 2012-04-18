@@ -50,3 +50,5 @@ def run_sim(dic):
     if dic['plots']:
         save_out.source_catalog(dic['data_dir'], sky_catalog, dic['verbose'])
     save_out.parameters(dic['data_dir'], dic, dic['verbose'])
+    
+    # Perform survey

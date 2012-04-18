@@ -112,7 +112,6 @@ def plot_survey(filename, sky_limits, density, m_min, m_max, A, verbose=False):
 
 if __name__ == "__main__":
     dir_path = get_dir_path()
-    print(dir_path)
 
     params = pickle.load(open('{0}/parameters.p'.format(dir_path)))
 
