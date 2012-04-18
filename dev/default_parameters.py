@@ -12,7 +12,7 @@
     # String: The output directory path for the simulation run
     'data_dir'            :     'default_output',
     # Boolean: Set to True to save out all the data required for plots
-    'plotdata'            :     True,
+    'plots'               :     True,
     # Boolean: Set to True to run the simulation in verbose mode,
     'verbose'             :     False,
 
@@ -21,7 +21,7 @@
     # Float: the maximum number of sources (all magnitude) per unit area
     # on the sky. If more than this number are produced by the magnitude
     # distribution (see below), only the brightest are selected.
-    'density_of_stars'    :     50.,
+    'density_of_stars'    :     1000.,
     # Float array: The parameters describing the magnitude distribution
     # of the sources in the sky, according to
     # log10(dN/dm) = A + B * mag + C * mag ** 2
@@ -54,9 +54,6 @@
     'survey_strategies'   :     ['survey'],
     # Float: The fraction of the bright sources to be used by the
     # self-calibration simulations. Reduce to increase simulation time.
-    'useful_fraction'     :     1.,
-    # Integer Array: The number of sample points on the focal plane for the
-    # best-in-basis fitting and all of the badness measures
     'ff_samples'          :     [300, 300],
     # Integer: The order of the flat-field used to fit the instrument response
     # in the self-calibration procedure

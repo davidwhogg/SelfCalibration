@@ -13,6 +13,8 @@ import os
 
 # Custom self-cal modules
 import analysis
+import true_functions
+import save_out
 
 
 def run_sim(dic):
@@ -20,13 +22,31 @@ def run_sim(dic):
         os.system('rm -r {0}'.format(dic['data_dir']))
     os.mkdir(dic['data_dir'])
     os.mkdir((dic['data_dir'] + '/FF'))
+    
+    np.random.seed(dic['seed'])
 
     # Only find best fit to the true flat-field if not already done
     if 'best_fit_params' in dic:
-        print("Using pre-existing best fit to the true flat-field.")
+        if dic['verbose']:
+            print("Using pre-existing best fit to the true flat-field.")
     else:
         dic['best_fit_params'] = analysis.best_fit_ff(dic['FoV'],
             dic['ff_samples'], dic['flat_field_order'], dic['stop_condition'],
             dic['max_iterations'], verbose=dic['verbose'])
     
-    print(dic)
+    # Only create a sky catalog if not already generated
+    if 'sky_catalog' in dic:
+        if dic['verbose']:
+            print("Using pre-existing sky catalog.")
+        sky_catalog = dic['sky_catalog']
+    else:
+        if dic['verbose']:
+            print("Generating sky catalog...")
+        sky_catalog = true_functions.SourceCatalog(dic['sky_limits'],
+                        dic['density_of_stars'], dic['m_min'], dic['m_max'],
+                        dic['powerlaw_constants'])
+        if dic['verbose']:        
+            print('...{0} sources generated!'.format(sky_catalog.size))
+    if dic['plots']:
+        save_out.source_catalog(dic['data_dir'], sky_catalog, dic['verbose'])
+    save_out.parameters(dic['data_dir'], dic, dic['verbose'])
