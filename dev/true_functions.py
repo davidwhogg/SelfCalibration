@@ -37,13 +37,13 @@ def flat_field(x, y, FoV, par=flat_field_parameters()):
 
     Input
     -----
-    x       :   numpy.array
+    x       :   numpy array
         A numpy array with the x-coordinates of the sample points
-    y       :   numpy.array
+    y       :   numpy array
         A numpy array with the y-coordinates of the sample points
-    FoV     :   Float array
+    FoV     :   float array
         The simulate imager's field-of-view in degrees [alpha, beta]
-    par     :   numpy.array
+    par     :   numpy array
         The parameters for the *true* flat-field model
 
     Return
@@ -91,7 +91,7 @@ class SourceCatalog:
             The saturation limit of the simulated imager
         m_max               :   float
             The 10-sigma detection limit of the simulated imager
-        A                   :   float array
+        A                   :   numpy array
             The parameters describing the magnitude distribution of the sources
             in the sky, according to: log10(dN/dm) = A + B * mag + C * mag ** 2
 
@@ -188,7 +188,7 @@ class SourceCatalog:
             The saturation limit of the simulated imager
         m_max               :   float
             The 10-sigma detection limit of the simulated imager
-        A                   :   float array
+        A                   :   numpy array
             The parameters describing the magnitude distribution of the sources
             in the sky, according to: log10(dN/dm) = A + B * mag + C * mag ** 2
         area                :   float

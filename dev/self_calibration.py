@@ -99,13 +99,15 @@ def average_over_ff(FoV, ff_samples, func, ff_params):
 
     Parameters
     ----------
-    FoV             :   Float Array
+    FoV             :   float array
         The simulate imager's field-of-view in degrees [alpha, beta]
-    ff_samples      :   Integer Array
+    ff_samples      :   integer array
         The number of sample points on the focal plane for the best-in-basis
         fitting and all of the badness measures
-    func            :   The function describing the instrument flat-field
-    ff_params       :   The flat-field parameters describing flat-field
+    func            :   function
+        The function describing the instrument flat-field
+    ff_params       :   int array
+        The flat-field parameters describing flat-field
 
     Returns
     -------

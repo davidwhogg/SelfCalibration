@@ -1,2 +1,14 @@
 Check were eplison is applied
 Check noise parameters are correct
+Check sky <--> focal plane coordinates
+copy survey to data_dir AND plot, with coverage??
+MeasuredCatalog.flux - are we doing the noise correctly here?
+
+Keep sky coordinates in the measured catalog to make plotting easier
+
+Bugs:
+-----
+
+ + MeasuredCatalog.true_invvar - multiplied by flat-field one time too many??
+ + Generate epsilon now per measurement and not per source
+

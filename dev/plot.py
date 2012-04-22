@@ -53,7 +53,7 @@ def get_dir_path():
     return dir_path
 
 
-def plot_survey(filename, sky_limits, density, m_min, m_max, A, verbose=False):
+def plot_source_catalog(filename, sky_limits, density, m_min, m_max, A, verbose=False):
     ''' This function plots a sky catalog, both spatially and as a function of
     magnitude
 
@@ -61,7 +61,7 @@ def plot_survey(filename, sky_limits, density, m_min, m_max, A, verbose=False):
     -----
     filename            :   string
         The path to the survey files
-    sky_limits          :   float array
+    sky_limits          :   numpy array
         The area of sky to generate sources in
         [alpha_min, alpha_max, beta_min, beta_max]
     density             :   int
@@ -71,7 +71,7 @@ def plot_survey(filename, sky_limits, density, m_min, m_max, A, verbose=False):
         The saturation limit of the simulated imager
     m_max               :   float
         The 10-sigma detection limit of the simulated imager
-    A                   :   float array
+    A                   :   numpy array
         The parameters describing the magnitude distribution of the sources
         in the sky, according to: log10(dN/dm) = A + B * mag + C * mag ** 2
     verbose             :   Boolean
@@ -79,7 +79,7 @@ def plot_survey(filename, sky_limits, density, m_min, m_max, A, verbose=False):
     '''
 
     if verbose:
-        print("Plotting Survey from {0}...".format(filename))
+        print("Plotting Source Catalog from {0}...".format(filename))
 
     s = pickle.load(open(filename))
 
@@ -110,13 +110,50 @@ def plot_survey(filename, sky_limits, density, m_min, m_max, A, verbose=False):
         print("...done!")
 
 
+def plot_survey(filename, verbose):
+    if verbose:
+        print("Plotting Survey Catalog from {0}...".format(filename))
+
+    s = pickle.load(open(filename))
+    temp = np.zeros(np.max(s.k))
+ 
+    # XXXXXtemp = np.histogram(y, bins=range(np.max(s.k)))[0]
+    
+ 
+    for indx in range(np.max(s.k)):
+        print(indx)
+        temp[indx] = len(np.where(s.k == indx)[0])
+        #print(temp[indx])
+    
+    fig = plt.figure(figsize=(8.3, 4.15))
+
+    ax1 = fig.add_axes([0.075, 0.15, 0.4, 0.8])
+    print(np.max(temp))   
+    for indx in range(int(np.max(temp))):
+        print(ii)
+        ii = np.where(temp==indx)
+        ax1.plot(s.alpha[ii], s.beta[ii], '.', color='{0}'.format(indx/np.max(temp)))
+
+    ax2 = fig.add_axes([0.575, 0.15, 0.4, 0.8])
+    ax2.hist(temp, color='k', alpha=0.7)
+    
+    filename = string.replace(filename, '.p', plot_suffix)
+    plt.savefig(filename)
+    plt.clf()
+    if verbose:
+        print("...done!")  
+
 if __name__ == "__main__":
     dir_path = get_dir_path()
 
     params = pickle.load(open('{0}/parameters.p'.format(dir_path)))
 
-    files = glob.glob('{0}/source_catalog.p'.format(dir_path))
-    for paths in files:
-        plot_survey(paths, params['sky_limits'], params['density_of_stars'],
+    source_catalog_files = glob.glob('{0}/source_catalog.p'.format(dir_path))
+    for paths in source_catalog_files:
+        plot_source_catalog(paths, params['sky_limits'], params['density_of_stars'],
                         params['m_min'], params['m_max'],
                         params['powerlaw_constants'], params['verbose'])
+
+    files = glob.glob('{0}/survey_catalog.p'.format(dir_path))
+    for paths in files:
+        plot_survey(paths, params['verbose'])

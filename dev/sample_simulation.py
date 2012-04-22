@@ -9,10 +9,8 @@ import os
 
 dic = eval(open("default_parameters.py").read())
 
-dic['survey_file'] = "survey"
-dic['verbose'] = False   
-
-#dic['best_fit_params'] = False
+dic['best_fit_params'] = False
 result = simulation.run_sim(dic)
 
-os.system('./plot.py {0}'.format(dic['data_dir']))
+if dic['data_dir']:
+    os.system('./plot.py {0}'.format(dic['data_dir']))

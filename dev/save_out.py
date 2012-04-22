@@ -46,3 +46,23 @@ def source_catalog(data_dir, source_catalog, verbose=False):
     pickle.dump(source_catalog, open(filename, "wb"))
     if verbose:
         print("...done!")
+
+
+def survey(data_dir, survey_catalog, verbose=False):
+    ''' Saves out the survey catalog
+    
+    Input
+    -----
+    data_dir            :   string
+        The output directory path for the simulation run
+    survey_catalog      :   obj
+        The survey object # *.k, *.alpha, *.beta, *.mag, , *.x, *.y *.size,
+        *.flux,
+    '''
+
+    filename = '{0}/survey_catalog.p'.format(data_dir)
+    if verbose:
+        print("Saving out source catalog to {0}".format(filename))
+    pickle.dump(survey_catalog, open(filename, "wb"))
+    if verbose:
+        print("...done!")

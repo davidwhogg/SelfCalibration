@@ -76,18 +76,18 @@ def compare_flats(a, true_ff, g):
 
     Parameters
     ----------
-    a             :     np.array
+    a             :     numpy Array
         The simulate imager's field-of-view in degrees [alpha, beta]
-    ff_samples      :   Float Array
+    ff_samples      :   int array
         The number of sample points on the focal plane
     func            :   function
         The function describing the flat-field model
-    ff_params       :   np.array
+    ff_params       :   numpy array
         The parameters describing the flat-field model
 
     Returns
     -------
-    out     :   numpy.array
+    out     :   numpy array
         the mean of the flat-field at the given sample points
     '''
     error = np.sum((true_ff - np.dot(g, a)) ** 2)

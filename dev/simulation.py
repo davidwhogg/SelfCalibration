@@ -15,13 +15,16 @@ import os
 import analysis
 import true_functions
 import save_out
+import survey
 
 
 def run_sim(dic):
-    if os.path.isdir(dic['data_dir']):  # Create output directories
-        os.system('rm -r {0}'.format(dic['data_dir']))
-    os.mkdir(dic['data_dir'])
-    os.mkdir((dic['data_dir'] + '/FF'))
+    
+    if dic['data_dir']:
+        if os.path.isdir(dic['data_dir']):  # Create output directories
+            os.system('rm -r {0}'.format(dic['data_dir']))
+        os.mkdir(dic['data_dir'])
+        os.mkdir((dic['data_dir'] + '/FF'))
     
     np.random.seed(dic['seed'])
 
@@ -47,8 +50,11 @@ def run_sim(dic):
                         dic['powerlaw_constants'])
         if dic['verbose']:        
             print('...{0} sources generated!'.format(sky_catalog.size))
-    if dic['plots']:
+    if dic['data_dir']:
         save_out.source_catalog(dic['data_dir'], sky_catalog, dic['verbose'])
-    save_out.parameters(dic['data_dir'], dic, dic['verbose'])
+        save_out.parameters(dic['data_dir'], dic, dic['verbose'])
     
     # Perform survey
+    survey_catalog = survey.survey(dic['survey_file'], sky_catalog, dic['FoV'], dic['eta'], dic['delta'], dic['epsilon_max'], data_dir=False, verbose=dic['verbose'])
+    if dic['data_dir']:
+        save_out.survey(dic['data_dir'], survey_catalog, dic['verbose'])

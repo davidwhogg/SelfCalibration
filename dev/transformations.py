@@ -12,28 +12,34 @@ import numpy as np
 
 
 def mag2flux(mag):
-    ''' Converts magnitudes to fluxes
+    ''' This function converts AB magnitudes to fluxes
 
-    Returns an numpy array in the same format containing fluxes
+    Input
+    -----
+    mag         :   numpy array
+        AB magnitudes
 
-    Parameters
-    ----------
-    mag         :   np.array
-        Array of magnitudes to convert to fluxes
+    Returns
+    -------
+    out         :   numpy array
+        Fluxes
     '''
 
     return np.power(10, (- 0.4 * (mag - 22.5)))
 
 
 def flux2mag(flux):
-    ''' Converts fluxes to magnitudes
+    ''' This functions converts fluxes to AB magnitudes
 
-    Returns an numpy array in the same format containing magnitudes
-
-    Parameters
+    Input
     ----------
-    flux         :   np.array
-        Array of fluxes to convert to magnitudes
+    flux        :   numpy array
+        Fluxes
+
+    Returns
+    -------
+    out         :   numpy array
+        AB magnitudes
     '''
 
     return 22.5 - 2.5 * np.log10(flux)
@@ -47,20 +53,27 @@ def test_mag2flux_flux2mag():
 
 
 def sky2fp(alpha, beta, pointing, orientation):
-    ''' Transforms the sky coordinates into focal plane coordinates
+    ''' This function transforms sky coordinates into focal plane coordinates.
+    alpha and beta are angles from the telescope normal and are not RA, dec
+    etc. The focal plane coordinates are measured in degrees.
 
-    Returns focal plane coordinates (x, y)
-
-    Parameters
+    Input
     ----------
-    alpha         :   np.array
-        Array of source alpha coordinates
-    beta          :   np.array
-        Array of source beta coordinates
-    pointing      :   np.array()
-        Telescope pointing (alpha, beta)
-    orientation   :   float
-        Telescope orientation
+    alpha           :      numpy array
+        Array of alpha angles in degrees
+    beta            :      numpy array
+        Array of beta angles in degrees
+    pointing        :      numpy array
+        Telescope pointing (alpha, beta) in degrees
+    orientation     :      float
+        Telescope orientation in degrees
+
+    Returns
+    -------
+    x               :       numpy array
+        focal plane x positions in degrees
+    y               :       numpy array
+        focal plane y positions in degrees
     '''
 
     theta = - orientation * np.pi / 180.  # telescope rotates NOT sky
@@ -72,21 +85,29 @@ def sky2fp(alpha, beta, pointing, orientation):
 
 
 def fp2sky(x, y, pointing, orientation):
-    ''' Transforms the focal plane coordinates into sky coordinates
+    ''' This function transforms focal plane coordinates into sky coordinates.
+    alpha and beta are angles from the telescope normal and are not RA, dec
+    etc. The focal plane coordinates are measured in degrees.
 
-    Returns sky coordinates coordinates (alpha, beta)
-
-    Parameters
+    Input
     ----------
-    x             :   np.array
-        Array of source x focal plane coordinates
-    y             :   np.array
-        Array of source y focal plane coordinates
-    pointing      :   np.array
-        Telescope pointing (alpha, beta)
-    orientation   :   float
-        Telescope orientation
+    x               :       numpy array
+        focal plane x positions in degrees
+    y               :       numpy array
+        focal plane y positions in degrees
+    pointing        :      numpy array
+        Telescope pointing (alpha, beta) in degrees
+    orientation     :      float
+        Telescope orientation in degrees
+
+    Returns
+    -------
+    alpha           :      numpy array
+        Array of alpha angles in degrees
+    beta            :      numpy array
+        Array of beta angles in degrees
     '''
+
     theta = - orientation * np.pi / 180.  # telescope rotates NOT sky
     alpha = x * np.cos(theta) + y * np.sin(theta) + pointing[0]
     beta = -x * np.sin(theta) + y * np.cos(theta) + pointing[1]
