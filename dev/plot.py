@@ -121,7 +121,6 @@ def plot_survey(filename, verbose):
     
  
     for indx in range(np.max(s.k)):
-        print(indx)
         temp[indx] = len(np.where(s.k == indx)[0])
         #print(temp[indx])
     

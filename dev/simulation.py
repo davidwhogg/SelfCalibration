@@ -16,12 +16,16 @@ import analysis
 import true_functions
 import save_out
 import survey
+import self_calibration
 
 
 def run_sim(dic):
     
+    # Create output directories
     if dic['data_dir']:
-        if os.path.isdir(dic['data_dir']):  # Create output directories
+        if dic['data_dir'][-1] == '/':
+            dic['data_dir'] = dic['data_dir'][0:-1]
+        if os.path.isdir(dic['data_dir']):
             os.system('rm -r {0}'.format(dic['data_dir']))
         os.mkdir(dic['data_dir'])
         os.mkdir((dic['data_dir'] + '/FF'))
@@ -55,6 +59,13 @@ def run_sim(dic):
         save_out.parameters(dic['data_dir'], dic, dic['verbose'])
     
     # Perform survey
-    survey_catalog = survey.survey(dic['survey_file'], sky_catalog, dic['FoV'], dic['eta'], dic['delta'], dic['epsilon_max'], data_dir=False, verbose=dic['verbose'])
+    survey_catalog = survey.survey(dic['survey_file'], sky_catalog, dic['FoV'], dic['eta'], dic['delta'], dic['epsilon_max'], data_dir=dic['data_dir'], verbose=dic['verbose'])
     if dic['data_dir']:
         save_out.survey(dic['data_dir'], survey_catalog, dic['verbose'])
+    
+    solution = self_calibration.self_calibration(survey_catalog, sky_catalog, 
+                    dic['flat_field_order'], dic['FoV'], dic['ff_samples'],
+                    dic['stop_condition'], dic['max_iterations'],
+                    dic['best_fit_params'], data_dir=dic['data_dir'],
+                    verbose=dic['verbose'])
+    return solution

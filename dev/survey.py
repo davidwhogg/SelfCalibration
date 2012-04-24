@@ -12,6 +12,7 @@ import sys
 # Custom Modules
 import transformations
 import true_functions
+import save_out
 
 
 def survey(survey_file, sky_catalog, FoV, eta, delta, epsilon_max,
@@ -53,13 +54,17 @@ def survey(survey_file, sky_catalog, FoV, eta, delta, epsilon_max,
         sys.exit()
     if verbose:
         print("...{0} points loaded!".format(number_pointings))
+    if data_dir:
+        save_out.survey_strategy(data_dir, pointings, verbose=verbose)
 
     if verbose:
         print("Surveying sky...")
     obs_cat = None
     for indx in range(pointings.shape[0]):
         si = single_image(sky_catalog, pointings[indx, 1:3],
-                    pointings[indx, 3], FoV, eta, delta, epsilon_max, data_dir)
+                            pointings[indx, 3], FoV, eta,
+                            delta, epsilon_max, data_dir,
+                            verbose)
         if obs_cat is None:
             obs_cat = si
         else:
@@ -159,7 +164,7 @@ class MeasuredCatalog:
 
 
 def single_image(sky_catalog, pointing, orientation, FoV, eta, delta,
-                                            epsilon_max, data_dir=False):
+                                epsilon_max, data_dir=False, verbose=False):
     ''' This functions performs a single image of the sky at the given pointing
     coordinates.
 
@@ -199,7 +204,7 @@ def single_image(sky_catalog, pointing, orientation, FoV, eta, delta,
         if (one_camera_file != True) and (orientation > 30) \
         and (pointing[0] > -1) and (pointing[0] < 1) and (pointing[1] > -1) \
         and (pointing[1] < 1):
-            save_out.camera(data_dir, sky_catalog, measured_catalog,
+            save_out.camera(data_dir, sky_catalog, measured_catalog, FoV,
                             inside_FoV, pointing, orientation, verbose=verbose)
 
     return measured_catalog

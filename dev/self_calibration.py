@@ -12,6 +12,155 @@ import numpy as np
 
 # Custom Modules
 import true_functions
+import save_out
+import analysis
+
+
+def self_calibration(obs_cat, sky_catalog, order, FoV,
+                        ff_samples, stop_condition, max_iterations,
+                        best_fit_parameters, data_dir=False, verbose=False):
+    ''' This functions performs the self-calibration procedure on the survey.
+
+    Parameters
+    ----------
+    obs_cat                 :       object
+        The observation catalog
+    sky_catalog             :       object
+        The *true* sky catalog
+    order                   :       Integer
+        The order of the polynomial flat-field used to fit the instrument
+        response in the self-calibration procedure
+    FoV                     :       float array
+        The imagers field-of-view in degrees (dalpha, dbeta)
+    ff_samples              :       float array
+        The number of points to sample the focal plane with
+        (alpha-axis, beta-axis)
+    stop_condition          :       float
+        The stop condition for the self-calibration procedure and the
+        best-in-basis fitting (stop when difference is less than 2 times this)
+    max_iterations          :       float
+        The maximum number of iterations in the self-calibration procedure and
+        the best-in-basis fitting
+    best_fit_parameters     :       numpy array
+        The best-in-basis fit to the true flat-field
+    data_dir                :       boolean / string
+        If set to False, the self-calibration simulations do not save out
+        any data (only returning the results to the calling program). If a
+        string is give, all data is saved out to this directory.
+    verbose                 :       boolean
+        Set to True to run the simulations in verbose mode
+    Returns
+    -------
+    out                     :       numpy array
+        The results of the self-calibration procedure [the number of iteration
+        steps required, the rms error of the final fitted source fluxes, their
+        badness of the fitted flat-field, the best-in-basis badness of the
+        fitted flat-field, the chi2 of the fit].
+    '''
+    q = np.array([1])
+    chi2 = 1e9
+    old_chi2 = 1e10
+    count = 0
+    next_plot_iteration = 1
+
+    if data_dir:
+        save_out.fitted_flat_field(q, FoV, ff_samples, count, data_dir,
+                                                                    verbose)
+
+    while ((abs(chi2 - old_chi2) > stop_condition) and \
+                                            (count < max_iterations)):
+        count += 1
+        temp_chi2 = chi2
+        s, s_invvar = s_step(obs_cat, q)
+        q, q_invvar, chi2 = q_step(obs_cat, s, order, FoV, ff_samples)
+        old_chi2 = temp_chi2
+
+        indx = [s != 0]
+        rms = analysis.rms_error(s[indx], sky_catalog.flux[indx], verbose)
+        bdness = analysis.badness(q, FoV, ff_samples, verbose)
+        bdness_bestfitff = analysis.best_in_basis(q, FoV, ff_samples,
+                                        best_fit_parameters, verbose)
+
+        if verbose:
+            print('Fitted parameters: {0}'.format(q))
+            print(("{0}: RMS = {1:.6f} %, Badness = {2:.6f} %, "
+                    "BestInBasis_Badness = {3:.6f} %, chi2 = {4:.2f} ({5})")
+                    .format(count, rms, bdness, bdness_bestfitff, chi2,
+                    obs_cat.size))
+
+        if (data_dir and (count == next_plot_iteration)) or \
+                                (abs(chi2 - old_chi2) < stop_condition):
+            save_out.fitted_flat_field(q, FoV, ff_samples, count,
+                                                            data_dir, verbose)
+            next_plot_iteration *= 2
+    return np.array([count, rms, bdness, bdness_bestfitff, chi2])
+
+
+def s_step(obs_cat, q):
+    ''' This functions returns a weighted mean of the sources observed multiple
+    times in the survey.
+
+    Parameters
+    ----------
+    obs_cat               :   object
+        The observation catalog
+    q               :   numpy.array
+        The instrument response parameters
+
+    Returns
+    -------
+    out             :   tuple
+        The weighted means and their uncertainties
+    '''
+    flat_field = evaluate_flat_field(obs_cat.x, obs_cat.y, q)
+    fcss = flat_field * obs_cat.counts * obs_cat.invvar
+    ffss = flat_field * flat_field * obs_cat.invvar
+    s = np.zeros(obs_cat.k.max() + 1)
+    s_invvar = np.zeros(obs_cat.k.max())
+    for ID in range(obs_cat.k.max()):
+        indx = (obs_cat.k == ID)
+        denominator = np.sum(ffss[indx])
+        s_invvar[ID] = denominator
+        if denominator > 0.:
+            s[ID] = np.sum(fcss[indx]) / denominator
+    return (s, s_invvar)
+
+
+def q_step(obs_cat, s, order, FoV, ff_samples):
+    ''' This functions fits for the flat-field parameters based on the given
+    model source fluxes.
+
+    Parameters
+    ----------
+    obs_cat               :   object
+        The observation catalog
+    s               :   numpy.array
+        The source fluxes
+    order           :   Integer
+        The order of the polynomial flat-field used to fit the instrument
+        response in the self-calibration procedure
+    FoV    :    float array
+        The imagers field-of-view in degrees (dalpha, dbeta)
+    ff_samples  :   float array
+        The number of points to sample the focal plane with
+        (alpha-axis, beta-axis)
+
+    Returns
+    -------
+    out             :   tuple
+        The results of the flat-field fitting procedure (numpy array of the
+        fitted flat-field paramters, their uncertainties and the chi2 of the
+        fit)
+    '''
+    g = evaluate_flat_field_functions(obs_cat.x, obs_cat.y, order)
+    ss = s[obs_cat.k]
+    q_invvar = np.dot(np.transpose(g) * ss * ss * obs_cat.invvar, g)
+    numerator = np.sum(np.transpose(g) * ss * obs_cat.counts * obs_cat.invvar,
+                                                        axis=1)
+    q = np.dot(np.linalg.inv(q_invvar), numerator)
+    q = normalize_flat_field(q, FoV, ff_samples)
+    chi2 = np.sum((np.dot(g, q) * ss - obs_cat.counts) ** 2 * obs_cat.invvar)
+    return (q, q_invvar, chi2)
 
 
 def evaluate_flat_field_functions(x, y, order):

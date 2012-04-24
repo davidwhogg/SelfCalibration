@@ -12,7 +12,7 @@
     # do not save out any data (only returning the results to the calling
     # program). If a string is give, all data is saved out to this directory.
     # NB: old directories with this name are removed!
-    'data_dir'            :     'default_output',
+    'data_dir'            :     'default_output/',
     # Boolean: Set to True to save out all the data required for plots
     'plots'               :     True,
     # Boolean: Set to True to run the simulation in verbose mode,
@@ -27,7 +27,7 @@
     # Float array: The parameters describing the magnitude distribution
     # of the sources in the sky, according to
     # log10(dN/dm) = A + B * mag + C * mag ** 2
-'powerlaw_constants'      :     [-13.34863146, 1.25429311, -0.02122949],
+    'powerlaw_constants'      :     [-13.34863146, 1.25429311, -0.02122949],
     # Float Array: The area of sky to generate sources in
     # [alpha_min, alpha_max, beta_min, beta_max]
     'sky_limits'          :     [-4.0, 4.0, -4.0, 4.0],
@@ -53,7 +53,7 @@
     # String: The file path to the survey strategy to be performed
     # during the simulation run. The file has the format: 
     #       observation_number, RA (deg), Dec (deg), Orientation (deg)
-    'survey_file'         :     'A.txt',
+    'survey_file'         :     'D.txt',
     # Float array: The number of points to sample the focal plane on for the
     # badness calculations
     'ff_samples'          :     [300, 300],
