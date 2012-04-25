@@ -27,8 +27,8 @@ def flat_field_parameters():
         The parameters for the *true* flat-field model
     '''
 
-    return np.append(np.array([1, -0.02, 0.03, -0.2, 0.01, -0.5]),
-                                (1e-4) * np.random.uniform(size=256))
+    return np.append(np.array([1, -0.01, 0.015, -0.1, 0.005, -0.25]),
+                                (5e-4) * np.random.uniform(size=256))
 
 
 def flat_field(x, y, FoV, par=flat_field_parameters()):

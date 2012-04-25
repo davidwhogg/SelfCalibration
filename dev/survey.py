@@ -205,7 +205,7 @@ def single_image(sky_catalog, pointing, orientation, FoV, eta, delta,
         and (pointing[0] > -1) and (pointing[0] < 1) and (pointing[1] > -1) \
         and (pointing[1] < 1):
             save_out.camera(data_dir, sky_catalog, measured_catalog, FoV,
-                            inside_FoV, pointing, orientation, verbose=verbose)
+                                    pointing, orientation, verbose=verbose)
 
     return measured_catalog
-    # measured_sources  *.size, *.k, *.flux, *.invvar, *.x, *.y
+    # measured_sources  *.size, *.k, *.counts, *.invvar, *.x, *.y

@@ -73,7 +73,7 @@ def survey_strategy(data_dir, survey, verbose=False):
         print("...done!")
 
 
-def camera(data_dir, sky_catalog, measured_catalog, FoV, inside_FoV,
+def camera(data_dir, sky_catalog, measured_catalog, FoV,
             pointing, orientation, verbose=False):
     ''' Saves out a single camera exposure, along with the total sky catalog
     and the meas
@@ -89,8 +89,6 @@ def camera(data_dir, sky_catalog, measured_catalog, FoV, inside_FoV,
         (*.size, *.ID, *.x, *.y, *true_invvar, *.counts, *.invvar)
     FoV                 :   float array
         The imagers field-of-view in degrees (dalpha, dbeta)
-    inside_FoV          :   np.array
-        Boolean array stating if source is inside the camera field-of-view
     pointing            :   np.array
         Array of telescope pointing (alpha, beta)
     orientation         :   float
@@ -104,19 +102,19 @@ def camera(data_dir, sky_catalog, measured_catalog, FoV, inside_FoV,
     if verbose:
         print("Saving out camera image to {0}...".format(filename))
 
-    x = 0.5 * np.array([FoV[0], -FoV[0], FoV[0], FoV[0], -FoV[0]])
+    x = 0.5 * np.array([-FoV[0], -FoV[0], FoV[0], FoV[0], -FoV[0]])
     y = 0.5 * np.array([-FoV[1], FoV[1], FoV[1], -FoV[1], -FoV[1]])
     alpha, beta = transformations.fp2sky(x, y, pointing, orientation)
 
-    dic = {'measured_catalog': measured_catalog,
+    dic = {'sources_x': measured_catalog.x,
+            'sources_y': measured_catalog.y,
             'sky_catalog': sky_catalog,
             'pointing': pointing,
             'orientation': orientation,
             'fp_x': x,
             'fp_y': y,
             'fp_alpha': alpha,
-            'fp_beta': beta,
-            'inside_FoV': inside_FoV}
+            'fp_beta': beta}
     pickle.dump(dic, open(filename, "wb"))
 
     if verbose:
