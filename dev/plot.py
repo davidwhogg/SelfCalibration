@@ -20,6 +20,7 @@ import string
 
 import true_functions
 import self_calibration
+import transformations
 
 GOLDEN_RATIO = 1.61803399
 
@@ -187,31 +188,49 @@ def camera_image(filename, sky_limits, density, fig_width=8.3,
         print('...done!')
 
 
-def survey(filename, verbose=False):
+def survey(filename, survey_file, FoV, sky_limits, fig_width=8.3, suffix='.png', verbose=False):
     if verbose:
         print("Plotting Survey Catalog from {0}...".format(filename))
 
     s = pickle.load(open(filename))
-    temp = np.zeros(np.max(s.k))
- 
-    # XXXXXtemp = np.histogram(y, bins=range(np.max(s.k)))[0]
+    survey = np.loadtxt(survey_file)
     
- 
-    for indx in range(np.max(s.k)):
-        temp[indx] = len(np.where(s.k == indx)[0])
-        #print(temp[indx])
+    fig = plt.figure(figsize=(fig_width, fig_width))
+
+    ax1 = fig.add_axes([0.12, 0.55, 0.4, 0.4])
     
-    fig = plt.figure(figsize=figure_size)
+    x_min = -FoV[0] / 2; y_min = -FoV[1] / 2
+    x_max = FoV[0] / 2; y_max = FoV[1] / 2
+    x = np.array([x_min, x_min, x_max, x_max, x_min])
+    y = np.array([y_min, y_max, y_max, y_min, y_min])
+    for image in survey:
+        alpha, beta = transformations.fp2sky(x, y, image[1:3], image[3])
+        ax1.plot(alpha, beta,'k-', alpha=0.5)
 
-    ax1 = fig.add_axes([0.075, 0.15, 0.4, 0.8])
-    print(np.max(temp))   
-    for indx in range(int(np.max(temp))):
-        print(ii)
-        ii = np.where(temp==indx)
-        ax1.plot(s.alpha[ii], s.beta[ii], '.', color='{0}'.format(indx/np.max(temp)))
+    min_sky = np.min(sky_limits) - 0.1 * (np.max(sky_limits) - np.min(sky_limits))
+    max_sky = np.max(sky_limits) + 0.1 * (np.max(sky_limits) - np.min(sky_limits))
+    ax1.set_xlim(min_sky, max_sky)
+    ax1.set_ylim(min_sky, max_sky)
 
-    ax2 = fig.add_axes([0.575, 0.15, 0.4, 0.8])
-    ax2.hist(temp, color='k', alpha=0.7)
+    ax2 = fig.add_axes([0.52, 0.55, 0.4, 0.4])
+    ax2.set_yticklabels([])
+    ax2.get_xticklabels()[0].set_visible(False)
+
+
+    no_measurements = np.histogram(s.k, bins=range(np.max(s.k)))[0]    
+    indx = np.where(no_measurements==24)
+    ax2.plot(s.alpha[indx], s.beta[indx], 'k.')
+    ax2.set_xlim(min_sky, max_sky)
+    ax2.set_ylim(min_sky, max_sky)
+    
+    
+    ax3 = fig.add_axes([0.12, 0.075, 0.8, 0.4])
+    
+    
+    ax3.hist(no_measurements, color='k', bins=range(np.max(no_measurements)+2))
+    
+    ax3.set_xlabel(r'Number of Source Observations')
+    ax3.set_ylabel(r'Number of Sources')
     
     filename = string.replace(filename, '.p', plot_suffix)
     plt.savefig(filename)
@@ -221,55 +240,104 @@ def survey(filename, verbose=False):
 
 
 def variance(filename, fig_width=8.3, suffix='.png', verbose=False):
+    ''' This function plots the both the assumed and the *true* measurement 
+    variances
+
+    Input
+    -----
+    filename            :   string
+        The path to the survey file
+    figure_width        :   float
+        The width of the figure in inches, default it 8.3
+    suffix              :   string
+        The format of the saved figure, either '.pdf', '.eps' or '.png'. 
+        Default is '.png' 
+    verbose             :   Boolean
+        Set to true to run function in verbose mode
+    '''
     if verbose:
         print("Plotting Inverse-Variances from {0}...".format(filename))
 
     s = pickle.load(open(filename))
 
     fig = plt.figure(figsize=(fig_width, 0.5 * fig_width))
-    ax1 = fig.add_axes([0.1, 0.15, 0.4, 0.8])
-    ax1.plot(s.counts, 1 / s.true_invvar, '.', color='0.2', alpha=0.1, markersize=1, label='True')
-    ax1.plot(s.counts, 1 / s.invvar, 'k.', markersize=1, label='Assumed')
-    ax1.set_xlabel(r'Count Rate (s$^{-1}$)')
+    ax1 = fig.add_axes([0.1, 0.1, 0.43, 0.8])
+    ax2 = fig.add_axes([0.53, 0.1, 0.43, 0.8])
+
+    ax1.plot(s.counts, 1 / s.invvar, 'k.', alpha=0.5, markersize=1)
+    ax1.text(0.9, 0.1, 'Assumed', bbox=dict(facecolor='w', alpha=0.5),
+                            va='center', ha='right', transform = ax1.transAxes)
+    
+    ax2.plot(s.counts, 1 / s.true_invvar, 'k.', alpha=0.5, markersize=1)
+    ax2.text(0.9, 0.1, 'True', bbox=dict(facecolor='w', alpha=0.5),
+                            va='center', ha='right', transform = ax2.transAxes)
+    
+    ax1.set_ylim(np.min(0.8 / s.invvar), np.max(1.1 / s.true_invvar))
+    ax2.set_ylim(np.min(0.8 / s.invvar), np.max(1.1 / s.true_invvar))
+
     ax1.set_ylabel(r'$\sigma^2$')
-    ax1.legend(loc='upper left')
-    
-    ax2 = fig.add_axes([0.575, 0.15, 0.4, 0.8])
-    ax2.plot(s.counts, s.counts / np.sqrt(s.invvar), 'k.', markersize=1, label="Assumed")
-    ax2.plot(s.counts, s.counts / np.sqrt(s.true_invvar), '.', color='0.5',alpha=0.5, markersize=1, label='True')
-    ax2.set_xlabel(r'Count Rate (s$^{-1}$)')
-    ax2.set_ylabel('Signal-to-Noise')
-    ax2.legend(loc='upper left')
-    
-    filename = string.replace(filename, '.p', '_variance.png')
-    fig.savefig(filename)
+    fig.text(0.53, 0.025, r'Count Rate (s$^{-1}$)', va='center', ha='center')
+    ax2.get_xticklabels()[0].set_visible(False)
+    ax2.set_yticklabels([])    
+
+    variance_filename = string.replace(filename, '.p', '_variance.png')
+    fig.savefig(variance_filename)
     fig.clf()
     if verbose:
         print('...done!')
+
+
+def s2n(filename, fig_width=8.3, suffix='.png', verbose=False):
+    ''' This function plots the the assumed and the *true* measurement 
+    signal-to-noises
+
+    Input
+    -----
+    filename            :   string
+        The path to the survey file
+    figure_width        :   float
+        The width of the figure in inches, default it 8.3
+    suffix              :   string
+        The format of the saved figure, either '.pdf', '.eps' or '.png'. 
+        Default is '.png' 
+    verbose             :   Boolean
+        Set to true to run function in verbose mode
     '''
-  plt.figure(figsize = (fig_width, fig_width))
-  plt.clf()
-  pickle_dic = pickle.load(open(invvar_filename))
-  counts = pickle_dic['counts']
-  true_invvar = pickle_dic['true_invvar']
-  reported_invvar = pickle_dic['reported_invvar']  
-  # Sort true invvar by counts so we can plot as a line
-  sort = np.zeros((len(counts), 2))
-  sort[:,0] = counts[:]
-  sort[:,1] = reported_invvar[:]
-  sort = sort[sort[:,0].argsort(),:]
-  sort_reported_invvar = sort[:,1]
-  sort_counts = sort[:,0]
-  plt.plot(np.log10(counts), np.log10((1/true_invvar)/counts**2),'k.', markersize = 2., label = r"Actual Variance", alpha = 0.01)
-  plt.plot(np.log10(sort_counts), np.log10((1/sort_reported_invvar)/sort_counts**2),'k', label = r"Assumed Variance")
-  plt.xlabel(r'$\log_{10}(c_{i})$')
-  plt.ylabel(r'$\log_{10}(\frac{\sigma_{i}^2}{c_i^2})$')
-  plt.xlim(np.min(np.log10(counts)), np.max(np.log10(counts)))
-  plt.subplots_adjust(wspace=0.3)
-  filename = string.replace(invvar_filename, '.p', '.pdf')
-  plt.savefig(filename,bbox_inches='tight')
-  plt.clf()
-    '''
+
+    if verbose:
+        print("Plotting Signal-to-Noise from {0}...".format(filename))
+
+    s = pickle.load(open(filename))
+
+    fig = plt.figure(figsize=(fig_width, 0.5 * fig_width))
+    ax1 = fig.add_axes([0.1, 0.1, 0.43, 0.8])
+    ax2 = fig.add_axes([0.53, 0.1, 0.43, 0.8])
+    
+    s2n = s.counts * np.sqrt(s.invvar)
+    true_s2n = s.counts * np.sqrt(s.true_invvar)
+    
+    ax1.plot(s.counts, s2n, 'k.', alpha=0.5, markersize=1)
+    ax1.text(0.9, 0.1, 'Assumed', bbox=dict(facecolor='w', alpha=0.5),
+                            va='center', ha='right', transform = ax1.transAxes)
+
+    ax2.plot(s.counts, true_s2n, 'k.', alpha=0.5, markersize=1)
+    ax2.text(0.9, 0.1, 'True', bbox=dict(facecolor='w', alpha=0.5),
+                            va='center', ha='right', transform = ax2.transAxes)
+
+    ax1.set_ylim(np.min(0.6 * true_s2n), np.max(1.1 * true_s2n))
+    ax2.set_ylim(np.min(0.6 * true_s2n), np.max(1.1 * true_s2n))
+
+    ax1.set_ylabel(r'Signal-to-Noise')
+    fig.text(0.53, 0.025, r'Count Rate (s$^{-1}$)', va='center', ha='center')
+    ax2.get_xticklabels()[0].set_visible(False)
+    ax2.set_yticklabels([])    
+
+    s2n_filename = string.replace(filename, '.p', '_s2n.png')
+    fig.savefig(s2n_filename)
+    fig.clf()
+
+    if verbose:
+        print('...done!')
 
 
 def flat_fields(filename, FoV, ff_samples, best_fit_params, fig_width=8.3,
@@ -383,9 +451,10 @@ if __name__ == "__main__":
 
     files = glob.glob('{0}/survey_catalog.p'.format(dir_path))
     for path in files:
-        print('XX Still need to do survey XX')
+        survey(path, params['survey_file'], params['FoV'], params['sky_limits'], fig_width=8.3, suffix=plot_suffix, verbose=verbose)
         variance(path, fig_width=8.3, suffix=plot_suffix, verbose=verbose)
-        #survey(path, params['verbose'])
+        s2n(path, fig_width=8.3, suffix=plot_suffix, verbose=verbose)
+        
 
     files = glob.glob('{0}/camera_image.p'.format(dir_path))
     for path in files:

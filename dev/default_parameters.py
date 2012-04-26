@@ -53,7 +53,7 @@
     # String: The file path to the survey strategy to be performed
     # during the simulation run. The file has the format: 
     #       observation_number, RA (deg), Dec (deg), Orientation (deg)
-    'survey_file'         :     'D.txt',
+    'survey_file'         :     'A.txt',
     # Float array: The number of points to sample the focal plane on for the
     # badness calculations
     'ff_samples'          :     [300, 300],

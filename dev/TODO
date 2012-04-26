@@ -10,6 +10,8 @@ Keep sky coordinates in the measured catalog to make plotting easier
 
 Remove global parameters from plot
 
+ADD multiprocessing to default_params
+
 Bugs:
 -----
 
