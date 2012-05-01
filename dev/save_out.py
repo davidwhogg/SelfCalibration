@@ -1,7 +1,7 @@
-# Rory Holmes
-# Feb 2012
+# Rory Holmes (MPIA) / David Hogg (NYU)
+# 2011 - 2012
 
-# This file contains the functions to save out data from the
+# This file contains the functions that save out the data from the
 # self-calibration simulations. All data is saved out as pickles.
 
 # Make Python 3 compatible
@@ -121,8 +121,8 @@ def camera(data_dir, sky_catalog, measured_catalog, FoV,
         print("...done!")
 
 
-def survey(data_dir, survey_catalog, verbose=False):
-    ''' Saves out the survey catalog
+def measurement_catalog(data_dir, survey_catalog, verbose=False):
+    ''' Saves out the measurement catalog
 
     Input
     -----
@@ -133,7 +133,7 @@ def survey(data_dir, survey_catalog, verbose=False):
         *.flux,
     '''
 
-    filename = '{0}/survey_catalog.p'.format(data_dir)
+    filename = '{0}/measurement_catalog.p'.format(data_dir)
     if verbose:
         print("Saving out source catalog to {0}".format(filename))
     pickle.dump(survey_catalog, open(filename, "wb"))
