@@ -1,5 +1,5 @@
-# Rory Holmes
-# Feb 2012
+# Rory Holmes (MPIA) / Davig Hogg (NPU)
+# 2011 - 2012
 
 # This file contains the functions to analyze the fitted flat-field in the
 # self-calibration simulations.
