@@ -1,43 +1,73 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# Rory Holmes (MPIA) / David Hogg (NYU)
+# 2011 - 2012
 
-import numpy as np
+# This file contains a sample parameter set for the self-calibration
+# simulations. All the parameters are stored in a single dictionary.
+# This file is parsed with the eval() function. All these parameters must be
+# present for the simulation to run correctly.
 
-dic = {
-  'survey_strategies'   :     ['deep'], #['D', 'C', 'B', 'A']
-  
-  #'mag_at_ten_sigma'    :     22.,
+{
+    # Programmatic Parameters
+    # =======================
+    # Boolean / String: If set to False, the self-calibration simulations
+    # do not save out any data (only returning the results to the calling
+    # program). If a string is give, all data is saved out to this directory.
+    # NB: old directories with this name are removed!
+    'data_dir'            :     'default_output/',
+    # Boolean: Set to True to save out all the data required for plots
+    'plots'               :     True,
+    # Boolean: Set to True to run the simulation in verbose mode,
+    'verbose'             :     True,
 
-  'eta'                 :     0.00173214,
-  
-  'alpha'               :     0.1584655417,
-  
-  'm_min'               :     17,
-  
-  'm_max'               :     22,
-  
-  'density_of_stars'    :     100, # all magnitudes, number per unit area on sky
-  
-  'powerlaw_constants'  :     np.array([-13.34863146, 1.25429311, -0.02122949]), # log10(dN/dm) = A + B*mag + C*mag**2
-  
-  'useful_fraction'     :     1.,
-  
-  'powerlaw'            :     0.25, # B in log10(dN/dm) = A + B*m
-  
-  'FoV'                 :     [0.76, 0.72], # [Δα, Δβ]
-  
-  'ff_samples'          :     [100, 100],
-  
-  'flat_field_order'    :     8,
-  
-  'epsilon_max'         :     1.,
-  
-  'sky_limits'          :     [-4.0, 4.0, -4.0, 4.0], #[α_min, α_max, β_min, β_max]
-  
-  'seed'                :     1, # Random number seed
-  
-  'stop_condition'	:     1e-8, # Stop cross-cal when difference in X2 less than this
-  
-  'max_iterations'	:     1049 # the maximum number of cross cal iterations
-  
-  } 
+    # Sky Parameters
+    # ==============
+    # Float: the maximum number of sources (all magnitude) per unit area
+    # on the sky. If more than this number are produced by the magnitude
+    # distribution (see below), only the brightest are selected.
+    'density_of_stars'    :     200.,
+    # Float array: The parameters describing the magnitude distribution
+    # of the sources in the sky, according to
+    # log10(dN/dm) = A + B * mag + C * mag ** 2
+'powerlaw_constants'      :     [-13.34863146, 1.25429311, -0.02122949],
+    # Float Array: The area of sky to generate sources in
+    # [alpha_min, alpha_max, beta_min, beta_max]
+    'sky_limits'          :     [-4.0, 4.0, -4.0, 4.0],
+
+    # Instrument Parameters
+    # =====================
+    # Float Array: The simulate imager's field-of-view in degrees [alpha, beta]
+    'FoV'                 :     [0.76, 0.72],
+    # Float: The saturation limit of the simulated imager
+    'm_min'               :     17.,
+    # Float: The 10-sigma detection limit of the simulated imager
+    'm_max'               :     22.,
+    # Floats: The parameters used in the measurement noise model
+    # sigma ** 2 = (1 + epsilon) * delta ** 2 + eta ** 2 * count_rate ** 2
+    'eta'                 :     0.00173214,
+    'delta'               :     0.1584655417,
+    # where epsilon is a random number drawn uniformly in the range
+    # [0.0, epsilon_max) for each measurement
+    'epsilon_max'         :     1.,
+
+    # Simulation Parameters
+    # =====================
+    # String: The file path to the survey strategy to be performed
+    # during the simulation run. The file has the format:
+    #       observation_number, RA (deg), Dec (deg), Orientation (deg)
+    'survey_file'         :     'D.txt',
+    # Float array: The number of points to sample the focal plane on for the
+    # badness calculations
+    'ff_samples'          :     [300, 300],
+    # Integer: The order of the flat-field used to fit the instrument response
+    # in the self-calibration procedure
+    'flat_field_order'    :     8,
+    # Float Array: The seed for the random number generator (to ensure repeat
+    # runs get the same answer!)
+    'seed'                :     [1.],
+    # Float: The stop condition for the self-calibration procedure and the
+    # best-in-basis fitting (stop when difference is less than 2 times this)
+    'stop_condition'	    :     1e-5,
+    # Integer: The maximum number of iterations in the self-calibration
+    # procedure and the best-in-basis fitting
+    'max_iterations'	    :     1049
+    }
