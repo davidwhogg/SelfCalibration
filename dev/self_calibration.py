@@ -1,8 +1,9 @@
-# Rory Holmes
-# Feb 2012
+# Rory Holmes (MPIA) / David Hogg (NYU)
+# 2011 - 2012
 
 # This file contains the functions to self-calibrate the photometric catalog
-# in the self-calibration simulations.
+# in the self-calibration simulations. These functions both fit for the source
+# fluxes and also the instrument response.
 
 # Make Python 3 compatible
 from __future__ import division, print_function
@@ -93,6 +94,10 @@ def self_calibration(obs_cat, sky_catalog, order, FoV,
             save_out.fitted_flat_field(q, FoV, ff_samples, count,
                                                             data_dir, verbose)
             next_plot_iteration *= 2
+    
+    if count = max_iterations:
+        count = 0  # did not converge error flag
+
     return np.array([count, rms, bdness, bdness_bestfitff, chi2])
 
 
