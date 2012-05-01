@@ -1,8 +1,9 @@
-# Rory Holmes
-# Feb 2012
+# Rory Holmes (MPIA) / David Hogg (NYU)
+# 2011 - 2012
 
-# This file contains the functions to create true things:
-# the sky and the true flat-field.
+# This file contains the functions to create the *true* models in the
+# self-calibration simulations, such as the *true* flat-field and the *true*_ff
+# instrument response.
 
 # Make Python 3 compatible
 from __future__ import division, print_function
