@@ -1,8 +1,8 @@
-# Rory Holmes
-# Feb 2012
+# Rory Holmes (MPIA) / David Hogg (NYU)
+# 2011 - 2012
 
 # This file contains the transformation functions for the
-# self-calibration simulations. All data is saved out as pickles.
+# self-calibration simulations.
 
 # Make Python 3 compatible
 from __future__ import division, print_function
