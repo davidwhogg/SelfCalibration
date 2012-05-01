@@ -1,9 +1,10 @@
-# Rory Holmes
-# Mar 2012
+# Rory Holmes (MPIA) / David Hogg (NYU)
+# 2011 - 2012
 
 # This file contains a sample parameter set for the self-calibration
 # simulations. All the parameters are stored in a single dictionary.
-# This file is parsed with the eval() function.
+# This file is parsed with the eval() function. All these parameters must be
+# present for the simulation to run correctly.
 
 {
     # Programmatic Parameters
@@ -27,7 +28,7 @@
     # Float array: The parameters describing the magnitude distribution
     # of the sources in the sky, according to
     # log10(dN/dm) = A + B * mag + C * mag ** 2
-    'powerlaw_constants'      :     [-13.34863146, 1.25429311, -0.02122949],
+'powerlaw_constants'      :     [-13.34863146, 1.25429311, -0.02122949],
     # Float Array: The area of sky to generate sources in
     # [alpha_min, alpha_max, beta_min, beta_max]
     'sky_limits'          :     [-4.0, 4.0, -4.0, 4.0],
@@ -51,7 +52,7 @@
     # Simulation Parameters
     # =====================
     # String: The file path to the survey strategy to be performed
-    # during the simulation run. The file has the format: 
+    # during the simulation run. The file has the format:
     #       observation_number, RA (deg), Dec (deg), Orientation (deg)
     'survey_file'         :     'A.txt',
     # Float array: The number of points to sample the focal plane on for the
@@ -60,7 +61,7 @@
     # Integer: The order of the flat-field used to fit the instrument response
     # in the self-calibration procedure
     'flat_field_order'    :     8,
-    # Float Array: The seed for the random number generator (to ensure repeat 
+    # Float Array: The seed for the random number generator (to ensure repeat
     # runs get the same answer!)
     'seed'                :     [1.],
     # Float: The stop condition for the self-calibration procedure and the
