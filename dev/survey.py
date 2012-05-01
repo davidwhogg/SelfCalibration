@@ -1,8 +1,8 @@
-# Rory Holmes
-# April 2012
+# Rory Holmes (MPIA) / David Hogg (NYU)
+# 2011 - 2012
 
 # This file contains all the functions and classes used to perform the imaging
-# survey in the self-calibration simulation
+# survey in the self-calibration simulations.
 
 # Standard Modules
 import numpy as np
@@ -130,7 +130,7 @@ class MeasuredCatalog:
         self.y = camera_catalog.y[inside_FoV]
         flat = true_functions.flat_field(self.x, self.y, FoV)
         true_counts = camera_catalog.flux[inside_FoV] * flat
-        self.true_invvar = self.true_invvar(true_counts,
+        self.true_invvar = self.true_invvar_func(true_counts,
                                                     eta, delta, epsilon_max)
         self.invvar = self.reported_invvar(true_counts, eta, delta)
         self.counts = true_counts + np.random.normal(size=self.size) \
@@ -143,7 +143,7 @@ class MeasuredCatalog:
         var = (delta ** 2) + (eta ** 2) * (true_counts ** 2)
         return 1. / var
 
-    def true_invvar(self, true_counts, eta, delta, epsilon_max):
+    def true_invvar_func(self, true_counts, eta, delta, epsilon_max):
         ''' This function calculates the *true*  inverse invariance for each
         measurement
         '''
@@ -154,8 +154,8 @@ class MeasuredCatalog:
     def append(self, other):
         self.size = self.size + other.size
         self.k = np.append(self.k, other.k)
-        self.alpha = np.append(self.x, other.alpha)
-        self.beta = np.append(self.y, other.beta)
+        self.alpha = np.append(self.alpha, other.alpha)
+        self.beta = np.append(self.beta, other.beta)
         self.x = np.append(self.x, other.x)
         self.y = np.append(self.y, other.y)
         self.counts = np.append(self.counts, other.counts)
@@ -198,14 +198,11 @@ def single_image(sky_catalog, pointing, orientation, FoV, eta, delta,
                     & (camera_catalog.y < 0.5 * FoV[1]))
     measured_catalog = MeasuredCatalog(camera_catalog, FoV, inside_FoV, eta,
                                                             delta, epsilon_max)
-
     if data_dir:
-        one_camera_file = os.path.exists((data_dir + '/camera_image.p'))
-        if (one_camera_file != True) and (orientation > 30) \
-        and (pointing[0] > -1) and (pointing[0] < 1) and (pointing[1] > -1) \
-        and (pointing[1] < 1):
-            save_out.camera(data_dir, sky_catalog, measured_catalog, FoV,
-                                    pointing, orientation, verbose=verbose)
+        if os.path.exists((data_dir + '/camera_image.p')) is False:
+            if (orientation > 30) and (pointing[0] > -1) and (pointing[0] < 1)\
+                            and (pointing[1] > -1) and (pointing[1] < 1):
+                save_out.camera(data_dir, sky_catalog, measured_catalog,
+                                   FoV, pointing, orientation, verbose=verbose)
 
     return measured_catalog
-    # measured_sources  *.size, *.k, *.counts, *.invvar, *.x, *.y
