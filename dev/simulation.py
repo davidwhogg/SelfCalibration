@@ -42,9 +42,9 @@ def run_sim(dic):
         self-calibration did not converge).
         list[1] = the root-mean-squared error between the fitted source fluxes
         and the true source fluxes.
-        list[2] = the ''badness´´ between the fitted instrument response and
+        list[2] = the "badness" between the fitted instrument response and
         the true instrument responses.
-        list[3] = the ''best-in-badness´´ between the fitted instrument
+        list[3] = the "best-in-badness" between the fitted instrument
         response and the true instrument responses.
         list[4] = the chi2 of the final fitted solution
     '''

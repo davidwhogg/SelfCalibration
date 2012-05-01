@@ -95,7 +95,7 @@ def self_calibration(obs_cat, sky_catalog, order, FoV,
                                                             data_dir, verbose)
             next_plot_iteration *= 2
     
-    if count = max_iterations:
+    if count == max_iterations:
         count = 0  # did not converge error flag
 
     return np.array([count, rms, bdness, bdness_bestfitff, chi2])
