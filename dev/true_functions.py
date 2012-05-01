@@ -29,7 +29,7 @@ def flat_field_parameters():
     '''
 
     return np.append(np.array([1, -0.01, 0.015, -0.1, 0.005, -0.25]),
-                                (1e-4) * np.random.uniform(size=256))
+                                (5e-4) * np.random.uniform(size=256))
 
 
 def flat_field(x, y, FoV, par=flat_field_parameters()):
