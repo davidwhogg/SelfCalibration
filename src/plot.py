@@ -251,6 +251,7 @@ def survey(filename, survey_file, FoV, sky_limits, density, fig_width=8.3,
 
     no_measurements = np.histogram(s.k, bins=range(np.max(s.k)))[0]
 
+    '''
     source_ID = np.unique(s.k)
     plot_array = np.zeros((4, source_ID.size))
     plot_array[0, :] = source_ID
@@ -265,7 +266,9 @@ def survey(filename, survey_file, FoV, sky_limits, density, fig_width=8.3,
     for indx in source_ID:
         ax2.plot(plot_array[1, :], plot_array[2, :], '.',
                                                     color=(no_obs / max_obs))
-
+    '''
+    ax2.plot(s.alpha, s.beta, 'k.', alpha=(1/np.max(no_measurements)))
+    
     ax2.set_xlim(min_sky, max_sky)
     ax2.set_ylim(min_sky, max_sky)
 
