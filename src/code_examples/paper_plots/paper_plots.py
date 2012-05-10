@@ -13,6 +13,8 @@ from __future__ import division, print_function
 import os
 import sys
 sys.path.append('./../..')  # add simulator modules to Python path
+from multiprocessing import Pool
+
 
 # Custom Modules
 import simulation
@@ -20,14 +22,17 @@ import simulation
 # Load the default parameters
 dic = eval(open('parameters.py').read())
 
-# Perform the four surveys
+# Perform the four surveys (each a separate process)
 survey_files = ['A', 'B', 'C', 'D']
+mult_proc = []
 for srvy in survey_files:
     dic['survey_file'] = srvy + '.txt'
     dic['data_dir'] = srvy
-    simulation.run_sim(dic)
+    mult_proc.append(dic)
+p = Pool(4)
+p.map(simulation.run_sim, mult_proc)
 
-if dic['data_dir']:
-    os.system('./../../plot.py {0}'.format(dic['data_dir']))
+for srvy in survey_files:
+    os.system('./../../plot.py {0}'.format(srvy))
 
 
