@@ -13,16 +13,16 @@
     # do not save out any data (only returning the results to the calling
     # program). If a string is give, all data is saved out to this directory.
     # NB: old directories with this name are removed!
-    'data_dir'            :     'default_output/',
+    'data_dir'            :     False,
     # Boolean: Set to True to run the simulation in verbose mode,
-    'verbose'             :     True,
+    'verbose'             :     False,
 
     # Sky Parameters
     # ==============
     # Float: the maximum number of sources (all magnitude) per unit area
     # on the sky. If more than this number are produced by the magnitude
     # distribution (see below), only the brightest are selected.
-    'density_of_stars'    :     200.,
+    'density_of_stars'    :     100.,
     # Float array: The parameters describing the magnitude distribution
     # of the sources in the sky, according to
     # log10(dN/dm) = A + B * mag + C * mag ** 2

@@ -89,11 +89,12 @@ def self_calibration(obs_cat, sky_catalog, order, FoV,
                     .format(count, rms, bdness, bdness_bestfitff, chi2,
                     obs_cat.size))
 
-        if (data_dir and (count == next_plot_iteration)) or \
+        if data_dir:
+            if (count == next_plot_iteration) or \
                                 (abs(chi2 - old_chi2) < stop_condition):
-            save_out.fitted_flat_field(q, FoV, ff_samples, count,
+                save_out.fitted_flat_field(q, FoV, ff_samples, count,
                                                             data_dir, verbose)
-            next_plot_iteration *= 2
+                next_plot_iteration *= 2
     
     if count == max_iterations:
         count = 0  # did not converge error flag

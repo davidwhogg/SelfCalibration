@@ -15,7 +15,7 @@ import os
 import sys
 
 # Add simulator modules to Python path
-sys.path.append('./../..')  
+sys.path.append('./../..')
 
 # Custom Modules
 import simulation
