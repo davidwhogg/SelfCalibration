@@ -481,21 +481,17 @@ def flat_fields(filename, FoV, ff_samples, best_fit_params, fig_width=8.3,
 
 if __name__ == "__main__":
 
-    verbose = True
-    mult_proc = True
+    dirs = ['A', 'B', 'C', 'D']
+
     plot_suffix = ".png"
     figure_width = 8.3
 
-    # Change process nice level to 10 (important if multiprocessing)
-    os.nice(10)
-
-    dir_path = get_dir_path()
-
-    old_figures = glob.glob('{0}/*.png'.format(dir_path))
-    old_figures += glob.glob('{0}/*.pdf'.format(dir_path))
-    for path in old_figures:
-        os.remove(path)
-    params = pickle.load(open('{0}/parameters.p'.format(dir_path)))
+    for dir_path in dirs:
+        old_figures = glob.glob('{0}/*.png'.format(dir_path))
+        old_figures += glob.glob('{0}/*.pdf'.format(dir_path))
+        for path in old_figures:
+            os.remove(path)
+        params = pickle.load(open('{0}/parameters.p'.format(dir_path)))
 
     source_catalog_files = glob.glob('{0}/source_catalog.p'.format(dir_path))
     for path in source_catalog_files:

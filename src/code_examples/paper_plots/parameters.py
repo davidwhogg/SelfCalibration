@@ -13,11 +13,9 @@
     # do not save out any data (only returning the results to the calling
     # program). If a string is give, all data is saved out to this directory.
     # NB: old directories with this name are removed!
-    'data_dir'            :     'default_output/',
-    # Boolean: Set to True to save out all the data required for plots
-    'plots'               :     True,
+    'data_dir'            :     False,
     # Boolean: Set to True to run the simulation in verbose mode,
-    'verbose'             :     True,
+    'verbose'             :     False,
 
     # Sky Parameters
     # ==============
@@ -57,7 +55,7 @@
     'survey_file'         :     'quasi_random.srvy',
     # Float array: The number of points to sample the focal plane on for the
     # badness calculations
-    'ff_samples'          :     [300, 300],
+    'ff_samples'          :     [100, 100],
     # Integer: The order of the flat-field used to fit the instrument response
     # in the self-calibration procedure
     'flat_field_order'    :     8,
