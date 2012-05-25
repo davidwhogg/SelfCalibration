@@ -7,8 +7,8 @@
 # functions. It calculates the performance of self-calibration with different
 # source densities and plots the output. A separate self-calibration simulation
 # is run for each source density value. To increase the speed of the simulation
-# the best-in-basis fit to the *true* instrument response is calculated only 
-# once at the beginning and is then provided as an input to each 
+# the best-in-basis fit to the *true* instrument response is calculated only
+# once at the beginning and is then provided as an input to each
 # self-calibration simulation.
 
 # Make Python 3 compatible
@@ -21,7 +21,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Add simulator modules to Python path
-sys.path.append('./../..')  
+sys.path.append('./../..')
 
 # Multiprocessing Flag:
 # False - then does not use multiprocessing
@@ -79,9 +79,9 @@ for run in results:
 fig = plt.figure()
 ax = fig.add_axes([0.1, 0.1, 0.8, 0.8])
 ax.loglog(density_of_sources, badness, '0.5', label='Badness')
-ax.loglog(density_of_sources, best_in_basis_badness, 'ko', markersize=1, label='Best-in-Basis Badness')
+ax.loglog(density_of_sources, best_in_basis_badness, 'ko', markersize=1,
+                                                label='Best-in-Basis Badness')
 ax.set_xlabel('Density of Sources (deg$^{-2}$)')
 ax.set_ylabel('Badness (%)')
 ax.legend(loc='lower left')
 fig.savefig('badnesses.pdf')
-
