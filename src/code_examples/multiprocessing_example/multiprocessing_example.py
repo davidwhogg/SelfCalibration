@@ -18,6 +18,8 @@ from __future__ import division, print_function
 import os
 import sys
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')  # Allow plots to be made without X11
 import matplotlib.pyplot as plt
 
 # Add simulator modules to Python path
@@ -26,7 +28,7 @@ sys.path.append('./../..')
 # Multiprocessing Flag:
 # False - then does not use multiprocessing
 # int - uses that many separate processes
-multi_proc = 4
+multi_proc = 2
 
 # Custom Modules
 import simulation
@@ -34,7 +36,7 @@ import analysis
 
 # Range of sources to run self-calibration simulations with
 # Sort high to low, to increase simulation speed
-density_of_sources = np.logspace(0, 2, 3)[::-1]
+density_of_sources = np.logspace(0, 3, 100)[::-1]
 
 # Load the default parameters
 dic = eval(open('parameters.py').read())
