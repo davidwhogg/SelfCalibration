@@ -108,15 +108,15 @@ def source_catalog(filename, sky_limits, density, m_min, m_max, A,
     ax2.set_xlabel(r'Source Magnitude (mag$_{\mathrm{AB}}$)')
     ax2.set_ylabel(r'Density of Sources')
 
-    filename = string.replace(filename, '.p', plot_suffix)
+    filename = string.replace(filename, '.p', suffix)
     plt.savefig(filename)
     plt.clf()
     if verbose:
         print("...done!")
 
 
-def camera_image(filename, sky_limits, density, fig_width=8.3,
-                                                suffix='.png', verbose=False):
+def camera_image(filename, sky_limits, density, output_path=False, 
+                        fig_width=8.3, suffix='.png', verbose=False):
     ''' This function plots the footprint of the imagers field-of-view on the
     sky (left) and a camera image with the *true* instrument response (right)
 
@@ -130,6 +130,9 @@ def camera_image(filename, sky_limits, density, fig_width=8.3,
     density             :   int
         The maximum number of sources (all magnitude) per unit area
         to generate for the self-calibration simulations
+    output_path         :   string
+        The path to save the figure to. If no value is given, figure is saved
+        in same directory as source pickle
     figure_width        :   float
         The width of the figure in inches, default it 8.3
     suffix              :   string
@@ -184,7 +187,10 @@ def camera_image(filename, sky_limits, density, fig_width=8.3,
     cs = ax2.contour(X, Y, true_ff, colors='0.75', levels=levels)
     cs.clabel(labels, fontsize=8)
 
-    filename = string.replace(filename, '.p', plot_suffix)
+    if output_path:
+        filename = output_path + suffix
+    else:
+        filename = string.replace(filename, '.p', suffix)
     fig.savefig(filename)
     fig.clf()
     if verbose:
@@ -284,7 +290,7 @@ def survey(filename, survey_file, FoV, sky_limits, density, fig_width=8.3,
     ax3.set_xlabel(r'Number of Source Observations')
     ax3.set_ylabel(r'Number of Sources')
 
-    filename = string.replace(filename, '.p', plot_suffix)
+    filename = string.replace(filename, '.p', suffix)
     plt.savefig(filename)
     plt.clf()
     if verbose:
@@ -392,8 +398,8 @@ def s2n(filename, fig_width=8.3, suffix='.png', verbose=False):
         print('...done!')
 
 
-def flat_fields(filename, FoV, ff_samples, best_fit_params, fig_width=8.3,
-                                                suffix='.png', verbose=False):
+def flat_fields(filename, FoV, ff_samples, best_fit_params, output_path=False,
+                            fig_width=8.3, suffix='.png', verbose=False):
     ''' This function plots the fitted flat-field against the *true* (top) and
     the best-in-basis (bottom) flat-fields. Left: contour plots to compare
     flat-fields, Right: residuals between two flat-fields.
@@ -410,6 +416,9 @@ def flat_fields(filename, FoV, ff_samples, best_fit_params, fig_width=8.3,
         The imager's field-of-view in degrees (dalpha, dbeta)
     best_fit_params     :   numpy array
         Array of the best-in-basis parameters
+    output_path         :   string
+        The path to save the figure to. If no value is given, figure is saved
+        in same directory as source pickle
     figure_width        :   float
         The width of the figure in inches, default it 8.3
     suffix              :   string
@@ -472,7 +481,10 @@ def flat_fields(filename, FoV, ff_samples, best_fit_params, fig_width=8.3,
     cbar = fig.colorbar(a, ax_cb, orientation='vertical')
     cbar.set_label(r'Residuals  (%)')
 
-    filename = string.replace(filename, '.p', plot_suffix)
+    if output_path:
+        filename = output_path + suffix
+    else:
+        filename = string.replace(filename, '.p', suffix)
     fig.savefig(filename)
     fig.clf()
     if verbose:
