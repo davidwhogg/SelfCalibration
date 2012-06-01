@@ -55,7 +55,7 @@
     'survey_file'         :     'quasi_random.srvy',
     # Float array: The number of points to sample the focal plane on for the
     # badness calculations
-    'ff_samples'          :     [100, 100],
+    'ff_samples'          :     [500, 500],
     # Integer: The order of the flat-field used to fit the instrument response
     # in the self-calibration procedure
     'flat_field_order'    :     8,
@@ -64,8 +64,8 @@
     'seed'                :     [1.],
     # Float: The stop condition for the self-calibration procedure and the
     # best-in-basis fitting (stop when difference is less than 2 times this)
-    'stop_condition'	    :     1e-5,
+    'stop_condition'	    :     1e-14,
     # Integer: The maximum number of iterations in the self-calibration
     # procedure and the best-in-basis fitting
-    'max_iterations'	    :     1049
+    'max_iterations'	    :     16385
     }

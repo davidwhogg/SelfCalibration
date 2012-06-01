@@ -117,4 +117,8 @@ def run_sim(dic):
                                                     data_dir=dic['data_dir'],
                                                     verbose=dic['verbose'])
 
+    if dic['data_dir']:
+        save_out.results(dic['data_dir'], performance,
+                                header='Final Results\n=============\n\n',
+                                verbose=dic['verbose'])
     return performance

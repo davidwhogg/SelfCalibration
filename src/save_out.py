@@ -25,12 +25,55 @@ def parameters(data_dir, params, verbose=False):
         The output directory path for the simulation run
     params              :   dictionary
         The parameter dictionary
+    verbose             :   boolean
+        Set to True to run in verbose mode
     '''
 
     filename = '{0}/parameters.p'.format(data_dir)
     if verbose:
         print("Saving out parameters to {0}".format(filename))
     pickle.dump(params, open(filename, "wb"))
+    if verbose:
+        print("...done!")
+
+
+def results(data_dir, results, header=False, verbose=False):
+    ''' Saves out the results from the self-calibration simulation
+
+    Input
+    -----
+    data_dir            :   string
+        The output directory path for the simulation run
+    results             :   numpy array
+        The results to save out:
+        results[0] = the number of self-calibration iterations required to
+        converge to the final fitted solution (if 0 returned, then
+        self-calibration did not converge).
+        results[1] = the root-mean-squared error between the fitted source
+        fluxes and the true source fluxes.
+        results[2] = the "badness" between the fitted instrument response and
+        the true instrument responses.
+        results[3] = the "best-in-badness" between the fitted instrument
+        response and the true instrument responses.
+        results[4] = the chi2 of the final fitted solution
+    header              :   string
+        The header to write to the file
+    verbose             :   boolean
+        Set to True to run in verbose mode
+    '''
+
+    filename = '{0}/results.txt'.format(data_dir)
+    if verbose:
+        print("Saving out results to {0}".format(filename))
+    f = open(filename, "wb")
+    if header:
+        f.write(header)
+    f.write('Iteration Number: {0}\n'.format(results[0]))
+    f.write('Source RMS: {0} %\n'.format(results[1]))
+    f.write('Badness: {0} %\n'.format(results[2]))
+    f.write('Best-in-Basis Badness: {0} %\n'.format(results[3]))
+    f.write('Chi2: {0}\n'.format(results[4]))
+    f.close()
     if verbose:
         print("...done!")
 
