@@ -1,0 +1,41 @@
+excellent suggestions, improve the paper. Respond inline
+
+	--Sec 2.2: "current" generation of large survey imagers would be more
+	  accurate than "next" generation.
+
+Done.
+
+	--Sec 3.1: "We We"
+	
+Done.
+
+	--Sec 5.1: please include some description of the density and/or total
+	  number of sources used, either here or in Sec. 2.2.  Also insert "16
+	  deg^2" before "patch of sky".
+	  
+We explicitly put the source density into the last sentence of 2.1 and we re-point the reader to the parameter table in the last sentence prior to Section 5.1. We included the solid angle of the total patch, as requested.
+
+	--suggestion for going a bit deeper in Sec 5.1: some surveys may find
+	  it difficult to rotate their hardware randomly with every shot.
+	  Could you do a survey E which has random pointing centers but no
+	  rotation?
+
+The referee is absolutely right that there are cameras that cannot be rotated with respect to the sky. That is one of the reasons why we designed Survey C without rotation. Since Survey C calibrates just as well as Survey D, we conclude that rotation is not necessary for good self-calibration. We agree that a Survey E would confirm that, but we believe that Survey C already makes this point well. We added a few sentences to the discussion of Survey C and D about this point in Sections 5.1 and 5.2.
+
+	--suggestion for going a bit deeper in Sec 5.2 (and/or Sec 4): you
+	  show the residuals in the instrument response, but more relevant
+	  might be the residuals in the final survey.  For Survey A (and to a
+	  large extent B), the residuals in the final survey are just as bad
+	  as in the instrument response.  But in Surveys C and D, they get beat
+	  down because the calibration error on a given piece of sky changes
+	  from observation to observation.  It would be instructive to add a
+	  performance metric which includes this effect.
+
+
+
+
+In Addition to these changes, we also made the following small changes:
+	- MeasuredCatalog.true_invvar - multiplied by flat-field one time too many??
+	- Generate epsilon now per measurement and not per source
+	
+Neither made significant changes to content of papers

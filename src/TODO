@@ -1,7 +1,5 @@
-Check were eplison is applied
-Check noise parameters are correct
 Check sky <--> focal plane coordinates
-copy survey to data_dir AND plot, with coverage??
+
 MeasuredCatalog.flux - are we doing the noise correctly here?
 
 Fiddle true parameters to get it looking better, and so that we are not fitting the mayor polynomial part with a polynomial
