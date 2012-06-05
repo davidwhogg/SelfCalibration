@@ -255,38 +255,39 @@ def survey(filename, survey_file, FoV, sky_limits, density, fig_width=8.3,
     ax2.set_yticklabels([])
     ax2.get_xticklabels()[0].set_visible(False)
 
-    no_measurements = np.histogram(s.k, bins=range(np.max(s.k)))[0]
-
-    '''
     source_ID = np.unique(s.k)
-    plot_array = np.zeros((4, source_ID.size))
-    plot_array[0, :] = source_ID
-    for indx in source_ID:
-        found = s.k == indx
-        no_obs = sum(found)
-        if no_obs > 0:
-            plot_array[1, :] = s.alpha[found][0]
-            plot_array[2, :] = s.beta[found][0]
-            plot_array[3, :] = no_obs
-    max_obs = np.max(no_obs)
-    for indx in source_ID:
-        ax2.plot(plot_array[1, :], plot_array[2, :], '.',
-                                                    color=(no_obs / max_obs))
-    '''
-    ax2.plot(s.alpha, s.beta, 'k.', alpha=(1/np.max(no_measurements)))
-    
+    x = np.zeros(source_ID.size)
+    y = x.copy()
+    nobs = x.copy()  
+    for i, sid in enumerate(source_ID):
+        found = np.where(s.k == sid)[0]
+        nobs[i] = found.size
+        if nobs[i] > 0:
+            x[i] = s.alpha[found[0]]
+            y[i] = s.beta[found[0]]
+    color = np.array(['{0:4.2f}'.format(indx) for indx in (1 - nobs / np.max(nobs))])
+    colors = np.unique(color)
+    colors = colors[::-1]
+    for c in colors:
+        found = np.where(color == c)[0]
+        if (found.size > 0):
+            ax2.plot(x[found], y[found], '.', color=c, markersize=2)
+
     ax2.set_xlim(min_sky, max_sky)
     ax2.set_ylim(min_sky, max_sky)
+
+    ax3 = fig.add_axes([0.55, 0.35, 0.35, 0.05])
+    ax3.set_xlim(0,1)
+    ax3.set_ylim(0,1)
+    ax3.get_xticklabels
+    
 
     fig.text(0.52, 0.5, r'Sky Position $\alpha$ (deg)', ha='center')
     ax1.set_ylabel(r'Sky Position $\beta$ (deg)')
 
     ax3 = fig.add_axes([0.12, 0.075, 0.4, 0.4])
     ax3.set_yscale('log')
-
-    ax3.hist(no_measurements, color='k',
-                                    bins=range(np.max(no_measurements) + 3))
-
+    ax3.hist(nobs, color='k', bins=np.arange(nobs.max()+1))
     ax3.set_xlabel(r'Number of Source Observations')
     ax3.set_ylabel(r'Number of Sources')
 
@@ -491,6 +492,62 @@ def flat_fields(filename, FoV, ff_samples, best_fit_params, output_path=False,
         print('...done!')
 
 
+def source_error(true_filename, fitted_filename, sky_limits, fig_width=8.3,
+                                                                verbose=False):
+    ''' This function plots the sky with all sources color-coded according to
+    their error in the final fit.
+
+    Input
+    -----
+    true_filename       :   string
+        The path to the *true* sky catalog
+    fitted_filename     :   string
+        The path to the measurement catalog
+   sky_limits          :   float_array
+        The area of sky to generate sources in
+        [alpha_min, alpha_max, beta_min, beta_max]
+   figure_width        :   float
+        The width of the figure in inches, default it 8.3
+    suffix              :   string
+        The format of the saved figure, either '.pdf', '.eps' or '.png'.
+        Default is '.png'
+    verbose             :   Boolean
+        Set to true to run function in verbose mode
+    '''
+    if verbose:
+        print("Plotting source error map from {0} and {1}..."
+                    .format(true_filename, fitted_filename))
+
+    true = pickle.load(open(true_filename))
+    measured = pickle.load(open(fitted_filename))
+    
+    fig = plt.figure(figsize=(fig_width, fig_width))
+    ax1 = fig.add_axes([0.1, 0.1, 0.8, 0.8])
+    
+    source_ID = np.unique(measured.k)
+    x = np.zeros(source_ID.size)
+    y = x.copy()
+    error = x.copy()  
+    for i, sid in enumerate(source_ID):
+        found = np.where(measured.k == sid)[0]
+        if len(found) > 0:
+            x[i] = measured.alpha[found[0]]
+            y[i] = measured.beta[found[0]]
+            original = true.flux[np.where(true.k == sid)[0]]
+            error[i] = np.average(measured.flux(found)) / original
+    color = np.array(['{0:4.2f}'.format(indx) for indx in (1 - error / np.max(error))])
+    colors = np.unique(color)
+    colors = colors[::-1]
+    for c in colors:
+        found = np.where(color == c)[0]
+        if (found.size > 0):
+            ax2.plot(x[found], y[found], '.', color=c, markersize=2)
+
+    plt.savefig(filename)
+    plt.clf()
+    if verbose:
+        print("...done!")
+
 if __name__ == "__main__":
 
     verbose = True
@@ -509,6 +566,7 @@ if __name__ == "__main__":
         os.remove(path)
     params = pickle.load(open('{0}/parameters.p'.format(dir_path)))
 
+    '''
     source_catalog_files = glob.glob('{0}/source_catalog.p'.format(dir_path))
     for path in source_catalog_files:
         source_catalog(path, params['sky_limits'],
@@ -537,3 +595,10 @@ if __name__ == "__main__":
         flat_fields(path, params['FoV'], params['ff_samples'],
                             params['best_fit_params'], fig_width=8.3,
                             suffix=plot_suffix, verbose=verbose)
+    '''
+    
+    true_filename = '{0}/source_catalog.p'.format(dir_path)
+    measured_filename = '{0}/measurement_catalog.p'.format(dir_path)
+    out_filename = '{0}/measured_catalog'.format(dir_path) + plot_suffix
+    source_error(true_filename, measured_filename, params['sky_limits'],
+                        fig_width=8.3, verbose=verbose)
