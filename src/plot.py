@@ -492,8 +492,8 @@ def flat_fields(filename, FoV, ff_samples, best_fit_params, output_path=False,
         print('...done!')
 
 
-def source_error(true_filename, fitted_filename, sky_limits, fig_width=8.3,
-                                                                verbose=False):
+def source_error(true_filename, fitted_filename, out_filename, sky_limits,
+                                                fig_width=8.3, verbose=False):
     ''' This function plots the sky with all sources color-coded according to
     their error in the final fit.
 
@@ -502,11 +502,13 @@ def source_error(true_filename, fitted_filename, sky_limits, fig_width=8.3,
     true_filename       :   string
         The path to the *true* sky catalog
     fitted_filename     :   string
-        The path to the measurement catalog
-   sky_limits          :   float_array
+        The path to the fitted source catalog
+    out_filename        :   string
+        The path to save the figure to
+    sky_limits          :   float_array
         The area of sky to generate sources in
         [alpha_min, alpha_max, beta_min, beta_max]
-   figure_width        :   float
+    figure_width        :   float
         The width of the figure in inches, default it 8.3
     suffix              :   string
         The format of the saved figure, either '.pdf', '.eps' or '.png'.
@@ -519,31 +521,42 @@ def source_error(true_filename, fitted_filename, sky_limits, fig_width=8.3,
                     .format(true_filename, fitted_filename))
 
     true = pickle.load(open(true_filename))
-    measured = pickle.load(open(fitted_filename))
+    fitted = pickle.load(open(fitted_filename))
     
     fig = plt.figure(figsize=(fig_width, fig_width))
     ax1 = fig.add_axes([0.1, 0.1, 0.8, 0.8])
     
-    source_ID = np.unique(measured.k)
-    x = np.zeros(source_ID.size)
+    x = np.zeros(len(fitted.k))
     y = x.copy()
-    error = x.copy()  
-    for i, sid in enumerate(source_ID):
-        found = np.where(measured.k == sid)[0]
+    error = x.copy()
+    for i, sid in enumerate(fitted.k):
+        found = np.where(fitted.k == sid)[0]
         if len(found) > 0:
-            x[i] = measured.alpha[found[0]]
-            y[i] = measured.beta[found[0]]
+            x[i] = fitted.alpha[found[0]]
+            y[i] = fitted.beta[found[0]]
             original = true.flux[np.where(true.k == sid)[0]]
-            error[i] = np.average(measured.flux(found)) / original
-    color = np.array(['{0:4.2f}'.format(indx) for indx in (1 - error / np.max(error))])
+            error[i] = np.average(fitted.flux[found]) / original
+    scaled_error = (error - np.min(error)) / (np.max(error) - np.min(error))
+    color = np.array(['{0:4.2f}'.format(indx) for indx in (1 - scaled_error)])
+    print(color)
     colors = np.unique(color)
     colors = colors[::-1]
     for c in colors:
         found = np.where(color == c)[0]
         if (found.size > 0):
-            ax2.plot(x[found], y[found], '.', color=c, markersize=2)
-
-    plt.savefig(filename)
+            ax1.plot(x[found], y[found], '.', color=c, markersize=2)
+    
+    ax1.set_xlabel(r'Sky Position $\alpha$ (deg)', ha='center')
+    ax1.set_ylabel(r'Sky Position $\beta$ (deg)')
+    
+    min_sky = np.min(sky_limits) \
+                            - 0.1 * (np.max(sky_limits) - np.min(sky_limits))
+    max_sky = np.max(sky_limits) \
+                            + 0.1 * (np.max(sky_limits) - np.min(sky_limits))
+    ax1.set_xlim(min_sky, max_sky)
+    ax1.set_ylim(min_sky, max_sky)
+    
+    plt.savefig(out_filename)
     plt.clf()
     if verbose:
         print("...done!")
@@ -598,7 +611,7 @@ if __name__ == "__main__":
     '''
     
     true_filename = '{0}/source_catalog.p'.format(dir_path)
-    measured_filename = '{0}/measurement_catalog.p'.format(dir_path)
+    fitted_filename = '{0}/fitted_catalog.p'.format(dir_path)
     out_filename = '{0}/measured_catalog'.format(dir_path) + plot_suffix
-    source_error(true_filename, measured_filename, params['sky_limits'],
-                        fig_width=8.3, verbose=verbose)
+    source_error(true_filename, fitted_filename, out_filename,
+                        params['sky_limits'], fig_width=8.3, verbose=verbose)
