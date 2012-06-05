@@ -196,6 +196,27 @@ def camera_image(filename, sky_limits, density, output_path=False,
     if verbose:
         print('...done!')
 
+def three_d_plot(ax, x, y, z, zmin=None, zmax=None):
+    """
+    Make a plot of colored points `x, y` on a grey background, colored
+    by a scheme linear in `z` from `zmin` to `zmax`.
+
+    Note the `zorder` argument to `plot()` that ensures that the
+    biggest outliers will be plotted last.
+    """
+    if zmin is None:
+        zmin = np.min(z)
+    if zmax is None:
+        zmax = np.max(z)
+    color = np.array(['{0:4.2f}'.format(cn) for cn in (zmax - z) / (zmax - zmin)])
+    colors = np.unique(color)
+    ax.set_axis_bgcolor('0.50')
+    for c in colors:
+        found = np.where(color == c)[0]
+        if (found.size > 0):
+            zorder = np.abs(float(c) - 0.5)
+            ax.plot(x[found], y[found], '.', color=c, markersize=2, zorder=zorder)
+    return None
 
 def survey(filename, survey_file, FoV, sky_limits, density, fig_width=8.3,
                                                 suffix='.png', verbose=False):
@@ -265,13 +286,8 @@ def survey(filename, survey_file, FoV, sky_limits, density, fig_width=8.3,
         if nobs[i] > 0:
             x[i] = s.alpha[found[0]]
             y[i] = s.beta[found[0]]
-    color = np.array(['{0:4.2f}'.format(indx) for indx in (1 - nobs / np.max(nobs))])
-    colors = np.unique(color)
-    colors = colors[::-1]
-    for c in colors:
-        found = np.where(color == c)[0]
-        if (found.size > 0):
-            ax2.plot(x[found], y[found], '.', color=c, markersize=2)
+    okay = np.where(nobs > 0)[0]
+    three_d_plot(ax2, x[okay], y[okay], nobs[okay], zmin=0.)
 
     ax2.set_xlim(min_sky, max_sky)
     ax2.set_ylim(min_sky, max_sky)
