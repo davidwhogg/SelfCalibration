@@ -29,7 +29,7 @@
     'powerlaw_constants'      :     [-13.34863146, 1.25429311, -0.02122949],
     # Float Array: The area of sky to generate sources in
     # [alpha_min, alpha_max, beta_min, beta_max]
-    'sky_limits'          :     [-4.0, 4.0, -4.0, 4.0],
+    'sky_limits'          :     [-4.8, 4.8, -4.8, 4.8],
 
     # Instrument Parameters
     # =====================

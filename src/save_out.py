@@ -177,9 +177,70 @@ def measurement_catalog(data_dir, survey_catalog, verbose=False):
     '''
 
     filename = '{0}/measurement_catalog.p'.format(data_dir)
+
     if verbose:
         print("Saving out source catalog to {0}".format(filename))
+
     pickle.dump(survey_catalog, open(filename, "wb"))
+
+    if verbose:
+        print("...done!")
+
+
+class FittedCatalog:
+    def __init__(self, source_id, alpha, beta, flux, flux_invvar):
+        ''' This class puts the fitted source catalog in the same format at the
+        sky catalog.
+        Input
+        -----
+        source_id               :       int
+                The source id
+        alpha                   :       float
+            The alpha coordinate of the source
+        beta                    :       float
+            The beta coordinate of the source
+        flux                    :       float
+            The fitted flux
+        flux_invvar             :       float
+            The inverse-variance of the flux fit
+        '''
+
+        self.k = source_id
+        self.alpha = alpha
+        self.beta = beta
+        self.flux = flux
+        self.flux_invvar = flux_invvar
+
+
+def fitted_catalog(data_dir, source_id, alpha, beta, flux, flux_invvar,
+                                                                verbose=False):
+    ''' Saves out the fitted source catalog
+
+    Input
+    -----
+    data_dir            :   string
+            The output directory path for the simulation run
+    source_id               :       int
+        The source id
+    alpha                   :       float
+        The alpha coordinate of the source
+    beta                    :       float
+        The beta coordinate of the source
+    flux                    :       float
+        The fitted flux
+    flux_invvar             :       float
+        The inverse-variance of the flux fit
+    '''
+
+    filename = '{0}/fitted_catalog.p'.format(data_dir)
+
+    if verbose:
+        print("Saving out fitted source catalog to {0}".format(filename))
+
+    catalog = FittedCatalog(source_id, alpha, beta, flux, flux_invvar)
+
+    pickle.dump(catalog, open(filename, "wb"))
+
     if verbose:
         print("...done!")
 

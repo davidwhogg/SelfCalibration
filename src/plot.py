@@ -94,8 +94,8 @@ def source_catalog(filename, sky_limits, density, m_min, m_max, A,
     ax1.plot(s.alpha, s.beta, 'k.', alpha=alpha, markersize=1)
     ax1.set_xlabel(r'$\alpha$ (deg$^2$)')
     ax1.set_ylabel(r'$\beta$ (deg$^2$)')
-    ax1.set_xlim(1.1 * sky_limits[0], 1.1 * sky_limits[1])
-    ax1.set_ylim(1.1 * sky_limits[2], 1.1 * sky_limits[3])
+    ax1.set_xlim(sky_limits[0], sky_limits[1])
+    ax1.set_ylim(sky_limits[2], sky_limits[3])
 
     ax2 = fig.add_axes([0.575, 0.15, 0.4, 0.8])
     mag = np.linspace(m_min, m_max, 20)
@@ -166,8 +166,8 @@ def camera_image(filename, sky_limits, density, output_path=False,
     ax1.plot(fp_alpha, fp_beta, 'k', linewidth=2)
     ax1.set_xlabel(r'Sky Position $\alpha$ (deg)')
     ax1.set_ylabel(r'Sky Position $\beta$ (deg)')
-    ax1.set_xlim(1.1 * sky_limits[0], 1.1 * sky_limits[1])
-    ax1.set_ylim(1.1 * sky_limits[2], 1.1 * sky_limits[3])
+    ax1.set_xlim(sky_limits[0], sky_limits[1])
+    ax1.set_ylim(sky_limits[2], sky_limits[3])
 
     ax2 = fig.add_axes([0.575, 0.15, 0.4, 0.8])
     ax2.plot(x, y, 'k.', markersize=6)
@@ -218,97 +218,134 @@ def three_d_plot(ax, x, y, z, zmin=None, zmax=None):
             ax.plot(x[found], y[found], '.', color=c, markersize=2, zorder=zorder)
     return None
 
-def survey(filename, survey_file, FoV, sky_limits, density, fig_width=8.3,
-                                                suffix='.png', verbose=False):
+def survey(source_filename, measurement_filename, fitted_filename, survey_file,
+                        out_filename, FoV, sky_limits, density, fig_width=8.3,
+                        suffix='.png', verbose=False):
     ''' This function plots the survey strategy, the sky coverage and a
     histogram of the number of times each source is observed.
 
     Input
     -----
-    filename            :   string
-        The path to the survey dataset pickle
-    survey_file         :   string
+    source_filename             :   string
+        The path to the source catalog
+    measurement_filename        :   string
+        The path to the measurement catalog
+    fitted_filename             :   string
+        The path to the fitted source catalog
+    survey_file                 :   string
         The path to the survey file
-    FoV                 :   float array
+    out_filename                :   string
+        The path to save the figure to
+    FoV                     :   float array
         The field-of-view of the imager in degrees (dalpha, dbeta)
-    sky_limits          :   float_array
+    sky_limits                  :   float_array
         The area of sky to generate sources in
         [alpha_min, alpha_max, beta_min, beta_max]
-    density             :   int
+    density                     :   int
         The maximum number of sources (all magnitude) per unit area
         to generate for the self-calibration simulations
-    figure_width        :   float
+    figure_width                :   float
         The width of the figure in inches, default it 8.3
-    suffix              :   string
+    suffix                      :   string
         The format of the saved figure, either '.pdf', '.eps' or '.png'.
         Default is '.png'
-    verbose             :   Boolean
+    verbose                     :   Boolean
         Set to true to run function in verbose mode
     '''
+    
     if verbose:
-        print("Plotting Survey Strategy and Coverage from {0} and {1}..."
-                    .format(filename, survey_file))
-
-    s = pickle.load(open(filename))
-    survey = np.loadtxt(survey_file)
-
+        print("Generating survey plot...")
+    
     fig = plt.figure(figsize=(fig_width, fig_width))
+    
+    if verbose:
+        print("...plotting survey footprint map from {0}..."
+                                                        .format(survey_file))
 
-    ax1 = fig.add_axes([0.12, 0.55, 0.4, 0.4])
-
+    survey = np.loadtxt(survey_file)
+    ax_temp = fig.add_axes([0.07, 0.55, 0.4, 0.4])
+    ax_temp.set_xticklabels([])
+    ax1 = ax_temp.twiny()
+    
     x_min = -FoV[0] / 2
     y_min = -FoV[1] / 2
     x_max = FoV[0] / 2
     y_max = FoV[1] / 2
     x = np.array([x_min, x_min, x_max, x_max, x_min])
     y = np.array([y_min, y_max, y_max, y_min, y_min])
+    
     for image in survey:
         alpha, beta = transformations.fp2sky(x, y, image[1:3], image[3])
         ax1.plot(alpha, beta, 'k-', alpha=0.5)
-    min_sky = np.min(sky_limits) \
-                            - 0.1 * (np.max(sky_limits) - np.min(sky_limits))
-    max_sky = np.max(sky_limits) \
-                            + 0.1 * (np.max(sky_limits) - np.min(sky_limits))
-    ax1.set_xlim(min_sky, max_sky)
-    ax1.set_ylim(min_sky, max_sky)
 
-    ax2 = fig.add_axes([0.52, 0.55, 0.4, 0.4])
+    ax1.set_xlim(sky_limits[0], sky_limits[1])
+    ax1.set_ylim(sky_limits[2], sky_limits[3])
+    
+    if verbose:
+        print('...done...')
+        print('...plotting coverage map from {0}...'
+                                                .format(measurement_filename))
+
+    measurement_catalog = pickle.load(open(measurement_filename))
+
+    ax2 = fig.add_axes([0.47, 0.55, 0.4, 0.4])
+    #ax_temp.set_xticklabels([])
+    #ax2 = ax_temp.twiny()
     ax2.set_yticklabels([])
-    ax2.get_xticklabels()[0].set_visible(False)
-
-    source_ID = np.unique(s.k)
+    
+    source_ID = np.unique(measurement_catalog.k)
     x = np.zeros(source_ID.size)
     y = x.copy()
     nobs = x.copy()  
     for i, sid in enumerate(source_ID):
-        found = np.where(s.k == sid)[0]
+        found = np.where(measurement_catalog.k == sid)[0]
         nobs[i] = found.size
         if nobs[i] > 0:
-            x[i] = s.alpha[found[0]]
-            y[i] = s.beta[found[0]]
+            x[i] = measurement_catalog.alpha[found[0]]
+            y[i] = measurement_catalog.beta[found[0]]
     okay = np.where(nobs > 0)[0]
     three_d_plot(ax2, x[okay], y[okay], nobs[okay], zmin=0.)
-
-    ax2.set_xlim(min_sky, max_sky)
-    ax2.set_ylim(min_sky, max_sky)
-
-    ax3 = fig.add_axes([0.55, 0.35, 0.35, 0.05])
-    ax3.set_xlim(0,1)
-    ax3.set_ylim(0,1)
-    ax3.get_xticklabels
+    
+    ax2.set_xlim(sky_limits[0], sky_limits[1])
+    ax2.set_ylim(sky_limits[2], sky_limits[3])
     
 
-    fig.text(0.52, 0.5, r'Sky Position $\alpha$ (deg)', ha='center')
+    fig.text(0.47, 0.98, r'Sky Position $\alpha$ (deg)', ha='center')
     ax1.set_ylabel(r'Sky Position $\beta$ (deg)')
 
-    ax3 = fig.add_axes([0.12, 0.075, 0.4, 0.4])
+    ax3 = fig.add_axes([0.07, 0.075, 0.35, 0.35])
     ax3.set_yscale('log')
     ax3.hist(nobs, color='k', bins=np.arange(nobs.max()+1))
     ax3.set_xlabel(r'Number of Source Observations')
     ax3.set_ylabel(r'Number of Sources')
+    
+    if verbose:
+        print("Plotting source error map from {0} and {1}..."
+                    .format(source_filename, fitted_filename))
 
-    filename = string.replace(filename, '.p', suffix)
-    plt.savefig(filename)
+    true = pickle.load(open(source_filename))
+    fitted = pickle.load(open(fitted_filename))
+    
+    ax4 = fig.add_axes([0.47, 0.075, 0.4, 0.4])
+    
+    x = np.zeros(len(fitted.k))
+    y = x.copy()
+    error = x.copy()
+    for i, sid in enumerate(fitted.k):
+        found = np.where(fitted.k == sid)[0]
+        if len(found) > 0:
+            x[i] = fitted.alpha[found[0]]
+            y[i] = fitted.beta[found[0]]
+            original = true.flux[np.where(true.k == sid)[0]]
+            error[i] = np.average(fitted.flux[found]) / original
+    scaled_error = (error - np.min(error)) / (np.max(error) - np.min(error))
+
+    three_d_plot(ax4, x, y, error)
+
+    ax4.set_xlim(sky_limits[0], sky_limits[1])
+    ax4.set_ylim(sky_limits[2], sky_limits[3])
+    
+    plt.savefig(out_filename+suffix)
     plt.clf()
     if verbose:
         print("...done!")
@@ -352,7 +389,6 @@ def variance(filename, fig_width=8.3, suffix='.png', verbose=False):
 
     ax1.set_ylabel(r'$\sigma^2$')
     fig.text(0.53, 0.025, r'Count Rate (s$^{-1}$)', va='center', ha='center')
-    ax2.get_xticklabels()[0].set_visible(False)
     ax2.set_yticklabels([])
 
     variance_filename = string.replace(filename, '.p', '_variance.png')
@@ -461,10 +497,10 @@ def flat_fields(filename, FoV, ff_samples, best_fit_params, output_path=False,
     ax3 = fig.add_axes([0.45, 0.075 / scale, 0.375, 0.375 / scale])
     ax4 = fig.add_axes([0.45, 0.45 / scale, 0.375, 0.375 / scale])
 
-    ax2.set_xticks([])
-    ax4.set_xticks([])
-    ax4.set_yticks([])
-    ax3.set_yticks([])
+    ax2.set_xticklabels([])
+    ax4.set_xticklabels([])
+    ax4.set_yticklabels([])
+    ax3.set_yticklabels([])
     ax_cb.set_xticks([])
 
     fig.text(0.45, 0.025 / scale, r'Focal Plane Position $x$ (deg)',
@@ -595,36 +631,54 @@ if __name__ == "__main__":
         os.remove(path)
     params = pickle.load(open('{0}/parameters.p'.format(dir_path)))
 
-    '''
-    source_catalog_files = glob.glob('{0}/source_catalog.p'.format(dir_path))
-    for path in source_catalog_files:
-        source_catalog(path, params['sky_limits'],
+    source_catalog('{0}/source_catalog.p'.format(dir_path),
+                                    params['sky_limits'],
+                                    params['density_of_stars'],
+                                    params['m_min'],
+                                    params['m_max'],
+                                    params['powerlaw_constants'],
+                                    fig_width=8.3,
+                                    suffix=plot_suffix,
+                                    verbose=verbose)
+
+    out_filename = '{0}/{1}'.format(dir_path, 'survey')
+    survey('{0}/source_catalog.p'.format(dir_path),
+                                '{0}/measurement_catalog.p'.format(dir_path),
+                                '{0}/fitted_catalog.p'.format(dir_path),
+                                '{0}/survey.txt'.format(dir_path),
+                                out_filename,
+                                params['FoV'],
+                                params['sky_limits'],
                                 params['density_of_stars'],
-                                params['m_min'], params['m_max'],
-                                params['powerlaw_constants'],
                                 fig_width=8.3,
                                 suffix=plot_suffix,
                                 verbose=verbose)
 
-    files = glob.glob('{0}/measurement_catalog.p'.format(dir_path))
-    for path in files:
-        survey(path, (dir_path + '/survey.txt'), params['FoV'],
-                        params['sky_limits'], params['density_of_stars'],
-                        fig_width=8.3, suffix=plot_suffix, verbose=verbose)
-        variance(path, fig_width=8.3, suffix=plot_suffix, verbose=verbose)
-        s2n(path, fig_width=8.3, suffix=plot_suffix, verbose=verbose)
+    variance('{0}/measurement_catalog.p'.format(dir_path),
+                                    fig_width=8.3,
+                                    suffix=plot_suffix,
+                                    verbose=verbose)
 
-    files = glob.glob('{0}/camera_image.p'.format(dir_path))
-    for path in files:
-        camera_image(path,  params['sky_limits'], params['density_of_stars'],
-        fig_width=8.3, suffix=plot_suffix, verbose=verbose)
+    s2n('{0}/measurement_catalog.p'.format(dir_path),
+                                    fig_width=8.3,
+                                    suffix=plot_suffix,
+                                    verbose=verbose)
+
+    camera_image('{0}/camera_image.p'.format(dir_path),
+                                    params['sky_limits'],
+                                    params['density_of_stars'],
+                                    fig_width=8.3,
+                                    suffix=plot_suffix,
+                                    verbose=verbose)
 
     files = glob.glob('{0}/FF/*_ff.p'.format(dir_path))
     for path in files:
         flat_fields(path, params['FoV'], params['ff_samples'],
-                            params['best_fit_params'], fig_width=8.3,
-                            suffix=plot_suffix, verbose=verbose)
-    '''
+                                    params['best_fit_params'],
+                                    fig_width=8.3,
+                                    suffix=plot_suffix,
+                                    verbose=verbose)
+
     
     true_filename = '{0}/source_catalog.p'.format(dir_path)
     fitted_filename = '{0}/fitted_catalog.p'.format(dir_path)

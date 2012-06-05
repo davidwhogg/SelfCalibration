@@ -26,10 +26,10 @@ import analysis
 # Multiprocessing Flag:
 # False - then does not use multiprocessing
 # int - uses that many separate processes
-multi_proc = 2
+multi_proc = False
 
 # The four survey directories
-survey_files = ['A', 'B', 'C', 'D']
+survey_files = ['D'] #['A', 'B', 'C', 'D']
 
 # Load the default parameters
 dic = eval(open('parameters.py').read())

@@ -53,7 +53,7 @@ def survey(survey_file, sky_catalog, FoV, eta, delta, epsilon_max,
         print('Error - no survey file!')
         sys.exit()
     if verbose:
-        print("...{0} points loaded!".format(number_pointings))
+        print("...{0} pointings loaded!".format(number_pointings))
     if data_dir:
         save_out.survey_strategy(data_dir, pointings, verbose=verbose)
 

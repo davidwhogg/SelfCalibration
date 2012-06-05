@@ -96,6 +96,14 @@ def self_calibration(obs_cat, sky_catalog, order, FoV,
                                                             data_dir, verbose)
                 next_plot_iteration *= 2
     
+    if data_dir:
+        save_out.fitted_catalog(data_dir, sky_catalog.k[indx],
+                                        sky_catalog.alpha[indx],
+                                        sky_catalog.beta[indx],
+                                        s[indx],
+                                        s_invvar[indx],
+                                        verbose=verbose)
+    
     if count == max_iterations:
         count = 0  # did not converge error flag
 
@@ -122,7 +130,7 @@ def s_step(obs_cat, q):
     fcss = flat_field * obs_cat.counts * obs_cat.invvar
     ffss = flat_field * flat_field * obs_cat.invvar
     s = np.zeros(obs_cat.k.max() + 1)
-    s_invvar = np.zeros(obs_cat.k.max())
+    s_invvar = np.zeros(obs_cat.k.max() + 1)
     for ID in range(obs_cat.k.max()):
         indx = (obs_cat.k == ID)
         denominator = np.sum(ffss[indx])
