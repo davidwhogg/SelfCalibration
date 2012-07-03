@@ -196,36 +196,40 @@ def camera_image(filename, sky_limits, density, output_path=False,
     if verbose:
         print('...done!')
 
-def three_d_plot(ax, x, y, z, zmin=None, zmax=None):
-    """
-    Make a plot of colored points `x, y` on a grey background, colored
-    by a scheme linear in `z` from `zmin` to `zmax`.
 
-    Note the `zorder` argument to `plot()` that ensures that the
-    biggest outliers will be plotted last.
-    """
-    if zmin is None:
-        zmin = np.min(z)
-    if zmax is None:
-        zmax = np.max(z)
-    color = np.array(['{0:4.2f}'.format(cn) for cn in (zmax - z) / (zmax - zmin)])
-    colors = np.unique(color)
-    ax.set_axis_bgcolor('1.0')
-    ax.fill_between([x.min(), x.max()], [y.min(), y.min()], y2=[y.max(), y.max()], color='0.5')
-    for c in colors:
-        found = np.where(color == c)[0]
-        if (found.size > 0):
-            zorder = np.abs(float(c) - 0.5)
-            ax.plot(x[found], y[found], '.', color=c, markersize=2)#, zorder=zorder)
-    return None
+def survey_coverage(ax, source_filename, measurement_filename,
+                                zero_level='0.9', nobs_plot_lim=None, ms=5):
+    ''' This function plots the sources on the sky, with a color-coding
+    corresponding to the number of times each source was observed.
 
-
-def survey_coverage(ax, source_filename, measurement_filename, zero_level='0.9', nobs_min=None, nobs_max=None):
-
+    Input
+    -----
+    ax                      :       matplotlib axes instance
+        The axes instance to plot the coverage map to
+    source_filename         :   string
+        The path to the fitted source catalog
+    measurement_filename    :   string
+        The path to the measurement file
+    zero_level              :   string of a float
+        The matplotlib color used to plot sources with zero observations 
+    nobs_plot_lim           :       int
+        The maximum number of observations to plot (used homogenize colormaps
+        across multiple plots)
+    ms                      :       int
+        The size of the source markers
     
+    Return
+    ------
+    out                     :       list
+        A two element list. list[0] contains the unique colors used in the plot
+        and list[1] contains the corresponding number of observations (for
+        error checking in the colorbar generation)
+    '''
+
     sky_cat = pickle.load(open(source_filename))
-    ax.plot(sky_cat.alpha, sky_cat.beta, '.', color=zero_level, markersize=2)
-    
+    ax.plot(sky_cat.alpha, sky_cat.beta, '.', color=zero_level,
+                                        markersize=ms, mec='none', zorder=-2)
+
     measurement_catalog = pickle.load(open(measurement_filename))
     source_ID = np.unique(measurement_catalog.k)
     x = np.zeros(source_ID.size)
@@ -237,66 +241,224 @@ def survey_coverage(ax, source_filename, measurement_filename, zero_level='0.9',
         if nobs[i] > 0:
             x[i] = measurement_catalog.alpha[found[0]]
             y[i] = measurement_catalog.beta[found[0]]
-    okay = np.where(nobs > 0)[0]
-    z = nobs[okay]
-    y = y[okay]
-    x = x[okay]
-    if nobs_max == None:
-        nobs_max = np.max(z)
-    if nobs_min == None:
-        nobs_min = np.min(z)
+
+    if nobs_plot_lim == None:
+        nobs_plot_lim = np.max(nobs[okay])
     
-    color = np.array(['{0:4.2f}'.format(cn) for cn in (nobs_max - z) / (1.5*(nobs_max - 1/1.5 * nobs_min))])
+    color = np.array(['{0:4.2f}'.format(cn) for cn in
+               float(zero_level) * (1 - nobs / nobs_plot_lim)])
     
     colors = np.unique(color)
+    nobs_check = np.zeros(colors.size)
     for c in colors:
         found = np.where(color == c)[0]
         if (found.size > 0):
-            zorder = np.abs(float(c) - 0.5)
-            ax.plot(x[found], y[found], '.', color=c, markersize=2)#, zorder=zorder)
+            zorder = -float(c)
+            ax.plot(x[found], y[found], '.', color=c,
+                                    mec='none', markersize=ms, zorder=zorder)
 
-    return [np.max(z), colors]
+    
+    # Provide a nobs_check vector that can be used to assert that the colormap
+    # in the colorbar is correct
+    for indx in range(colors.size):
+        found = np.where(color == colors[indx])[0]
+        nobs_check[indx] = nobs[found[0]]
+    
+    return [colors, nobs_check]
 
 
-def survey_coverage_colorbar(ax_cb, nobs_max, colors, zero_level='0.9'):
+def survey_coverage_colorbar(ax_cb, nobs_plot_lim, colors, nobs_check,
+                                                            zero_level='0.9'):
+    ''' This function plots a colorbar for the survey_coverage plot
 
-    levels = np.arange(0, nobs_max, 1)    
-    color = np.linspace(float(zero_level), np.min(colors.astype(float)), len(levels))
+    Input
+    -----
+    ax_cb                   :       matplotlib axes instance
+        The axes instance to plot the colorbar to
+    nobs_plot_lim           :       int
+        The maximum number of observations to plot (used homogenize colormaps
+        across multiple plots).
+    colors                  :       numpy string array
+        Array containing the unique numbers of source observations
+    nobs_check              :       numpy array
+        Array with the same dimensions as "color", with each element giving the
+        corresponding nobs for the color element. Used to check colorbar
+        colormap
+    zero_level              :       string of float 
+        The whitest value in the plot, corresponding to zero observations
+    '''
+
+    levels = np.arange(0, nobs_plot_lim, 0.1)    
+    color = np.linspace(float(zero_level), 0, levels.size)
+      
+    # check colorbar colormap scaling
+    for indx in range(colors.size):
+        found = np.where(levels == nobs_check[indx])[0]
+        assert (color[found] - colors[indx].astype(float)) < 0.1
+
     for indx in range(len(levels)-1):
-        ax_cb.fill_between([0, 1], [levels[indx], levels[indx]], y2=[levels[indx+1], levels[indx+1]], color=str(color[indx]))
-    ax_cb.set_ylim(0, np.max(levels))
+        ax_cb.fill_between([0, 1], [levels[indx], levels[indx]],
+                            y2=[levels[indx+1], levels[indx+1]],
+                            color=str(color[indx]))
+
+    ax_cb.set_xlim(0, 1)
+    ax_cb.set_ylim(0, nobs_plot_lim)
+
+    return None
 
 
-def survey_coverage_histogram(ax, measurement_filename):
+def survey_coverage_histogram(ax, measurement_filename, xlim=None, ylim=None):
+    ''' This function plots a histogram of the number of source observations
+
+    Input
+    -----
+    ax                      :       matplotlib axes instance
+        The axes instance to plot the histogram to
+    measurement_filename    :       string
+        The path to the measurement file
+    xlim                    :       list
+        The limits for the x-axis [xmin, xmax].
+    xlim                    :       list
+        The limits for the x-axis [ymin, ymax].
+    '''
+    
     measurement_catalog = pickle.load(open(measurement_filename))
+    
     source_ID = np.unique(measurement_catalog.k)
     nobs = np.zeros(source_ID.size)  
+    
     for i, sid in enumerate(source_ID):
         found = np.where(measurement_catalog.k == sid)[0]
         nobs[i] = found.size
-    ax.hist(nobs, color='k', bins=np.arange(nobs.max()+1))
-    ax.set_yscale('log')
-    ax.set_xlim(1, nobs.max() + 5)
+    
+    hist = ax.hist(nobs, color='k', bins=np.arange(nobs.max())+0.5, histtype='bar')
+    
+    if xlim is None:
+        ax.set_xlim(1, nobs.max() + 2)
+    else:
+        ax.set_xlim(xlim)
+    if ylim is None:
+        ax.set_ylim(1, 1.1 * np.max(hist[0]))
+    else:
+        ax.set_ylim(ylim)
+    
+    return None
+    
 
+def survey_source_error(ax, source_filename, fitted_filename, ms=5, lower_limit=None, upper_limit=None, lower_color=0.9, upper_color=0.):
+    ''' This function plots a source map on the given matplotlib axes instance,
+    with the sources color-coded according to their error in the final fitted
+    solution.
 
-def survey_source_error(ax, source_filename, fitted_filename):
+    Input
+    -----
+    ax                      :       matplotlib axes instance
+        The axes instance to plot the error map to
+    source_filename         :       string
+        The path to the source catalog, which contains the *true* source fluxes
+    fitted_filename         :       string
+        The path to the fitted source catalog
+    ms                      :       int
+        The markersize for each source
+    lower_limit             :       float
+        The lower limit on the error to plot. Errors lower than this are
+        clipped to this value.
+    upper_limit             :       float
+        The upper limit on the error to plot. Errors higher than this are
+        clipped to this value.
+    lower_color             :       float
+        The matplotlib color value for the sources with the lowest errors
+    upper_color             :       float
+        The matplotlib color value for the sources with the highest errors
+
+    Returns
+    -------
+    out                     :       list
+        A two element list. list[0] contains the unique colors used in the plot
+        and list[1] contains the corresponding errors (for checking in the
+        colorbar generation)
+    '''
+
     true = pickle.load(open(source_filename))
     fitted = pickle.load(open(fitted_filename))
+    
     x = np.zeros(len(fitted.k))
     y = x.copy()
     error = x.copy()
+    
     for i, sid in enumerate(fitted.k):
         found = np.where(fitted.k == sid)[0]
         if len(found) > 0:
             x[i] = fitted.alpha[found[0]]
             y[i] = fitted.beta[found[0]]
             original = true.flux[np.where(true.k == sid)[0]]
-            error[i] = np.average(fitted.flux[found]) / original
-    scaled_error = (error - np.min(error)) / (np.max(error) - np.min(error))
-    three_d_plot(ax, x, y, error)
+            error[i] = (100 * (np.average(fitted.flux[found]) - original)
+                                                                    / original)
+
+    if lower_limit is None:
+        lower_limit = np.min(error)
+    if upper_limit is None:    
+        upper_limit = np.max(error)
+    
+    color = np.array(['{0:4.2f}'.format(cn) for cn in
+                        0.5 * (upper_color + lower_color)
+                        + (upper_color - lower_color)
+                        * np.clip(error, lower_limit, upper_limit)
+                        / (upper_limit - lower_limit)])
+    
+    colors = np.unique(color)
+    for c in colors:
+        found = np.where(color == c)[0]
+        if (found.size > 0):
+            zorder = np.abs(float(c) - 0.5)
+            ax.plot(x[found], y[found], '.', color=c, mec='none', markersize=ms, zorder=zorder)
+    
+    error_check = np.zeros(colors.size)
+    # Provide a error_check vector that can be used to assert that the colormap
+    # in the colorbar is correct
+    for indx in range(colors.size):
+        found = np.where(color == colors[indx])[0]
+        error_check[indx] = error[found[0]]
+
+    return [colors, error_check]
+
+
+def survey_source_error_colorbar(ax_cb, colors, error_check, lower_limit=None, upper_limit=None, lower_color=0.9, upper_color=0.):
+    ''' This function plots a colorbar for the survey_source_error figure.
+
+    Input
+    -----
+    
+    '''
+    assert 1 == 2 # check colorbars, error one is incorrect!!!!
+    # XX in percent
+    levels = np.linspace(np.min(error_check), np.max(error_check), 100)
+    color = np.linspace(np.min(colors.astype(float)), np.max(colors.astype(float)), levels.size)
+
+    for indx in range(len(levels)-1):
+        ax_cb.fill_between([0, 1], [levels[indx], levels[indx]],
+                            y2=[levels[indx+1], levels[indx+1]],
+                            color=str(color[indx]))
+
+    ax_cb.set_xlim(0, 1)
+    ax_cb.set_ylim(levels.min(), levels.max())
+
+    return None
 
 
 def survey_footprint(ax, survey_filename, FoV):
+    ''' This function plots the survey footprint map on the given matplotlib
+    axes instance
+
+    Input
+    -----
+    ax                      :       matplotlib axes instance
+        The axes instance to plot the footprint map to
+    survey_filename         :       string
+        The path to the survey file
+
+    '''
+    
     survey = np.loadtxt(survey_filename)
     
     x_min = -FoV[0] / 2
@@ -309,13 +471,17 @@ def survey_footprint(ax, survey_filename, FoV):
     for image in survey:
         alpha, beta = transformations.fp2sky(x, y, image[1:3], image[3])
         ax.plot(alpha, beta, 'k-', alpha=0.5)
+    
+    return None
 
 
 def survey(source_filename, measurement_filename, fitted_filename, survey_filename,
-                        out_filename, FoV, sky_limits, density, fig_width=8.3,
-                        suffix='.png', verbose=False):
-    ''' This function plots the survey strategy, the sky coverage and a
-    histogram of the number of times each source is observed.
+                        out_filename, FoV, sky_limits, density,
+                        nobs_plot_lim=50,
+                        fig_width=8.3, suffix='.png', verbose=False):
+    ''' This function plots the survey footprint, the sky coverage, a
+    histogram of the number of times each source is observed and a map of the
+    errors in the fitted sources.
 
     Input
     -----
@@ -337,6 +503,8 @@ def survey(source_filename, measurement_filename, fitted_filename, survey_filena
     density                     :   int
         The maximum number of sources (all magnitude) per unit area
         to generate for the self-calibration simulations
+    nobs_plot_lim               :   int
+        The maximum number of source observations to plot
     figure_width                :   float
         The width of the figure in inches, default it 8.3
     suffix                      :   string
@@ -349,8 +517,8 @@ def survey(source_filename, measurement_filename, fitted_filename, survey_filena
     if verbose:
         print("Generating survey plot...")
     
-    middle = [0.48, 0.5]
-    size = [0.41, 0.41]
+    middle = [0.5, 0.5]
+    size = [0.40, 0.40]
     fig = plt.figure(figsize=(fig_width, fig_width))
     
     ax_temp1 = fig.add_axes([middle[0] - size[0], middle[1], size[0], size[1]])
@@ -383,59 +551,67 @@ def survey(source_filename, measurement_filename, fitted_filename, survey_filena
     ax4.set_xlim(sky_limits[0], sky_limits[1])
     ax4.set_ylim(sky_limits[2], sky_limits[3])
     ax4.set_xlabel(r'Sky Position $\alpha$ (deg)')
-    
+
+    ax_temp4_cb = fig.add_axes([middle[0] + 1.03 * size[0],
+                                        middle[1] - 0.95 * size[1],
+                                        0.07 * size[0],
+                                        0.9 * size[1]])
+    ax_temp4_cb.set_yticks([])
+    ax_cb4 = ax_temp4_cb.twinx()
+    ax_cb4.set_xticks([])
+
     fig.text(middle[0], middle[1] + 1.1 * size[1],
                     r'Sky Position $\alpha$ (deg)',
                     ha='center', va='center')
     fig.text(middle[0] - 1.1 * size[0], middle[1] + 0.5 * size[1],
                     r'Sky Position $\beta$ (deg)',
                     ha='center', va='center', rotation=90)
-    fig.text(middle[0] + 1.2 * size[0], middle[1] + 0.5 * size[1],
+    fig.text(middle[0] + 1.22 * size[0], middle[1] + 0.5 * size[1],
                     r'Number of Observations',
+                    va='center', ha='center', rotation=90)
+    fig.text(middle[0] + 1.22 * size[0], middle[1] - 0.5 * size[1],
+                    r'Flux Error (%)',
                     va='center', ha='center', rotation=90)
 
     if verbose:
         print("...plotting survey footprint map from {0}..."
                                                     .format(survey_filename))
-
     survey_footprint(ax1, survey_filename, FoV)
-   
     if verbose:
         print('...done...')
         
     if verbose:
         print('...plotting coverage map from {0}...'
                                                 .format(measurement_filename))
-
-    nobs_max, colors = survey_coverage(ax2, source_filename,
-                                                        measurement_filename)
-    survey_coverage_colorbar(ax_cb2, nobs_max, colors)
-    
-
+    colors, nobs_check = survey_coverage(ax2, source_filename,
+                        measurement_filename, nobs_plot_lim=nobs_plot_lim,
+                        zero_level='0.9')
+    survey_coverage_colorbar(ax_cb2, nobs_plot_lim, colors, nobs_check,
+                                        zero_level='0.9')
     if verbose:
-        print('...done!')
+        print('...done...')
 
     if verbose:
         print('Plotting measurement histogram from {0}...'
                                                 .format(measurement_filename))
-    survey_coverage_histogram(ax3, measurement_filename)
+    survey_coverage_histogram(ax3, measurement_filename,
+                                            xlim=(1, nobs_plot_lim))
+    if verbose:
+        print('...done...')
     
     if verbose:
-        print('...done!')
-    
-    if verbose:
-        print("Plotting source error map from {0} and {1}..."
+        print('Plotting source error map from {0} and {1}...'
                     .format(source_filename, fitted_filename))
+    colors, errors = survey_source_error(ax4, source_filename, fitted_filename, lower_limit=-2.5, upper_limit=2.5)
+    survey_source_error_colorbar(ax_cb4, colors, errors, lower_limit=None, upper_limit=None, lower_color=0.9, upper_color=0.)
+    if verbose:
+        print('...done...')
 
-    survey_source_error(ax4, source_filename, fitted_filename)
-
-    
-    
     plt.savefig(out_filename+suffix)
     plt.clf()
     if verbose:
-        print("...done!")
-
+        print("...figure done!")
+    assert 1==2
 
 def variance(filename, fig_width=8.3, suffix='.png', verbose=False):
     ''' This function plots the both the assumed and the *true* measurement
