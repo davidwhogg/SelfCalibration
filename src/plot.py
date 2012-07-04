@@ -228,7 +228,7 @@ def survey_coverage(ax, source_filename, measurement_filename,
 
     sky_cat = pickle.load(open(source_filename))
     ax.plot(sky_cat.alpha, sky_cat.beta, '.', color=zero_level,
-                                        markersize=ms, mec='none', zorder=-2)
+                                    markersize=ms, mec='none', zorder=-2000)
 
     measurement_catalog = pickle.load(open(measurement_filename))
     source_ID = np.unique(measurement_catalog.k)
@@ -252,7 +252,7 @@ def survey_coverage(ax, source_filename, measurement_filename,
     for c in colors:
         found = np.where(color == c)[0]
         if (found.size > 0):
-            zorder = -float(c)
+            zorder = -1000 * float(c)
             ax.plot(x[found], y[found], '.', color=c,
                                     mec='none', markersize=ms, zorder=zorder)
 
@@ -268,6 +268,10 @@ def survey_coverage(ax, source_filename, measurement_filename,
     colorbar_nobs = np.append(colorbar_nobs, 0)
     colors = np.append(colors, zero_level)
     colorbar_nobs = np.append(nobs_plot_lim, colorbar_nobs)
+
+    ax.xaxis.set_zorder(3000)
+    ax.yaxis.set_zorder(3000)
+    print(ax.get_clip_on())
 
     return [colors, colorbar_nobs]
 
@@ -405,7 +409,7 @@ def survey_source_error(ax, source_filename, fitted_filename, ms=5,
     for c in colors:
         found = np.where(color == c)[0]
         if (found.size > 0):
-            zorder = np.abs(float(c) - 0.5)
+            zorder = 1000 * np.abs(float(c) - 0.5)
             ax.plot(x[found], y[found], '.', color=c, mec='none',
                                                 markersize=ms, zorder=zorder)
 
@@ -535,25 +539,23 @@ def survey(source_filename, measurement_filename,
     size = [0.40, 0.40]
     fig = plt.figure(figsize=(fig_width, fig_width))
 
-    ax_temp1 = fig.add_axes([middle[0] - size[0], middle[1], size[0], size[1]])
-    ax_temp1.set_xticklabels([])
-    ax1 = ax_temp1.twiny()
+    ax1 = fig.add_axes([middle[0] - size[0], middle[1], size[0], size[1]])
     ax1.set_xlim(sky_limits[0], sky_limits[1])
     ax1.set_ylim(sky_limits[2], sky_limits[3])
+    ax1.tick_params(labelleft=True, labelright=False,
+                                            labeltop=True, labelbottom=False)
 
-    ax_temp2 = fig.add_axes([middle[0], middle[1], size[0], size[1]])
-    ax_temp2.set_yticks([])
-    ax_temp2.set_xticks([])
-    ax2 = ax_temp2.twiny()
-    ax2.set_yticklabels([])
+    ax2 = fig.add_axes([middle[0], middle[1], size[0], size[1]])
     ax2.set_xlim(sky_limits[0], sky_limits[1])
     ax2.set_ylim(sky_limits[2], sky_limits[3])
-    ax_temp2_cb = fig.add_axes([middle[0] + 1.03 * size[0],
+    ax2.tick_params(labelleft=False, labelright=False,
+                                            labeltop=True, labelbottom=False)
+    ax_cb2 = fig.add_axes([middle[0] + 1.03 * size[0],
                                         middle[1] + 0.05 * size[1],
                                         0.07 * size[0],
                                         0.9 * size[1]])
-    ax_temp2_cb.set_yticks([])
-    ax_cb2 = ax_temp2_cb.twinx()
+    ax_cb2.tick_params(labelleft=False, labelright=True,
+                                            labeltop=False, labelbottom=False)
     ax_cb2.set_xticks([])
 
     ax3 = fig.add_axes([middle[0] - size[0], middle[1] - size[1],
@@ -566,12 +568,13 @@ def survey(source_filename, measurement_filename,
     ax4.set_ylim(sky_limits[2], sky_limits[3])
     ax4.set_xlabel(r'Sky Position $\alpha$ (deg)')
 
-    ax_temp4_cb = fig.add_axes([middle[0] + 1.03 * size[0],
+    ax_cb4 = fig.add_axes([middle[0] + 1.03 * size[0],
                                         middle[1] - 0.95 * size[1],
                                         0.07 * size[0],
                                         0.9 * size[1]])
-    ax_temp4_cb.set_yticks([])
-    ax_cb4 = ax_temp4_cb.twinx()
+
+    ax_cb4.tick_params(labelleft=False, labelright=True,
+                                            labeltop=False, labelbottom=False)
     ax_cb4.set_xticks([])
 
     fig.text(middle[0], middle[1] + 1.1 * size[1],
@@ -584,7 +587,7 @@ def survey(source_filename, measurement_filename,
                     r'Number of Observations',
                     va='center', ha='center', rotation=90)
     fig.text(middle[0] + 1.22 * size[0], middle[1] - 0.5 * size[1],
-                    r'Flux Error (%)',
+                    r'Flux Error (percent)',
                     va='center', ha='center', rotation=90)
 
     if verbose:
