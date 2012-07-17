@@ -27,7 +27,7 @@ def flat_field_parameters():
     out     :   numpy array
         The parameters for the *true* flat-field model
     '''
-
+    # XX Magic Numbers
     return np.append(np.array([1, -0.01, 0.015, -0.1, 0.005, -0.25]),
                                 (5e-4) * np.random.uniform(size=256))
 
@@ -68,10 +68,11 @@ def flat_field(x, y, FoV, par=flat_field_parameters()):
             ky = ny * np.pi / FoV[1]
             cky = np.cos(ky * y)
             sky = np.sin(ky * y)
-            ff += par[k] * ckx * cky
-            ff += par[k + 1] * ckx * sky
-            ff += par[k + 2] * skx * cky
-            ff += par[k + 3] * skx * sky
+            # XX Magic Numbers: ** 0.75 to kill higher order terms
+            ff += par[k + 0] * ckx * cky / (1 + nx + ny) ** 0.75
+            ff += par[k + 1] * ckx * sky / (1 + nx + ny) ** 0.75
+            ff += par[k + 2] * skx * cky / (1 + nx + ny) ** 0.75
+            ff += par[k + 3] * skx * sky / (1 + nx + ny) ** 0.75
             k += 4
     return ff
 
