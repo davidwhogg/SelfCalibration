@@ -11,6 +11,7 @@
 from __future__ import division, print_function
 
 import matplotlib.pyplot as plt
+import matplotlib
 import glob
 import pickle
 import numpy as np
@@ -577,6 +578,16 @@ def survey(source_filename, measurement_filename,
                                             labeltop=False, labelbottom=False)
     ax_cb4.set_xticks([])
 
+    ax1.text(0.96, 0.04, '(a)', va='center', ha='center',
+                                        zorder=2000, transform=ax1.transAxes)
+    ax2.text(0.04, 0.04, '(b)', va='center', ha='center',
+                                        zorder=2000, transform=ax2.transAxes)
+    ax3.text(0.95, 0.96, '(c)', va='center', ha='center',
+                                        zorder=2000, transform=ax3.transAxes)
+    ax4.text(0.04, 0.96, '(d)', va='center', ha='center',
+                                        zorder=2000, transform=ax4.transAxes)
+    
+
     fig.text(middle[0], middle[1] + 1.1 * size[1],
                     r'Sky Position $\alpha$ (deg)',
                     ha='center', va='center')
@@ -780,6 +791,17 @@ def flat_fields(filename, FoV, ff_samples, best_fit_params, output_path=False,
     ax3 = fig.add_axes([0.45, 0.075 / scale, 0.375, 0.375 / scale])
     ax4 = fig.add_axes([0.45, 0.45 / scale, 0.375, 0.375 / scale])
 
+    ax1.text(0.95, 0.96, '(c)', va='center', ha='center',
+                        bbox=dict(facecolor='w', edgecolor='w', alpha=0.7),
+                        zorder=2000, transform=ax1.transAxes)
+    ax2.text(0.95, 0.04, '(a)', va='center', ha='center',
+                        bbox=dict(facecolor='w', edgecolor='w', alpha=0.7),
+                        zorder=2000, transform=ax2.transAxes)
+    ax3.text(0.05, 0.96, '(d)', va='center', ha='center',
+                        zorder=2000, transform=ax3.transAxes)
+    ax4.text(0.05, 0.04, '(b)', va='center', ha='center',
+                        zorder=2000, transform=ax4.transAxes)
+
     ax2.set_xticklabels([])
     ax4.set_xticklabels([])
     ax4.set_yticklabels([])
@@ -815,7 +837,7 @@ def flat_fields(filename, FoV, ff_samples, best_fit_params, output_path=False,
                                                     cmap='gray', aspect='auto')
 
     cbar = fig.colorbar(a, ax_cb, orientation='vertical')
-    cbar.set_label(r'Residuals  (%)')
+    cbar.set_label(r'Residuals  (percent)')
 
     if output_path:
         filename = output_path + suffix
@@ -831,8 +853,11 @@ if __name__ == "__main__":
 
     verbose = True
     mult_proc = True
-    plot_suffix = ".png"
-    figure_width = 8.3
+    plot_suffix = ".pdf"
+    figure_width = 7.
+
+    plt.rcParams['font.family'] = 'Computer Modern'
+    plt.rcParams['text.usetex'] = True
 
     # Change process nice level to 10 (important if multiprocessing)
     os.nice(10)
