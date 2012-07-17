@@ -56,11 +56,11 @@ def best_fit_ff(FoV, ff_samples, order, stop_condition, max_iterations,
     g = self_cal.evaluate_flat_field_functions(X.flatten(), Y.flatten(), order)
     true_ff = true_functions.flat_field(X.flatten(), Y.flatten(), FoV)
     a = np.zeros((order + 1) * (order + 2) / 2)
-    fitted_parameters = opt.fmin_bfgs(compare_flats, a,
-                        args=(true_ff, g),
-                        gtol=stop_condition,
-                        maxiter=max_iterations,
-                        disp=verbose)
+    fitted_parameters = opt.leastsq(compare_flats, a,
+                        args=(true_ff, g))[0]#,
+                        #gtol=stop_condition,
+                        #maxfev=max_iterations,
+                        #disp=verbose)
     fitted_parameters = self_cal.normalize_flat_field(fitted_parameters, FoV,
                                                                     ff_samples)
     if verbose:
@@ -72,7 +72,7 @@ def best_fit_ff(FoV, ff_samples, order, stop_condition, max_iterations,
 
 def compare_flats(a, true_ff, g):
     ''' This is the error function used in the best-in-basis flat-field
-    fitting function.
+    fitting function. XX fix comments below
 
     Parameters
     ----------
@@ -90,8 +90,8 @@ def compare_flats(a, true_ff, g):
     out     :   numpy array
         the mean of the flat-field at the given sample points
     '''
-    error = np.sum((true_ff - np.dot(g, a)) ** 2)
-    return error
+    
+    return (true_ff - np.dot(g, a))
 
 
 def badness(q, FoV, ff_samples, verbose=False):
