@@ -64,8 +64,8 @@
     'seed'                :     [1.],
     # Float: The stop condition for the self-calibration procedure and the
     # best-in-basis fitting (stop when difference is less than 2 times this)
-    'stop_condition'	    :   1e-12,
+    'stop_condition'	    :   1e-14,
     # Integer: The maximum number of iterations in the self-calibration
     # procedure and the best-in-basis fitting
-    'max_iterations'	    :     16385
+    'max_iterations'	    :    10001
     }
