@@ -108,7 +108,7 @@ during this stage.
 
 \subsubsection{True Instrument Response Model}
 \label{sec:instrument_response_model}
-We construct a complex, position independent instrument response model $f_\true(\vec{x_i} | \vec{q}_{\true})$ from a superposition of large and small-scale variations:
+We construct a complex, position independent instrument response model $f_\true(\vec{x_i} | \vec{q}_{\true})$ from a superposition of large- and small-scale variations:
 \begin{eqnarray*}
 f_\true(\vec{x_i} | \vec{q}_{\true, 1 \ldots 260}) = f_\text{large}(\vec{x_i} | \vec{q}_{\true, 1 \ldots 6}) + f_\text{small}(\vec{x_i} | \vec{q}_{\true, 7 \ldots 260}) \quad ,
 \end{eqnarray*}
@@ -126,7 +126,7 @@ where
 k_x & = & \dfrac{a \, \pi}{X} \quad ,\\
 k_y & = & \dfrac{b \, \pi}{Y} \quad ,\\
 \end{eqnarray*}
-with the physical focal plane dimensions $X$ and $Y$. The $(1 + a +d)^{-0.75}$ factor reduces the magnitude of the higher order terms. In total, the instrument response model is parameterized with 260 parameters; an example can be seen in Figure \ref{fig:single_image}      (right). It is this instrument response that we try and recover with the self-calibration procedure. With this instrument response model, we have assumed that the variations in sensitivities on a pixel-to-pixel-scale have been calibrated with some other method, such as an internal flat-field calibration source. It is only the variations on larger scales that we aim to constrain with the self-calibration procedure. Our final assumption in these simulations is that the instrument response is temporally stable. 
+with the physical focal plane dimensions $X$ and $Y$. The $(1 + a +d)^{-0.75}$ factor reduces the magnitude of the higher order terms. In total, the instrument response model is parameterized with 260 parameters; an example can be seen in Figure \ref{fig:single_image} (right). It is this instrument response that we try and recover with the self-calibration procedure. With this instrument response model, we have assumed that the variations in sensitivities on a pixel-to-pixel-scale have been calibrated with some other method, such as an internal flat-field calibration source. It is only the variations on larger scales that we aim to constrain with the self-calibration procedure. Our final assumption in these simulations is that the instrument response is temporally stable. 
 
 \subsection{Complete Survey}
 In this work we are interested in simulating complete surveys, in order to identify the crucial characteristics of survey strategies that allow for the relative instrument response model to be accurately, retrospectively constrained from the resulting catalog. We therefore apply the single exposure procedure introduced in the previous section for each pointing specified in a defined survey strategy, which is a set of pointings $(\alpha, \beta)$ and orientations $(\theta)$. The resultant source measurements are collated into a survey-wide catalog. 
@@ -291,7 +291,7 @@ The code used in this work is publicly available at \url{github.com/davidwhogg/S
 \clearpage
 \begin{deluxetable}{lc}
 \tablewidth{0pt}
-\tablecaption{A summary of the tuneable parameters in these simulations and their fiducial values.\label{tab:parameters}}
+\tablecaption{A summary of the tunable parameters in the simulations and their fiducial values.\label{tab:parameters}}
 \tablehead{
 \colhead{Parameter} & \colhead{Fiducial Value}}
 \startdata
@@ -340,7 +340,7 @@ D   & Quasi-Random  & Random & 1728\\
 
 \begin{figure}
 \plotone{C_163_ff.pdf}
-\figcaption{Survey Strategy C: A comparison of the fitted instrument response model $f_\fit(\vec{x_j} | \vec{q_\fit})$ (black) obtained from self-calibrating the Survey C catalog compared to (a) the true $f_\true(\vec{x} | \vec{q_\true})$ and (c) the best-in-basis $f_\basis(\vec{x_j} | \vec{q_\basis})$ instrument response models (gray). The self-calibration procedure converged to the final solution after 163 iterations. The plots (b) and (d) show the residuals between the two instrument response models plotted in (a) and (c) respectively.\label{fig:C_result}}
+\figcaption{Survey Strategy C: A comparison of the fitted instrument response model $f_\fit(\vec{x_j} | \vec{q_\fit})$ (black) obtained from self-calibrating the Survey C catalog compared to (a) the true $f_\true(\vec{x} | \vec{q_\true})$ and (c) the best-in-basis $f_\basis(\vec{x_j} | \vec{q_\basis})$ instrument response models (gray). The self-calibration procedure converged to the final solution after 163 iterations. The plots (b) and (d) show the residuals between the two instrument response models plotted in (a) and (c) respectively. With this regular observing strategies, all regions of the focal plane well interconnected with each other.\label{fig:C_result}}
 \end{figure}
 
 \begin{figure}
