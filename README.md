@@ -49,7 +49,7 @@ A complete parameter dictionary must be past to `simulation.run_sim()` for each 
 
 ### Known issues:
 
-* The true flat-field is too peaked in the center.
+* ...
 
 ### Migration from svn:
 

@@ -31,7 +31,7 @@ The referee is absolutely right that there are cameras that cannot be rotated wi
 	  from observation to observation.  It would be instructive to add a
 	  performance metric which includes this effect.
 
-This is an excellent suggestion. We have added Figures 7 to 11, which show the residuals in the final survey. 
+This is an excellent suggestion. We have added Figures 7 to 11, which show the residuals in the final survey. We comment on these figures in Section 5.2, and we feel that this led to a substantial improvement of the paper.
 
 In Addition to these changes, we also made the following small changes:
 	- We removed "Large-Scale" from the paper title

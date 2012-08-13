@@ -65,7 +65,7 @@ for indx in range(len(dirs)):
 
     for image in survey:
         alpha, beta = transformations.fp2sky(x, y, image[1:3], image[3])
-        ax[indx].plot(alpha, beta, 'k-', alpha=0.2)
+        ax[indx].plot(alpha, beta, 'k-', alpha=0.4)
 
     min_sky = np.min(sky_limits) \
                         - 0.02 * (np.max(sky_limits) - np.min(sky_limits))

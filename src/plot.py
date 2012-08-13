@@ -272,7 +272,6 @@ def survey_coverage(ax, source_filename, measurement_filename,
 
     ax.xaxis.set_zorder(3000)
     ax.yaxis.set_zorder(3000)
-    print(ax.get_clip_on())
 
     return [colors, colorbar_nobs]
 
