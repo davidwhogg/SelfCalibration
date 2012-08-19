@@ -94,7 +94,7 @@ def generate_random_survey(sky_limits, FoV, N):
 if __name__ == "__main__":
 
     sky_limits = [-4., 4., -4., 4.]
-    number_passes = 6
+    number_passes = 12
     FoV = [0.76, 0.72]
 
     xA = generate_uniform_survey(sky_limits, FoV, number_passes)
