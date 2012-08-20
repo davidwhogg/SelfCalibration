@@ -7,6 +7,7 @@
 
 \newcommand{\expectation}[1]{\tilde{#1}}
 \newcommand{\sky}{^{(\mathrm{sky})}}
+\newcommand{\source}{^{(\mathrm{src})}}
 
 \begin{document}
 
@@ -14,8 +15,14 @@
 
 \noindent
 David W. Hogg (NYU)
+\\{\footnotesize
+\textsl{Center for Cosmology and Particle Physics, Department of Physics, New York University, New York, USA}
 \\
-\textsl{Max-Planck-Institut f\"ur Astronomie, Heidelberg, Germany}
+\textsl{Max-Planck-Institut f\"ur Astronomie, Heidelberg, Germany}}
+
+\textsl{This document is a draft dated 2012-08-20.  It is based in
+  part on conversations with Rob Fergus (NYU), Rory Holmes (MPIA), and
+  Bernhard Sch\"olkopf (MPI-IS).}
 
 We have shown with large optical imaging surveys that the redundant
 information coming from the multiple observations of stars is
@@ -74,15 +81,17 @@ still would be to make bigger patches (say $5\times 5$ or larger) or
 to make use of the residuals away from a physically motivated model of
 the observed images.
 
-\paragraph{pixel signal models}
-Sticking with the intermediate level of dumbness for now: In a set of
-$3\times 3$ sky patches, the expected signal
-$\expectation{D}_{ij}$---the expected number of electrons or data
-numbers read out---in pixel $i$ of exposure $j$ might be a combination
-of zero-level, dark-current, and sky-photon signals
-\begin{equation}
+\paragraph{pixel signal models:}
+Sticking with the intermediate level of dumbness for now: In a
+$3\times 3$ sky patch (a patch far from any detectable sources), the
+expected signal $\expectation{D}_{ij}$---the expected number of
+electrons or data numbers read out---in pixel $i$ of exposure $j$
+might be a combination of zero-level, dark-current, and sky-photon
+signals
+\begin{eqnarray}
 \expectation{D}_{ij} = z_i + d_i\,t_j + f\sky_i\,S\sky_j\,t_j
-\end{equation}
+\quad ,
+\end{eqnarray}
 where $i$ labels the device pixel ($i$ maps back to a pixel location
 in the original imaging device), $j$ labels the exposure, each of
 which might have a slightly different sky level, $z_i$ is a zero-level
@@ -92,11 +101,71 @@ exposure $j$, $f\sky_i$ is the sensitivity of pixel $i$ to diffuse sky
 illumination, and $S\sky_j$ is the intensity of the sky in exposure
 $j$ (interpolated to pixel $i$ if there are gradients).
 
-In a $3\times 3$ source patch, the expectation is similar...
-\begin{equation}
+In a $3\times 3$ source patch (a patch containing some detectable
+source or part thereof), the expectation is similar but there is now
+source flux
+\begin{eqnarray}
 \expectation{D}_{ij} = z_i + d_i\,t_j + f\sky_i\,S\sky_j\,t_j
-\end{equation}
+                     + f\source_i\,S\source_{ij}\,t_j
+\quad ,
+\end{eqnarray}
+where now $f\source_i$ is the sensitivity of pixel $i$ to compact
+source flux, and $S\source_{ij}$ is the source flux in exposure $j$
+interpolated to or evaluated at the location of pixel $i$.  This
+interpolation to pixel $i$ is where the $3\times 3$ pixel patch comes
+in: We are going to use the 8 pixels surrounding pixel $i$ to
+interpolate the source flux probabilistically to pixel $i$.  This also
+shows that using a bigger patch, say $5\times 5$, would be
+substantially less dumb.  Even the sky patches (as noted momentarily
+above) might require interpolation to pixel $i$, since there might be
+sky gradients.
 
+In the case that there are also \emph{dark}
+observations---observations with the shutter closed---or \emph{zero}
+observations---observations with zero exposure times---there can be
+additional constraints on the $z_i$ and the $d_i$ beyond just the
+science-data constraints.  These considerations also suggest that a
+survey that varies its exposure time will thereby obtain much more
+information about the calibration information (and also vet the
+shutter!).
+
+There might be an additional dependence of the source sensitivity
+$f\source_i$ on color or spectral energy distribution.  There might
+also be variations of all the calibration parameters on time, possibly
+even with break-points or sharp transitions (think episodic radiation
+damage and the like).  There will also be many, many pixels affected
+by cosmic rays.  All of these issues make the real-world execution of
+this program more complicated than the cartoon given here.  For now we
+might try assuming that we can work with only patches that are
+obviously \emph{not} affected by cosmic rays, and work only with
+time-slices of the data within which no significant variations are
+expected.
+
+The likelihood of any model for the data will be related to the idea
+that the observed or read-out data $D_{ij}$ differs from the model
+expectation $\expectation{D}_{ij}$ by the contribution of some kind of
+noise, which might be Poisson or Gaussian or some combination,
+depending on the device and our precision needs.
+
+\paragraph{blind deconvolution:}
+This problem looks very much like a blind deconvolution problem,
+because there is a true but unknown scene multiplied by some unknown
+set of pixel responses before noisy detection.  If the astronomical
+fields $(S\sky_j, S\source_{ij})$ are known, the pixel response
+parameters $(z_i, d_i, f\sky_i, f\source_i)$ are related to the signal
+by a pure linear operation and \foreign{vice versa}.  If the noise in
+the data is Gaussian (or can be approximated as such), the inference
+can proceed by iterated weighted linear least squares.  If the imager
+is well-behaved, $S\sky_j$ will be a very smooth function of pixel
+position $i$ or no function at all.  If the imaging is well-sampled,
+$S\source_{ij}$ will be expressable as a linear combination of
+band-limited basis functions, like sincs or Gaussians.
+
+If we aren't satisfied with point estimates---and we shouldn't
+be---then we can propagate the uncertainties in both the calibration
+quantities and the astronomical scene as a set of samples or explicit
+analytic descriptions of the posterior PDF.  The latter might be
+possible in the case of pure Gaussian noise.
 
 \begin{thebibliography}{70}
 \bibitem[Holmes \etal(2012)]{holmes}
