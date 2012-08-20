@@ -2,20 +2,27 @@
 
 \newcommand{\foreign}[1]{\textsl{#1}}
 \newcommand{\etal}{\foreign{et~al.}}
+\newcommand{\project}[1]{\textsl{#1}}
+\newcommand{\SDSS}{\project{SDSS}}
 
 \begin{document}
 
-\paragraph{Can we infer the pixel-level flat-field without an internal calibration source?}
+\section*{Can we infer the pixel-level flat-field without an internal calibration source?}
 
-We have shown with large surveys that the redundant information coming
-from the multiple observations of stars is sufficient to infer the
-large-scale sensitivity (effective area or flat-field or vignetting)
-of an imaging device (\citealt{ubercal}, \citealt{holmes}).  In these
-experiments, the photometry has been thought of as being well sampled,
-and the flat-field function has had only thousands of parameters. We
-have not attempted to obtain millions of pixel-level parameters from
-the data and we have not considered arbitrarily non-smooth functions
-of two-dimensional position.
+\noindent
+David W. Hogg (NYU)
+\\
+\textsl{Max-Planck-Institut f\"ur Astronomie, Heidelberg, Germany}
+
+We have shown with large optical imaging surveys that the redundant
+information coming from the multiple observations of stars is
+sufficient to infer the large-scale sensitivity (effective area or
+flat-field or vignetting) of an astronomical imaging device
+(\citealt{ubercal}, \citealt{holmes}).  In these self-calibration
+experiments, the sensitivity function has had only hundreds or
+thousands of parameters.  We have not attempted to obtain millions of
+pixel-level parameters from the data and we have not considered
+arbitrarily non-smooth two-dimensional sensitivity functions.
 
 With observations of billions of sources on the sky, however, it might
 be possible to infer millions of sensitivity parameters, even as many
@@ -24,10 +31,24 @@ device.  After all, we know a lot about the sky, many sources are
 observed multiple times, and every source touches multiple pixels even
 in a single visit.
 
+In detail, the sensitivity of a pixel can be a function of spectral
+energy distribution (different pixels will be differently sensitive to
+sources with different colors or spectra) and a function of
+intra-pixel illumination pattern (the pixel might have a more
+sensitive region and some less sensitive regions).  Also, diffuse
+illumination, such as uniform sky background, might illuminate the
+pixel from a different mixture of angles than compact illumination,
+such as from a star, so there might be, effectively, different pixel
+sensitivities for the sky and for sources.  Indeed, reflections in the
+\SDSS\ camera led to problems of this kind, which invalidated the
+sky-based flat-fields (\citealt{ubercal}).  For all these reasons we
+might actually have many sensitivity parameters per pixel; this makes
+our task harder quantitatvely, but perhaps not qualitatively.
+
 \begin{thebibliography}{70}
 \bibitem[Padmanabhan \etal(2008)]{ubercal}
 Padmanabhan,~N., Schlegel,~D.~J., Finkbeiner,~D.~P., \etal, 2008, \apj, 674, 1217
-\bibitem[Holmes \etal(2012)]{2012arXiv1203.6255H}
+\bibitem[Holmes \etal(2012)]{holmes}
 Holmes,~R., Hogg,~D.~W., \& Rix,~H.-W., 2012, arXiv:1203.6255 
 \end{thebibliography}
 
