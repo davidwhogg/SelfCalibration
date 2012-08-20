@@ -19,7 +19,7 @@ import analysis
 
 def self_calibration(obs_cat, sky_catalog, order, FoV,
                         ff_samples, stop_condition, max_iterations,
-                        best_fit_parameters,data_dir=False, verbose=False):
+                        best_fit_parameters, data_dir=False, verbose=False):
     ''' This functions performs the self-calibration procedure on the survey.
 
     Parameters
@@ -76,7 +76,6 @@ def self_calibration(obs_cat, sky_catalog, order, FoV,
         q, q_invvar, chi2 = q_step(obs_cat, s, order, FoV, ff_samples)
         old_chi2 = temp_chi2
 
-        
         indx = [s != 0]
 
         rms = analysis.rms_error(s[indx], sky_catalog.flux[indx], verbose)
@@ -98,7 +97,7 @@ def self_calibration(obs_cat, sky_catalog, order, FoV,
                 save_out.fitted_flat_field(q, FoV, ff_samples, count,
                                                             data_dir, verbose)
                 next_plot_iteration *= 2
-    
+
     if data_dir:
         save_out.fitted_catalog(data_dir, sky_catalog.k[indx],
                                         sky_catalog.alpha[indx],
@@ -106,7 +105,7 @@ def self_calibration(obs_cat, sky_catalog, order, FoV,
                                         s[indx],
                                         s_invvar[indx],
                                         verbose=verbose)
-    
+
     if count == max_iterations:
         count = 0  # did not converge error flag
 
