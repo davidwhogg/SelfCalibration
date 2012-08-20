@@ -585,7 +585,6 @@ def survey(source_filename, measurement_filename,
                                         zorder=2000, transform=ax3.transAxes)
     ax4.text(0.04, 0.96, '(d)', va='center', ha='center',
                                         zorder=2000, transform=ax4.transAxes)
-    
 
     fig.text(middle[0], middle[1] + 1.1 * size[1],
                     r'Sky Position $\alpha$ (deg)',
