@@ -18,6 +18,7 @@ import true_functions
 import save_out
 import survey
 import self_calibration
+import time
 
 
 def run_sim(dic):
@@ -94,6 +95,7 @@ def run_sim(dic):
         save_out.parameters(dic['data_dir'], dic, dic['verbose'])
 
     # Perform sky survey
+    t_stamp = time.time()
     measurement_catalog = survey.survey(dic['survey_file'],
                                                 sky_catalog,
                                                 dic['FoV'],
@@ -105,7 +107,11 @@ def run_sim(dic):
     if dic['data_dir']:
         save_out.measurement_catalog(dic['data_dir'], measurement_catalog,
                                                                 dic['verbose'])
+        text = 'Measurement Catalog (s): '
+        save_out.save_time(dic['data_dir'] + '/timings.txt',
+                                                text, time.time() - t_stamp)
 
+    t_stamp = time.time()
     performance = self_calibration.self_calibration(measurement_catalog,
                                                     sky_catalog,
                                                     dic['flat_field_order'],
@@ -121,4 +127,8 @@ def run_sim(dic):
         save_out.results(dic['data_dir'], performance,
                                 header='Final Results\n=============\n\n',
                                 verbose=dic['verbose'])
+        text = 'Self-Calibration (s): '
+        save_out.save_time(dic['data_dir'] + '/timings.txt',
+                                                text, time.time() - t_stamp)
+
     return performance
