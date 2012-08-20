@@ -1,4 +1,34 @@
-\documentclass[12pt]{article}
+\documentclass[12pt,preprint,dvips]{aastex}
+
+\newcommand{\foreign}[1]{\textsl{#1}}
+\newcommand{\etal}{\foreign{et~al.}}
+
 \begin{document}
-Hello world.
+
+\paragraph{Can we infer the pixel-level flat-field without an internal calibration source?}
+
+We have shown with large surveys that the redundant information coming
+from the multiple observations of stars is sufficient to infer the
+large-scale sensitivity (effective area or flat-field or vignetting)
+of an imaging device (\citealt{ubercal}, \citealt{holmes}).  In these
+experiments, the photometry has been thought of as being well sampled,
+and the flat-field function has had only thousands of parameters. We
+have not attempted to obtain millions of pixel-level parameters from
+the data and we have not considered arbitrarily non-smooth functions
+of two-dimensional position.
+
+With observations of billions of sources on the sky, however, it might
+be possible to infer millions of sensitivity parameters, even as many
+or more sensitivity parameters than there are pixels in the imaging
+device.  After all, we know a lot about the sky, many sources are
+observed multiple times, and every source touches multiple pixels even
+in a single visit.
+
+\begin{thebibliography}{70}
+\bibitem[Padmanabhan \etal(2008)]{ubercal}
+Padmanabhan,~N., Schlegel,~D.~J., Finkbeiner,~D.~P., \etal, 2008, \apj, 674, 1217
+\bibitem[Holmes \etal(2012)]{2012arXiv1203.6255H}
+Holmes,~R., Hogg,~D.~W., \& Rix,~H.-W., 2012, arXiv:1203.6255 
+\end{thebibliography}
+
 \end{document}
