@@ -25,7 +25,7 @@ import simulation
 
 # Range of sources to run self-calibration simulations with
 # Sort high to low, to increase simulation speed
-density_of_sources = np.logspace(0, 2, 10)[::-1]
+density_of_sources = np.logspace(0, 3, 30)[::-1]
 
 # Multiprocessing flat: int = number of threads, False = no multiprocessing
 multi_proc = 2
