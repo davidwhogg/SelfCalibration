@@ -278,3 +278,21 @@ def fitted_flat_field(q, FoV, ff_samples, it_no, data_dir, verbose=False):
 
     if verbose:
         print("...done!")
+
+
+def save_time(filename, text, time):
+    ''' This function saves out a given time to the specified file
+
+    Input
+    -----
+    filename                :           string
+        The filename to save the text to
+    text                    :           text
+        The string to include before the time value
+    time                    :           float
+        The time value
+    '''
+
+    f = open(filename, 'a')
+    f.write(text + str(time) + '\n')
+    f.close()
