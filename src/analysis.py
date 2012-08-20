@@ -57,10 +57,7 @@ def best_fit_ff(FoV, ff_samples, order, stop_condition, max_iterations,
     true_ff = true_functions.flat_field(X.flatten(), Y.flatten(), FoV)
     a = np.zeros((order + 1) * (order + 2) / 2)
     fitted_parameters = opt.leastsq(compare_flats, a,
-                        args=(true_ff, g))[0]#,
-                        #gtol=stop_condition,
-                        #maxfev=max_iterations,
-                        #disp=verbose)
+                        args=(true_ff, g))[0]
     fitted_parameters = self_cal.normalize_flat_field(fitted_parameters, FoV,
                                                                     ff_samples)
     if verbose:
@@ -90,7 +87,7 @@ def compare_flats(a, true_ff, g):
     out     :   numpy array
         the mean of the flat-field at the given sample points
     '''
-    
+
     return (true_ff - np.dot(g, a))
 
 
