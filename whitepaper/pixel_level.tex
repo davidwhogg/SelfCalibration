@@ -5,6 +5,9 @@
 \newcommand{\project}[1]{\textsl{#1}}
 \newcommand{\SDSS}{\project{SDSS}}
 
+\newcommand{\expectation}[1]{\tilde{#1}}
+\newcommand{\sky}{^{(\mathrm{sky})}}
+
 \begin{document}
 
 \section*{Can we infer the pixel-level flat-field without an internal calibration source?}
@@ -18,11 +21,12 @@ We have shown with large optical imaging surveys that the redundant
 information coming from the multiple observations of stars is
 sufficient to infer the large-scale sensitivity (effective area or
 flat-field or vignetting) of an astronomical imaging device
-(\citealt{ubercal}, \citealt{holmes}).  In these self-calibration
-experiments, the sensitivity function has had only hundreds or
-thousands of parameters.  We have not attempted to obtain millions of
-pixel-level parameters from the data and we have not considered
-arbitrarily non-smooth two-dimensional sensitivity functions.
+(\citealt{ubercal}, \citealt{schlafly}, \citealt{holmes}).  In these
+self-calibration experiments, the sensitivity function has had only
+hundreds or thousands of parameters.  We have not attempted to obtain
+millions of pixel-level parameters from the data and we have not
+considered arbitrarily non-smooth two-dimensional sensitivity
+functions.
 
 With observations of billions of sources on the sky, however, it might
 be possible to infer millions of sensitivity parameters, even as many
@@ -45,11 +49,62 @@ sky-based flat-fields (\citealt{ubercal}).  For all these reasons we
 might actually have many sensitivity parameters per pixel; this makes
 our task harder quantitatvely, but perhaps not qualitatively.
 
+\paragraph{varying levels of dumbness:}
+There are various thought experiments or considerations that suggest
+that a pixel-level self-calibration is possible.  One observation is
+that if a pixel is unusually low in sensitivity, it's mean output
+signal will be low on average for the whole data set.  This statement
+could be made more precise for the sky flat by considering only
+observations in which the pixel is not near any detectable source.  It
+could be made even more precise if each observation is divided by the
+mean pixel value, to account for variations in sky brightness.  These
+kinds of operations or considerations could lead to a very good sky
+flat for any device, and is not unlike what is usually done.
+
+As we said, however, each pixel might have a different response to
+compact sources than it does to the diffuse sky, so slightly less-dumb
+methods might be called for.  For example, consider all overlapping
+$3\times 3$-pixel patches in a full data set.  Most of these patches
+would be far from any detectable source and could be labeled ``sky''.
+A fraction would be near or on top of compact, detected sources and
+could be labeled ``source''.  This labeling could be
+non-comprehensive; there could be intermediate patches labeled
+``neither''; this is just an engineering consideration.  Less dumb
+still would be to make bigger patches (say $5\times 5$ or larger) or
+to make use of the residuals away from a physically motivated model of
+the observed images.
+
+\paragraph{pixel signal models}
+Sticking with the intermediate level of dumbness for now: In a set of
+$3\times 3$ sky patches, the expected signal
+$\expectation{D}_{ij}$---the expected number of electrons or data
+numbers read out---in pixel $i$ of exposure $j$ might be a combination
+of zero-level, dark-current, and sky-photon signals
+\begin{equation}
+\expectation{D}_{ij} = z_i + d_i\,t_j + f\sky_i\,S\sky_j\,t_j
+\end{equation}
+where $i$ labels the device pixel ($i$ maps back to a pixel location
+in the original imaging device), $j$ labels the exposure, each of
+which might have a slightly different sky level, $z_i$ is a zero-level
+or bias for pixel $i$, $d_i$ is a dark current rate or signal per time
+in the absence of illumination, $t_j$ is the exposure time for
+exposure $j$, $f\sky_i$ is the sensitivity of pixel $i$ to diffuse sky
+illumination, and $S\sky_j$ is the intensity of the sky in exposure
+$j$ (interpolated to pixel $i$ if there are gradients).
+
+In a $3\times 3$ source patch, the expectation is similar...
+\begin{equation}
+\expectation{D}_{ij} = z_i + d_i\,t_j + f\sky_i\,S\sky_j\,t_j
+\end{equation}
+
+
 \begin{thebibliography}{70}
-\bibitem[Padmanabhan \etal(2008)]{ubercal}
-Padmanabhan,~N., Schlegel,~D.~J., Finkbeiner,~D.~P., \etal, 2008, \apj, 674, 1217
 \bibitem[Holmes \etal(2012)]{holmes}
 Holmes,~R., Hogg,~D.~W., \& Rix,~H.-W., 2012, arXiv:1203.6255 
+\bibitem[Padmanabhan \etal(2008)]{ubercal}
+Padmanabhan,~N., Schlegel,~D.~J., Finkbeiner,~D.~P., \etal, 2008, \apj, 674, 1217
+\bibitem[Schlafly \etal(2012)]{schlafly}
+Schlafly,~E.~F., Finkbeiner,~D.~P., Juric,~M., \etal, 2012, arXiv:1201.2208 
 \end{thebibliography}
 
 \end{document}
