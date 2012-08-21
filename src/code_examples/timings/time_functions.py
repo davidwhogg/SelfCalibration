@@ -83,7 +83,7 @@ fig.clf()
 
 fig = plt.figure(figsize=(6, 6))
 ax = fig.add_axes([0.15, 0.15, 0.8, 0.8])
-ax.loglog(density, time_self_cal, 'kx')
+ax.loglog(density, time_measurement, 'kx')
 ax.set_xlabel('Density of Sources (deg-2)')
 ax.set_ylabel('Time to Perform Survey (s)')
 fig.savefig('survey_time.png')
