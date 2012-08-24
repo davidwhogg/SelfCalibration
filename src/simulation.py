@@ -87,7 +87,8 @@ def run_sim(dic):
                                                     dic['density_of_stars'],
                                                     dic['m_min'],
                                                     dic['m_max'],
-                                                    dic['powerlaw_constants'])
+                                                    dic['powerlaw_constants'],
+                                                    dic['analysis_limits'])
         if dic['verbose']:
             print('...{0} sources generated!'.format(sky_catalog.size))
     if dic['data_dir']:

@@ -78,7 +78,8 @@ def flat_field(x, y, FoV, par=flat_field_parameters()):
 
 
 class SourceCatalog:
-    def __init__(self, sky_limits, density_of_stars, m_min, m_max, A):
+    def __init__(self, sky_limits, density_of_stars,
+                                            m_min, m_max, A, analysis_limits):
         ''' This class generates the Source Catalog object
 
         Input
@@ -96,6 +97,8 @@ class SourceCatalog:
         A                   :   numpy array
             The parameters describing the magnitude distribution of the sources
             in the sky, according to: log10(dN/dm) = A + B * mag + C * mag ** 2
+        analysis_limits     :   list
+            Sky region for rms calculation.
 
         '''
 
@@ -109,6 +112,10 @@ class SourceCatalog:
                         high=sky_limits[3], size=self.size)
         self.mag = self.generate_magnitudes(m_min, m_max, A, area, self.size)
         self.flux = transformations.mag2flux(self.mag)
+        self.is_in_analysis_region = ((self.alpha > analysis_limits[0])
+                                    * (self.alpha < analysis_limits[1])
+                                    * (self.beta > analysis_limits[2])
+                                    * (self.beta < analysis_limits[3])).astype(bool)
 
     def power_law(self, A, m):
         ''' This function calculates the value of the source magnitude

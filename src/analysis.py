@@ -172,7 +172,7 @@ def best_in_basis(q, FoV, ff_samples, best_fit_params, verbose=False):
     return best_in_basis_badness
 
 
-def rms_error(flux, true_flux, verbose=False):
+def rms_error(flux, true_flux, weight, verbose=False):
     ''' Calculates the root-mean-square error between the estimated source
     fluxes and the true source fluxes. This only applies to the bright sources
     selected for the self-calibration procedure and not necessarily all the
@@ -184,6 +184,8 @@ def rms_error(flux, true_flux, verbose=False):
         Containing all the source flux estimates
     true_flux   :   numpy array
         Containing all the true fluxes for the sources
+    weight      :   numpy array
+        Weights to use
     verbose     :   Boolean
         Set to true to run simulations in verbose mode
 
@@ -196,7 +198,9 @@ def rms_error(flux, true_flux, verbose=False):
     if verbose:
         print("Calculating RMS Error of fitted sources...")
 
-    rms = 100 * np.sqrt(np.mean(((flux - true_flux) / true_flux) ** 2))
+    w = weight.astype(float)
+    ms = np.sum(w * ((flux - true_flux) / true_flux) ** 2) / np.sum(w)
+    rms = 100 * np.sqrt(ms)
 
     if verbose:
         print("...done!")

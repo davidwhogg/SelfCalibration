@@ -1,10 +1,10 @@
 ToD0
 -----
-1. make sure rms only uses objects inside analysis_area
-2. make sure histograms of numbers of observations only use objects inside analysis area
+
 3. add comment in text and caption about limiting rms
 4. mention holes in error and coverage figures in captions
-5. write last paragraph of discussion based on comments from van Dokkum (thank in comments)
+5. Hogg: write last paragraph of discussion based on comments from van Dokkum
+99. rerun on all 4 surveys with 10k iterations
 
 Tests
 -----
@@ -14,4 +14,5 @@ Tests
 
 Done (but not tested)
 ---------------------
-increase FoV size so that C has no gaps
+make sure rms only uses objects inside analysis_area
+make sure histograms of numbers of observations only use objects inside analysis area

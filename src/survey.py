@@ -96,6 +96,7 @@ class CameraCatalog:
         self.mag = sky_catalog.mag
         self.alpha = sky_catalog.alpha
         self.beta = sky_catalog.beta
+        self.is_in_analysis_region = sky_catalog.is_in_analysis_region
         self.x, self.y = \
             transformations.sky2fp(sky_catalog.alpha, sky_catalog.beta,\
                                                         pointing, orientation)
@@ -126,6 +127,7 @@ class MeasuredCatalog:
         self.k = camera_catalog.k[inside_FoV]
         self.alpha = camera_catalog.alpha[inside_FoV]
         self.beta = camera_catalog.beta[inside_FoV]
+        self.is_in_analysis_region = camera_catalog.is_in_analysis_region[inside_FoV]
         self.x = camera_catalog.x[inside_FoV]
         self.y = camera_catalog.y[inside_FoV]
         flat = true_functions.flat_field(self.x, self.y, FoV)
@@ -156,6 +158,8 @@ class MeasuredCatalog:
         self.k = np.append(self.k, other.k)
         self.alpha = np.append(self.alpha, other.alpha)
         self.beta = np.append(self.beta, other.beta)
+        self.is_in_analysis_region = np.append(self.is_in_analysis_region,
+                                                other.is_in_analysis_region)
         self.x = np.append(self.x, other.x)
         self.y = np.append(self.y, other.y)
         self.counts = np.append(self.counts, other.counts)

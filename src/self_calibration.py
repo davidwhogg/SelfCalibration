@@ -78,7 +78,9 @@ def self_calibration(obs_cat, sky_catalog, order, FoV,
 
         indx = [s != 0]
 
-        rms = analysis.rms_error(s[indx], sky_catalog.flux[indx], verbose)
+        rms = analysis.rms_error(s[indx], sky_catalog.flux[indx],
+                                    sky_catalog.is_in_analysis_region[indx],
+                                    verbose)
         bdness = analysis.badness(q, FoV, ff_samples, verbose)
         bdness_bestfitff = analysis.best_in_basis(q, FoV, ff_samples,
                                         best_fit_parameters, verbose)

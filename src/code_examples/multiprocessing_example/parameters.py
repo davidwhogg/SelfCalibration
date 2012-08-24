@@ -30,6 +30,9 @@
     # Float Array: The area of sky to generate sources in
     # [alpha_min, alpha_max, beta_min, beta_max]
     'sky_limits'          :     [-4.8, 4.8, -4.8, 4.8],
+    # Float Array: The area of sky to use for analyses like rms
+    # [alpha_min, alpha_max, beta_min, beta_max]
+    'analysis_limits'          :     [-3.8, 3.8, -3.8, 3.8],
 
     # Instrument Parameters
     # =====================

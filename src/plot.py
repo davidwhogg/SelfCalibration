@@ -326,17 +326,18 @@ def survey_coverage_histogram(ax, measurement_filename, xlim, ylim=None):
 
     print(measurement_catalog.k.size)
 
-    source_ID = np.unique(measurement_catalog.k)
+    k = measurement_catalog.k[measurement_catalog.is_in_analysis_region]
+    source_ID = np.unique(k)
     print(source_ID.size)
     nobs = np.zeros(source_ID.size)
 
     for i, sid in enumerate(source_ID):
-        found = np.where(measurement_catalog.k == sid)[0]
+        found = np.where(k == sid)[0]
         nobs[i] = found.size
 
     print(np.sum(nobs))
     print(np.mean(nobs))
-    assert np.sum(nobs).astype(int) == measurement_catalog.k.size
+    assert np.sum(nobs).astype(int) == k.size
     hist = ax.hist(nobs, color='k',
                         bins=np.arange(int(xlim[1]) + 5) - 0.5,
                         histtype='step')
