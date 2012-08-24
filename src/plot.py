@@ -335,8 +335,6 @@ def survey_coverage_histogram(ax, measurement_filename, xlim, ylim=None):
         found = np.where(k == sid)[0]
         nobs[i] = found.size
 
-    print(np.sum(nobs))
-    print(np.mean(nobs))
     assert np.sum(nobs).astype(int) == k.size
     hist = ax.hist(nobs, color='k',
                         bins=np.arange(int(xlim[1]) + 5) - 0.5,
