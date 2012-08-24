@@ -26,10 +26,13 @@
     # Float array: The parameters describing the magnitude distribution
     # of the sources in the sky, according to
     # log10(dN/dm) = A + B * mag + C * mag ** 2
-'powerlaw_constants'      :     [-13.34863146, 1.25429311, -0.02122949],
+    'powerlaw_constants'      :     [-13.34863146, 1.25429311, -0.02122949],
     # Float Array: The area of sky to generate sources in
     # [alpha_min, alpha_max, beta_min, beta_max]
     'sky_limits'          :     [-4.8, 4.8, -4.8, 4.8],
+    # Float Array: The area of sky to generate sources in
+    # [alpha_min, alpha_max, beta_min, beta_max]
+    'analysis_limits'          :     [-3.8, 3.8, -3.8, 3.8],
 
     # Instrument Parameters
     # =====================
