@@ -34,7 +34,7 @@
     # Instrument Parameters
     # =====================
     # Float Array: The simulate imager's field-of-view in degrees [alpha, beta]
-    'FoV'                 :     [0.76, 0.72],
+    'FoV'                 :     [0.75, 0.75],
     # Float: The saturation limit of the simulated imager
     'm_min'               :     17.,
     # Float: The 10-sigma detection limit of the simulated imager
@@ -67,5 +67,5 @@
     'stop_condition'	    :   1e-14,
     # Integer: The maximum number of iterations in the self-calibration
     # procedure and the best-in-basis fitting
-    'max_iterations'	    :    10001
+    'max_iterations'	    :    1
     }

@@ -10,9 +10,13 @@
 from __future__ import division, print_function
 
 import numpy as np
+import parameters
 
 
 def uniform_center_list(sky_limits, FoV, nx, ny):
+    assert nx * FoV[0] > sky_limits[1] - sky_limits[0]
+    assert ny * FoV[1] > sky_limits[3] - sky_limits[2]
+    
     x_step_size = (sky_limits[1] - sky_limits[0] - FoV[0]) / (nx - 1.)
     y_step_size = (sky_limits[3] - sky_limits[2] - FoV[1]) / (ny - 1.)
 
@@ -25,11 +29,8 @@ def generate_uniform_survey(sky_limits, FoV, Ncovering,
                                                 rotate=False, offset=False):
 
     theta = 0.
-
-    nx = np.ceil((sky_limits[1] - sky_limits[0]) / (0.975 * FoV[0]))\
-                                                                .astype(int)
-    ny = np.ceil((sky_limits[3] - sky_limits[2]) / (0.975 * FoV[1]))\
-                                                                .astype(int)
+    nx = 12
+    ny = 12
 
     x_center_list, y_center_list = uniform_center_list(sky_limits, FoV, nx, ny)
     if offset:
@@ -93,9 +94,10 @@ def generate_random_survey(sky_limits, FoV, N):
 
 if __name__ == "__main__":
 
+    dic = eval(open('parameters.py').read())
     sky_limits = [-4., 4., -4., 4.]
     number_passes = 12
-    FoV = [0.76, 0.72]
+    FoV = dic['FoV']
 
     xA = generate_uniform_survey(sky_limits, FoV, number_passes)
     np.savetxt('A.txt', xA)

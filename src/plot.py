@@ -307,7 +307,7 @@ def survey_coverage_colorbar(ax_cb, colors, colorbar_nobs):
     return None
 
 
-def survey_coverage_histogram(ax, measurement_filename, xlim=None, ylim=None):
+def survey_coverage_histogram(ax, measurement_filename, xlim, ylim=None):
     ''' This function plots a histogram of the number of source observations
 
     Input
@@ -324,22 +324,27 @@ def survey_coverage_histogram(ax, measurement_filename, xlim=None, ylim=None):
 
     measurement_catalog = pickle.load(open(measurement_filename))
 
+    print(measurement_catalog.k.size)
+
     source_ID = np.unique(measurement_catalog.k)
+    print(source_ID.size)
     nobs = np.zeros(source_ID.size)
 
     for i, sid in enumerate(source_ID):
         found = np.where(measurement_catalog.k == sid)[0]
         nobs[i] = found.size
 
-    hist = ax.hist(nobs, color='k', bins=np.arange(nobs.max()) + 0.5,
-                                                                histtype='bar')
+    print(np.sum(nobs))
+    print(np.mean(nobs))
+    assert np.sum(nobs).astype(int) == measurement_catalog.k.size
+    hist = ax.hist(nobs, color='k',
+                        bins=np.arange(int(xlim[1]) + 5) - 0.5,
+                        histtype='step')
 
-    if xlim is None:
-        ax.set_xlim(1, nobs.max() + 2)
-    else:
-        ax.set_xlim(xlim)
+    
+    ax.set_xlim(xlim)
     if ylim is None:
-        ax.set_ylim(1, 1.1 * np.max(hist[0]))
+        ax.set_ylim(-0.1 * np.max(hist[0]), 1.1 * np.max(hist[0]))
     else:
         ax.set_ylim(ylim)
 
@@ -620,8 +625,7 @@ def survey(source_filename, measurement_filename,
     if verbose:
         print('Plotting measurement histogram from {0}...'
                                                 .format(measurement_filename))
-    survey_coverage_histogram(ax3, measurement_filename,
-                                            xlim=(1, nobs_plot_lim))
+    survey_coverage_histogram(ax3, measurement_filename, (0, nobs_plot_lim))
     if verbose:
         print('...done...')
 
@@ -851,7 +855,7 @@ if __name__ == "__main__":
 
     verbose = True
     mult_proc = True
-    plot_suffix = ".pdf"
+    plot_suffix = ".png"
     figure_width = 7.
 
     plt.rcParams['font.family'] = 'Computer Modern'
