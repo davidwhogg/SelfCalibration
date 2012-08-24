@@ -216,11 +216,11 @@ iterative solution presented here.
 
 \section{Performance Metrics}
 \label{sec:metrics}
-To assess the performance of the self-calibration procedure with different survey strategies, it is necessary to quantify the quality of the final fitted solution. To do this we defined three quantities. The first is the root-mean-squared (RMS) error $S_\text{RMS}$ in the final fitted source fluxes $s_{k,\fit}$ compared to the true source fluxes $s_{k,\true}$ for the $K$ sources used in the self-calibration procedure:
+To assess the performance of the self-calibration procedure with different survey strategies, it is necessary to quantify the quality of the final fitted solution. To do this we defined three quantities. The first is the root-mean-squared (RMS) error $S_\rms$ in the final fitted source fluxes $s_{k,\fit}$ compared to the true source fluxes $s_{k,\true}$ for the $K$ sources used in the self-calibration procedure:
 \begin{equation}
-S_\text{RMS} = \sqrt{\dfrac{1}{K} \sum_k^K \left( \dfrac{s_{k,\fit} - s_{k,\true}}{s_{k,\true}} \right)^2}   \quad .
+S_\rms = \sqrt{\dfrac{1}{K} \sum_k^K \left( \dfrac{s_{k,\fit} - s_{k,\true}}{s_{k,\true}} \right)^2}   \quad .
 \end{equation}
-The other two metrics, called ``badnesses'', are defined as the RMS error between the final fitted instrument response and a reference instrument response sampled on a regular $300 \times 300$ grid across the focal plane. For the ``true badness'' $B_\true$, the \textit{fitted} instrument response $f_\fit(\vec{x} | \vec{q_\fit})$ is compared to the \textit{true} instrument response $f_\true(\vec{x} | \vec{q_\true})$ at the $J$ sample points  
+In detail, we compute this $S_\rms$ excluding sources near the survey boundary. The other two metrics, called ``badnesses'', are defined as the error between the final fitted instrument response and a reference instrument response sampled on a regular $300 \times 300$ grid across the focal plane. For the ``true badness'' $B_\true$, the \textit{fitted} instrument response $f_\fit(\vec{x} | \vec{q_\fit})$ is compared to the \textit{true} instrument response $f_\true(\vec{x} | \vec{q_\true})$ at the $J$ sample points  
 \begin{equation}
 B_\true = \sqrt{\dfrac{1}{J} \sum_j^J \left(\dfrac{f_\fit(\vec{x_j} | \vec{q_\fit}) - f_\true(\vec{x_j} | \vec{q_\true})}{f_\true(\vec{x_j} | \vec{q_\true})}\right)^2}   \quad .
 \end{equation}
@@ -352,34 +352,36 @@ D   & Quasi-Random  & Random & 1728\\
 \figcaption{Survey Strategy D: A comparison of the fitted instrument response model $f_\fit(\vec{x_j} | \vec{q_\fit})$ (black) obtained from self-calibrating the Survey D catalog compared to (a) the true $f_\true(\vec{x} | \vec{q_\true})$ and (b) the best-in-basis $f_\basis(\vec{x_j} | \vec{q_\basis})$ instrument response models (gray). The self-calibration procedure converged to the final solution after 197 iterations. The plots (b) and (d) show the residuals between the two instrument response models plotted in (a) and (c) respectively. With this quasi-random observing strategies, all regions of the focal plane well interconnected with each other.\label{fig:D_result}}
 \end{figure}
 
+\newcommand{\surveyfigcaption}{and the self-calibration results: (a) shows the survey footprint diagram (as shown in Figure \ref{fig:simple_surveys}), (b) shows the source coverage for this survey, with (c) showing a histogram of the number of source observations (excluding sources very near the survey boundary) and (d) shows the flux errors for each of the sources after the self-calibration procedure.  In panels (b) and (d) the white gaps are \emph{not} gaps in the survey coverage but rather sky positions at which there do not happen to be observed stars}
+
 \begin{figure}
 \plotone{A_survey.pdf}
-\figcaption{A summary of Survey Strategy A and the resultant self-calibration results: (a) shows the survey footprint diagram (as shown in Figure \ref{fig:simple_surveys}), (b) shows the source coverage for this survey, with (c) showing a histogram of the number of source observations and (d) shows the flux errors for each of the sources after the self-calibration procedure. The imprint of the survey strategy can be clearly seen in the coverage map. With this survey strategy, the self-calibration procedure is not able to converge to a solution and therefore there are strong and regular residuals in the flux error map.
+\figcaption{A summary of Survey Strategy A \surveyfigcaption. The imprint of the survey strategy can be clearly seen in the coverage map. With this survey strategy, the self-calibration procedure is not able to converge to a solution and therefore there are strong and regular residuals in the flux error map.
 \label{fig:A_survey}}
 \end{figure}
 
 \begin{figure}
 \plotone{B_survey.pdf}
-\figcaption{A summary of Survey Strategy B and the resultant self-calibration results: (a) shows the survey footprint diagram (as shown in Figure \ref{fig:simple_surveys}), (b) shows the source coverage for this survey, with (c) showing a histogram of the number of source observations and (d) shows the flux errors for each of the sources after the self-calibration procedure. The imprint of the survey strategy can be clearly seen in the coverage map. With this survey strategy, the self-calibration procedure can well calibrate the instrument response at the edge of the focal plane, but not in the center. As a result, the residuals in the flux error map are higher at the center of each pointing, where the sources fall on a less well contained part of the focal plane. 
+\figcaption{A summary of Survey Strategy B \surveyfigcaption. The imprint of the survey strategy can be clearly seen in the coverage map. With this survey strategy, the self-calibration procedure can well calibrate the instrument response at the edge of the focal plane, but not in the center. As a result, the residuals in the flux error map are higher at the center of each pointing, where the sources fall on a less well contained part of the focal plane. 
 \label{fig:B_survey}}
 \end{figure}
 
 \begin{figure}
 \plotone{C_survey.pdf}
-\figcaption{A summary of Survey Strategy C and the resultant self-calibration results: (a) shows the survey footprint diagram (as shown in Figure \ref{fig:simple_surveys}), (b) shows the source coverage for this survey, with (c) showing a histogram of the number of source observations and (d) shows the flux errors for each of the sources after the self-calibration procedure.
+\figcaption{A summary of Survey Strategy C \surveyfigcaption.
 \label{fig:C_survey}}
 \end{figure}
 
 \begin{figure}
 \plotone{D_survey.pdf}
-\figcaption{A summary of Survey Strategy D and the resultant self-calibration results: (a) shows the survey footprint diagram (as shown in Figure \ref{fig:simple_surveys}), (b) shows the source coverage for this survey, with (c) showing a histogram of the number of source observations and (d) shows the flux errors for each of the sources after the self-calibration procedure. As can be seen from (c), this quasi-random survey offers a more uniform coverage of the field than the other survey investigated.
+\figcaption{A summary of Survey Strategy D \surveyfigcaption. As can be seen in panel (c), this quasi-random survey offers a more uniform coverage of the field than the other survey investigated.
 \label{fig:D_survey}}
 \end{figure}
 
 \clearpage
 \begin{deluxetable}{ccccc}
 \rotate
-\tablecaption{A summary of the quality of the final fit from the self-calibration procedure with the four simple survey strategies summarized in Table \ref{tab:simple_surveys}. The self-calibration procedure was run with only the brightest sources within the survey area; the source error $S_\text{RMS}$ corresponds to the measurements of these sources only and not all those within the survey. *Did not converge.\label{tab:simple_results}}
+\tablecaption{A summary of the quality of the final fit from the self-calibration procedure with the four simple survey strategies summarized in Table \ref{tab:simple_surveys}. The self-calibration procedure was run with only the brightest sources within the survey area; the source error $S_\rms$ corresponds to the measurements of these sources only and not all those within the survey. *Did not converge.\label{tab:simple_results}}
 \tablewidth{0pt}
 \tablehead{
 \colhead{Survey Name} & \colhead{Iterations} & \colhead{Source Error}       & \colhead{True Badness}        & \colhead{Best-in-Basis} \\

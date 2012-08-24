@@ -27,10 +27,10 @@ import analysis
 # Multiprocessing Flag:
 # False - then does not use multiprocessing
 # int - uses that many separate processes
-multi_proc = False
+multi_proc = 4
 
 # The four survey directories
-survey_files = ['D']#['A', 'B', 'C', 'D']
+survey_files = ['A', 'B', 'C', 'D']
 
 # Load the default parameters
 dic = eval(open('parameters.py').read())
@@ -61,48 +61,5 @@ else:
     results = []
     for params in parameter_dictionaries:
         results.append(simulation.run_sim(params))
-
-#  Since there are lots of souces at the edge of Survey D that are only
-#  measured a few times, the RMS 
-f = open('rms_results.txt', 'w')
-survey_area = [-4., 4., -4., 4.]
-header = 'Source RMS Error with {0} survey area:'.format(survey_area)
-f.write(header + '\n')
-print(header)
-
-for path in survey_files:
-	
-	# Load the catalogs from the simulation run
-	fitted_cat = pickle.load(open((path + '/fitted_catalog.p'), mode='rb'))
-	true_cat = pickle.load(open((path + '/source_catalog.p'), mode='rb'))
-	
-	if true_cat.k.max() > fitted_cat.k.max():
-		k_max = true_cat.k.max()
-	else:
-		k_max = fitted_cat.k.max()
-	
-	error = np.array([])
-	norm_error = np.array([])
-	
-	true_flux = np.array([])
-	fitted_flux = np.array([])
-	
-	inside = ((true_cat.alpha > survey_area[0])
-	                * (true_cat.alpha < survey_area[1])
-	                * (true_cat.beta > survey_area[2])
-	                * (true_cat.beta < survey_area[3]))
-
-	for indx in range(k_max):
-		indx_t = np.where(true_cat.k[inside] == indx)[0]
-		indx_f = np.where(fitted_cat.k == indx)[0]
-	
-		if (len(indx_t == 1) and len(indx_f == 1)):
-			true_flux = np.append(true_flux, true_cat.flux[inside][indx_t])
-			fitted_flux = np.append(fitted_flux, fitted_cat.flux[indx_f])
-	
-	rms = analysis.rms_error(fitted_flux, true_flux)
-	result = 'Survey {0}:\t\tRMS = {1:0.7f} %'.format(path, rms)
-	f.write(result + '\n')
-	print(result)
 
 print('Simulation Complete!')
