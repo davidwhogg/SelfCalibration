@@ -1,18 +1,14 @@
-Check sky <--> focal plane coordinates
-
-MeasuredCatalog.flux - are we doing the noise correctly here?
-
-Fiddle true parameters to get it looking better, and so that we are not fitting the mayor polynomial part with a polynomial
-
-Keep sky coordinates in the measured catalog to make plotting easier
-
-Remove global parameters from plot
-
-ADD multiprocessing to default_params
-
-Bugs:
+ToD0
 -----
+1. make sure rms only uses objects inside analysis_area
+2. make sure histograms of numbers of observations only use objects inside analysis area
+3. increase FoV size so that C has no gaps
+4. mention holes in error and coverage figures in captions
+5. write last paragraph of discussion based on comments from van Dokkum (thank in comments)
+6. red comments on text
 
- + MeasuredCatalog.true_invvar - multiplied by flat-field one time too many??
- + Generate epsilon now per measurement and not per source
-
+Tests
+-----
+1. do the number of observation plots look correct?
+2. Is HW happy with new paragraph?
+3. do best-in-basis and rms make sense?
