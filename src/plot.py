@@ -323,12 +323,8 @@ def survey_coverage_histogram(ax, measurement_filename, xlim, ylim=None):
     '''
 
     measurement_catalog = pickle.load(open(measurement_filename))
-
-    print(measurement_catalog.k.size)
-
     k = measurement_catalog.k[measurement_catalog.is_in_analysis_region]
     source_ID = np.unique(k)
-    print(source_ID.size)
     nobs = np.zeros(source_ID.size)
 
     for i, sid in enumerate(source_ID):
