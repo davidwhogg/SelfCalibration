@@ -265,8 +265,31 @@ As this work was completed in the context of space-based imaging surveys, we hav
 
 In this paper, we have considered the design of survey strategies for calibrating the large-scale, relative photometric response of an instrument, but there are many more calibration parameters that can be constrained from this method. For example, the optical distortion of an instrument or the point-spread-function variation could also be constrained with such a method, although it would need to be explored whether the properties of a survey strategy that makes it good for one calibration, are also suitable for other calibration aspects.
 
-HOGG write van Dokkum paragraph
-Ultimately a trade-off would need to be performed between the different calibration concerns and the other goals of the survey, such as sky coverage, variability monitoring and so-on. 
+Ultimately, survey design requires trade-offs between calibration
+requirements and other requirements related to cadence, telescope
+overheads, and observing constraints (like alt, az, airmass, and
+field-rotation constraints).  One requirement that is often
+over-emphasized, however, is conceptual or apparent ``uniformity'';
+these these different survey strategies have different uniformities of
+coverage, each with possibly non-obvious consequences.  Many
+astronomers will see survey strategy A as being ``more uniform'' in
+its coverage (especially relative to survey D).  This is not true, if
+uniformity is defined by the variance or skewness or any other simple
+statistic in exposure times; strategy D is extremely uniform (more
+uniform than Poisson, for example).  In any survey, past and future,
+variations in exposure time have been valuable for checking systematic
+and random errors, and don't---in themselves---make it difficult to
+obtain a uniform survey in properties like brightness (since samples
+can be cut on any well-measured property).  In general, in the
+presence of real astronomical variations in distributions of
+luminosity, distance, metallicity, and (more importantly) extinction
+by dust, there is no way to make a survey uniformly sensitive to the
+objects of interest.  As a community we should be prepared to adjust
+our analysis for the non-uniformity of the survey rather than adjust
+(cut) our data to match the uniformity of unrealistically simplified
+analyses.  This is already standard practice in the precise
+cosmological measurement experiments, and will be required practice
+for the next generation of massively-multiple-epoch imaging surveys.
 
 \acknowledgments
 It is a pleasure to thank Rob Fergus (NYU), Jason Kalirai (STScI), Sam Roweis (deceased), and Pieter van Dokkum (Yale) for valuable conversations. 
