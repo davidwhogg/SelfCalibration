@@ -346,7 +346,7 @@ def survey_coverage_histogram(ax, measurement_filename, xlim, ylim=None):
     return None
 
 
-def survey_source_error(ax, source_filename, fitted_filename, ms=5,
+def survey_source_error(ax, source_filename, fitted_filename, ms=10,
                             lower_limit=None, upper_limit=None,
                             lower_color=0.9, upper_color=0.):
     ''' This function plots a source map on the given matplotlib axes instance,
@@ -612,7 +612,7 @@ def survey(source_filename, measurement_filename,
     colors, colorbar_nobs = survey_coverage(ax2, source_filename,
                                                 measurement_filename,
                                                 nobs_plot_lim=nobs_plot_lim,
-                                                zero_level='0.9')
+                                                zero_level='0.9', ms=10)
     survey_coverage_colorbar(ax_cb2, colors, colorbar_nobs)
     if verbose:
         print('...done...')
@@ -629,7 +629,7 @@ def survey(source_filename, measurement_filename,
                     .format(source_filename, fitted_filename))
     colors, errors = survey_source_error(ax4, source_filename, fitted_filename,
                             lower_limit=error_lim[0], upper_limit=error_lim[1],
-                            lower_color=0.9, upper_color=0.)
+                            lower_color=0.9, upper_color=0., ms=10)
     survey_source_error_colorbar(ax_cb4, colors, errors)
     if verbose:
         print('...done...')

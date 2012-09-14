@@ -22,7 +22,7 @@
     # Float: the maximum number of sources (all magnitude) per unit area
     # on the sky. If more than this number are produced by the magnitude
     # distribution (see below), only the brightest are selected.
-    'density_of_stars'    :     300.,
+    'density_of_stars'    :     200.,
     # Float array: The parameters describing the magnitude distribution
     # of the sources in the sky, according to
     # log10(dN/dm) = A + B * mag + C * mag ** 2
@@ -67,8 +67,8 @@
     'seed'                :     [1.],
     # Float: The stop condition for the self-calibration procedure and the
     # best-in-basis fitting (stop when difference is less than 2 times this)
-    'stop_condition'	    :   1e-14,
+    'stop_condition'	    :   1e-8,
     # Integer: The maximum number of iterations in the self-calibration
     # procedure and the best-in-basis fitting
-    'max_iterations'	    :    10001
+    'max_iterations'	    :    1001
     }
