@@ -96,7 +96,7 @@ if __name__ == "__main__":
 
     dic = eval(open('parameters.py').read())
     sky_limits = [-4., 4., -4., 4.]
-    number_passes = 12
+    number_passes = 9
     FoV = dic['FoV']
 
     xA = generate_uniform_survey(sky_limits, FoV, number_passes)
