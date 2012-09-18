@@ -70,5 +70,5 @@
     'stop_condition'	    :   1e-8,
     # Integer: The maximum number of iterations in the self-calibration
     # procedure and the best-in-basis fitting
-    'max_iterations'	    :    1001
+    'max_iterations'	    :    5001
     }
