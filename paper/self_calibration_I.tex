@@ -118,7 +118,7 @@ f_\text{large}(\vec{x_i} | \vec{q}_{\true, 1 \ldots 6}) = q_{\true, 1} + q_{\tru
 \end{eqnarray*}
 The small-scale instrument response, which is constructed from sine and cosine contributions, is superimposed on this large-scale instrument response. The small-scale instrument response $f_\text{small}(\vec{x_i} | \vec{q}_{\true, 7 \ldots 260})$ is modeled as
 \begin{eqnarray*}
-f_\text{small}(\vec{x_i} | \vec{q}_{\true, 7\ldots 260})  & = &  \sum_{a=0}^6 \sum_{b=0}^a \left(1 + a + b\right) ^ {-0.75} \left[ q_{\true, 7+4b} \cos (k_x \, x_i) + q_{\true, 8+4b} \sin (k_x \, x_i) \right] \\
+f_\text{small}(\vec{x_i} | \vec{q}_{\true, 7\ldots 260})  & = &  \sum_{a=0}^6 \sum_{b=0}^a \left(1 + a + b\right) ^ {-0.5} \left[ q_{\true, 7+4b} \cos (k_x \, x_i) + q_{\true, 8+4b} \sin (k_x \, x_i) \right] \\
 & & \qquad \qquad \times \left[ q_{\true, 9+4b} \cos (k_y \, y_i) + q_{\true, 10+4b} \sin (k_y \, y_i) \right] \quad ,
 \end{eqnarray*}
 where
@@ -126,7 +126,7 @@ where
 k_x & = & \dfrac{a \, \pi}{X} \quad ,\\
 k_y & = & \dfrac{b \, \pi}{Y} \quad ,\\
 \end{eqnarray*}
-with the physical focal-plane dimensions $X$ and $Y$. The $(1 + a +d)^{-0.75}$ factor reduces the magnitude of the higher order terms. In total, the instrument response model is parameterized with 260 parameters; an example can be seen in Figure \ref{fig:single_image} (right). It is this instrument response that we try and recover with the self-calibration procedure. With this instrument response model, we have assumed that the variations in sensitivities on a pixel-to-pixel-scale have been calibrated with some other method, such as an internal flat-field calibration source. It is only the variations on larger scales that we aim to constrain with the self-calibration procedure. Our final assumption in these simulations is that the instrument response is temporally stable. 
+with the physical focal-plane dimensions $X$ and $Y$. The $(1 + a +d)^{-0.5}$ factor reduces the magnitude of the higher order terms. In total, the instrument response model is parameterized with 260 parameters; an example can be seen in Figure \ref{fig:single_image} (right). It is this instrument response that we try and recover with the self-calibration procedure. With this instrument response model, we have assumed that the variations in sensitivities on a pixel-to-pixel-scale have been calibrated with some other method, such as an internal flat-field calibration source. It is only the variations on larger scales that we aim to constrain with the self-calibration procedure. Our final assumption in these simulations is that the instrument response is temporally stable. 
 
 \subsection{Complete Survey}
 In this work we are interested in simulating complete surveys, in order to identify the crucial characteristics of survey strategies that allow for the relative instrument response model to be accurately, retrospectively constrained from the resulting catalog. We therefore apply the single exposure procedure introduced in the previous section for each pointing specified in a defined survey strategy, which is a set of pointings $(\alpha, \beta)$ and orientations $(\theta)$. The resultant source measurements are collated into a survey-wide catalog. 
@@ -235,9 +235,9 @@ The best-in-basis badness is always smaller than the true badness, as it does no
 In this paper, we consider four simple but very different survey strategies. We use the end-to-end catalog simulation and self-calibration chain, introduced in Sections \ref{sec:survey_simulations} and \ref{sec:self_cal}, to evaluate the performance of the self-calibration procedure with these strategies. The parameters of these simulations are summarized in Table \ref{tab:parameters}.
 
 \subsection{Survey Description}
-We label the four survey strategies---which all cover the same 64~deg$^2$ patch of sky---with the letters A to D. These survey strategies are summarized in Table \ref{tab:simple_surveys} and are shown in Figure \ref{fig:simple_surveys}. Strategy A is the simplest strategy; the target field is regularly tiled with small overlaps between adjacent pointings ($\sim 5$~percent and $\sim 8$~percent in the camera pointing directions $\alpha$ and $\beta$ respectively). The pointings in the 12 passes over the same field are exactly aligned. Survey B is the same as A, but with each pass over the target field the orientation of the telescope is rotated by $30^\circ$. 
+We label the four survey strategies---which all cover the same 64~deg$^2$ patch of sky---with the letters A to D. These survey strategies are summarized in Table \ref{tab:simple_surveys} and are shown in Figure \ref{fig:simple_surveys}. Strategy A is the simplest strategy; the target field is regularly tiled with small overlaps between adjacent pointings ($\sim 5$~percent and $\sim 8$~percent in the camera pointing directions $\alpha$ and $\beta$ respectively). The pointings in the 9 passes over the same field are exactly aligned. Survey B is the same as A, but with each pass over the target field the orientation of the telescope is rotated by $30^\circ$. 
 
-Survey C is more complex. The first pass over the field is the same as in Survey A, with $12 \times 12$ pointings. In the next pass, one of the pointings in the $\alpha$ direction is removed and one is added in the $\beta$ and the pointings are respaced uniformly, so the resultant pointing grid is $13 \times 11$. In the third pass over the field this change is reversed and the field is measured on a $11 \times 13$ grid. These three passes are then repeated four times. 
+Survey C is more complex. The first pass over the field is the same as in Survey A, with $12 \times 12$ pointings. In the next pass, one of the pointings in the $\alpha$ direction is removed and one is added in the $\beta$ and the pointings are respaced uniformly, so the resultant pointing grid is $13 \times 11$. In the third pass over the field this change is reversed and the field is measured on a $11 \times 13$ grid. These three passes are then repeated three times. 
 
 The pointing positions in Survey D are quasi-random: the pointings are the same as with Survey A, but each has a random offset within [-0.35,0.35)~deg applied in both the $\alpha$ and $\beta$ directions. By fixing the pointings within these $0.7~\text{deg} \times 0.7~\text{deg}$ boxes, we ensure that the quasi random strategy has a uniform coverage of the field; that is, the fluctuations in coverage are less than they would be in a Poisson (totally random) process. The orientations of the pointings in Survey D are completely random. 
 
@@ -273,7 +273,7 @@ over-emphasized, however, is conceptual or apparent ``uniformity'';
 these different survey strategies have different uniformities of
 coverage, each with possibly non-obvious consequences.  Many
 astronomers will see survey strategy A as being ``more uniform'' in
-its coverage (especially relative to survey D).  This is not true, if
+its coverage (especially relative to strategy D).  This is not true, if
 uniformity is defined by the variance or skewness or any other simple
 statistic in exposure times; strategy D is extremely uniform (more
 uniform than Poisson, for example).  In any survey, past and future,
@@ -341,18 +341,18 @@ Fitted Instrument Response Model & 8$^{\text{th}}$ order polynomial\\
 \tablehead{
 \colhead{Survey Label} & \colhead{Pointing Center} & \colhead{Orientation} & \colhead{Number of Pointings}}
 \startdata
-A  & Uniform Grid ($12\times12$) & $0^\circ$ & 1728 \\
-B      & Uniform Grid ($12\times12$)     & Each Pass: $\theta +30^\circ$& 1728 \\
-C   & Pass 1:  Uniform Grid ($12\times12$)  &  & 1720\\
+A  & Uniform Grid ($12\times12$) & $0^\circ$ & 1296 \\
+B      & Uniform Grid ($12\times12$)     & Each Pass: $\theta +30^\circ$& 1296 \\
+C   & Pass 1:  Uniform Grid ($12\times12$)  &  & 1290\\
  & Pass 2:  Uniform Grid ($13§\times11$) & $0^\circ$&\\
   & Pass 3:  Uniform Grid ($11§\times13$) & &\\
-D   & Quasi-Random  & Random & 1728\\
+D   & Quasi-Random  & Random & 1296\\
 \enddata
 \end{deluxetable}
 
 \begin{figure}
 \plotone{simple_surveys.pdf}
-\figcaption{Focal-plane footprints projected onto the synthetic sky according to the four simple survey strategies described in Section \ref{sec:simple_surveys} and summarized in Table \ref{tab:simple_surveys}. Surveys A, B and D have 1728 pointings and survey C has 1720 pointings.\label{fig:simple_surveys}}
+\figcaption{Focal-plane footprints projected onto the synthetic sky according to the four simple survey strategies described in Section \ref{sec:simple_surveys} and summarized in Table \ref{tab:simple_surveys}. Surveys A, B and D have 1296 pointings and survey C has 1290 pointings.\label{fig:simple_surveys}}
 \end{figure}
 
 \begin{figure}
