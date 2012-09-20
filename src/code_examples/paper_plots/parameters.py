@@ -22,7 +22,7 @@
     # Float: the maximum number of sources (all magnitude) per unit area
     # on the sky. If more than this number are produced by the magnitude
     # distribution (see below), only the brightest are selected.
-    'density_of_stars'    :     200.,
+    'density_of_stars'    :     300.,
     # Float array: The parameters describing the magnitude distribution
     # of the sources in the sky, according to
     # log10(dN/dm) = A + B * mag + C * mag ** 2
