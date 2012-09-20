@@ -828,9 +828,9 @@ def flat_fields(filename, FoV, ff_samples, best_fit_params, output_path=False,
     true_residual = 100 * (dic['fitted_ff'] - true_ff) / true_ff
     best_residual = 100 * (dic['fitted_ff'] - best_ff) / best_ff
     fp = (-FoV[0] / 2, FoV[0] / 2, -FoV[1] / 2, FoV[1] / 2)
-    a = ax4.imshow(true_residual, extent=fp, vmin=-0.5, vmax=0.5,
+    a = ax4.imshow(true_residual, extent=fp, vmin=-2., vmax=2.,
                                                     cmap='gray', aspect='auto')
-    ax3.imshow(best_residual, extent=fp, vmin=-0.5, vmax=0.5,
+    ax3.imshow(best_residual, extent=fp, vmin=-2., vmax=2.,
                                                     cmap='gray', aspect='auto')
 
     cbar = fig.colorbar(a, ax_cb, orientation='vertical')

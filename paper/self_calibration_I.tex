@@ -118,7 +118,7 @@ f_\text{large}(\vec{x_i} | \vec{q}_{\true, 1 \ldots 6}) = q_{\true, 1} + q_{\tru
 \end{eqnarray*}
 The small-scale instrument response, which is constructed from sine and cosine contributions, is superimposed on this large-scale instrument response. The small-scale instrument response $f_\text{small}(\vec{x_i} | \vec{q}_{\true, 7 \ldots 260})$ is modeled as
 \begin{eqnarray*}
-f_\text{small}(\vec{x_i} | \vec{q}_{\true, 7\ldots 260})  & = &  \sum_{a=0}^6 \sum_{b=0}^a \left(1 + a + b\right) ^ {-0.5} \left[ q_{\true, 7+4b} \cos (k_x \, x_i) + q_{\true, 8+4b} \sin (k_x \, x_i) \right] \\
+f_\text{small}(\vec{x_i} | \vec{q}_{\true, 7\ldots 260})  & = &  \sum_{a=0}^6 \sum_{b=0}^a \left(1 + a + b\right) ^ {-0.25} \left[ q_{\true, 7+4b} \cos (k_x \, x_i) + q_{\true, 8+4b} \sin (k_x \, x_i) \right] \\
 & & \qquad \qquad \times \left[ q_{\true, 9+4b} \cos (k_y \, y_i) + q_{\true, 10+4b} \sin (k_y \, y_i) \right] \quad ,
 \end{eqnarray*}
 where
@@ -126,7 +126,7 @@ where
 k_x & = & \dfrac{a \, \pi}{X} \quad ,\\
 k_y & = & \dfrac{b \, \pi}{Y} \quad ,\\
 \end{eqnarray*}
-with the physical focal-plane dimensions $X$ and $Y$. The $(1 + a +d)^{-0.5}$ factor reduces the magnitude of the higher order terms. In total, the instrument response model is parameterized with 260 parameters; an example can be seen in Figure \ref{fig:single_image} (right). It is this instrument response that we try and recover with the self-calibration procedure. With this instrument response model, we have assumed that the variations in sensitivities on a pixel-to-pixel-scale have been calibrated with some other method, such as an internal flat-field calibration source. It is only the variations on larger scales that we aim to constrain with the self-calibration procedure. Our final assumption in these simulations is that the instrument response is temporally stable. 
+with the physical focal-plane dimensions $X$ and $Y$. The $(1 + a +d)^{-0.25}$ factor reduces the magnitude of the higher order terms. In total, the instrument response model is parameterized with 260 parameters; an example can be seen in Figure \ref{fig:single_image} (right). It is this instrument response that we try and recover with the self-calibration procedure. With this instrument response model, we have assumed that the variations in sensitivities on a pixel-to-pixel-scale have been calibrated with some other method, such as an internal flat-field calibration source. It is only the variations on larger scales that we aim to constrain with the self-calibration procedure. Our final assumption in these simulations is that the instrument response is temporally stable. 
 
 \subsection{Complete Survey}
 In this work we are interested in simulating complete surveys, in order to identify the crucial characteristics of survey strategies that allow for the relative instrument response model to be accurately, retrospectively constrained from the resulting catalog. We therefore apply the single exposure procedure introduced in the previous section for each pointing specified in a defined survey strategy, which is a set of pointings $(\alpha, \beta)$ and orientations $(\theta)$. The resultant source measurements are collated into a survey-wide catalog. 

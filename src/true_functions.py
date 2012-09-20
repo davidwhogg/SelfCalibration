@@ -69,10 +69,10 @@ def flat_field(x, y, FoV, par=flat_field_parameters()):
             cky = np.cos(ky * y)
             sky = np.sin(ky * y)
             # XX Magic Numbers: ** 0.75 to kill higher order terms
-            ff += par[k + 0] * ckx * cky / (1 + nx + ny) ** 0.5
-            ff += par[k + 1] * ckx * sky / (1 + nx + ny) ** 0.5
-            ff += par[k + 2] * skx * cky / (1 + nx + ny) ** 0.5
-            ff += par[k + 3] * skx * sky / (1 + nx + ny) ** 0.5
+            ff += par[k + 0] * ckx * cky / (1 + nx + ny) ** 0.25
+            ff += par[k + 1] * ckx * sky / (1 + nx + ny) ** 0.25
+            ff += par[k + 2] * skx * cky / (1 + nx + ny) ** 0.25
+            ff += par[k + 3] * skx * sky / (1 + nx + ny) ** 0.25
             k += 4
     return ff
 
