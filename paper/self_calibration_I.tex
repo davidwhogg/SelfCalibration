@@ -235,7 +235,7 @@ The best-in-basis badness is always smaller than the true badness, as it does no
 In this paper, we consider four simple but very different survey strategies. We use the end-to-end catalog simulation and self-calibration chain, introduced in Sections \ref{sec:survey_simulations} and \ref{sec:self_cal}, to evaluate the performance of the self-calibration procedure with these strategies. The parameters of these simulations are summarized in Table \ref{tab:parameters}.
 
 \subsection{Survey Description}
-We label the four survey strategies---which all cover the same 64~deg$^2$ patch of sky---with the letters A to D. These survey strategies are summarized in Table \ref{tab:simple_surveys} and are shown in Figure \ref{fig:simple_surveys}. Strategy A is the simplest strategy; the target field is regularly tiled with small overlaps between adjacent pointings ($\sim 5$~percent and $\sim 8$~percent in the camera pointing directions $\alpha$ and $\beta$ respectively). The pointings in the 9 passes over the same field are exactly aligned. Survey B is the same as A, but with each pass over the target field the orientation of the telescope is rotated by $30^\circ$. 
+We label the four survey strategies---which all cover the same 64~deg$^2$ patch of sky---with the letters A to D. These survey strategies are summarized in Table \ref{tab:simple_surveys} and are shown in Figure \ref{fig:simple_surveys}. Strategy A is the simplest strategy; the target field is regularly tiled with small overlaps between adjacent pointings ($\sim 5$~percent and $\sim 8$~percent in the camera pointing directions $\alpha$ and $\beta$ respectively). The pointings in the 9 passes over the same field are exactly aligned. Survey B is the same as A, but with each pass over the target field the orientation of the telescope is rotated by $40^\circ$. 
 
 Survey C is more complex. The first pass over the field is the same as in Survey A, with $12 \times 12$ pointings. In the next pass, one of the pointings in the $\alpha$ direction is removed and one is added in the $\beta$ and the pointings are respaced uniformly, so the resultant pointing grid is $13 \times 11$. In the third pass over the field this change is reversed and the field is measured on a $11 \times 13$ grid. These three passes are then repeated three times. 
 
@@ -248,7 +248,7 @@ The iterative self-calibration procedure converges to a final fitted solution fo
 
 The survey strategies, the resultant sky coverages and the errors in final self-calibration flux solutions are summarized for each survey individually in Figures \ref{fig:A_survey} to \ref{fig:D_survey}. With Surveys A and B---and to a lesser extent Survey C---the imprint of the strategies can be clearly seen in the coverage maps. It is important to note that---with sufficient re-visits to the field---the coverage of the quasi-random survey D is more uniform than the other strategies investigated.
 
-The self-calibration procedure performs best with the Survey C and Survey D catalogs. The performance of the self-calibration procedure is worse for the Survey B catalog and it fails completely with the Survey A catalog, where no solution was obtained. The number of iterations of the self-calibration procedure required to converge to the final solution also decreases as the quality of the final fit increases: Survey D required 65 iterations, Survey C 333, Survey B 2,477 and the procedure was iterated 10,000 times with Survey A without reaching a solution.
+The self-calibration procedure performs best with the Survey C and Survey D catalogs. The performance of the self-calibration procedure is worse for the Survey B catalog and it fails completely with the Survey A catalog, where no solution was obtained. The number of iterations of the self-calibration procedure required to converge to the final solution also decreases as the quality of the final fit increases: Survey D required 11 iterations, Survey C 24, Survey B 1,114 and the procedure was iterated 5,000 times with Survey A without reaching a solution.
 
 With the Survey C and D catalogs, the instrument response is accurately recovered. As can be seen from Figures \ref{fig:C_result} and \ref{fig:D_result} (top), the fitted instrument response $f_\fit(\vec{x_j} | \vec{q_\fit})$ does not perfectly reproduce the true instrument response $f_\true(\vec{x} | \vec{q_\true})$, with residuals up to the $\pm 0.5$~percent level. That said, through comparisons with the best fit possible with the eight order polynomial basis used in the self-calibration procedure $f_\basis(\vec{x_j} | \vec{q_\basis})$ (bottom), we find that majority of the remaining errors in our fits are due to limitations in the model basis used. The residuals in this comparison are low; this can also be clearly seen in the factor of $\sim 10$ improvement in the best-in-basis badness $B_\basis$ compared to the true badness $B_\true$. The results from these two survey catalogs are clear: if the correct redundancy is built into the survey, then self-calibration calibration can be used to accurately constrain the relative instrument response, with presumably the majority of the remaining errors coming from the limitations in the model used to represent the instrument response. 
 
@@ -265,31 +265,8 @@ As this work was completed in the context of space-based imaging surveys, we hav
 
 In this paper, we have considered the design of survey strategies for calibrating the large-scale, relative photometric response of an instrument, but there are many more calibration parameters that can be constrained from this method. For example, the optical distortion of an instrument or the point-spread-function variation could also be constrained with such a method, although it would need to be explored whether the properties of a survey strategy that makes it good for one calibration, are also suitable for other calibration aspects.
 
-Ultimately, survey design requires trade-offs between calibration
-requirements and other requirements related to cadence, telescope
-overheads, and observing constraints (like alt, az, airmass, and
-field-rotation constraints).  One requirement that is often
-over-emphasized, however, is conceptual or apparent ``uniformity'';
-these different survey strategies have different uniformities of
-coverage, each with possibly non-obvious consequences.  Many
-astronomers will see survey strategy A as being ``more uniform'' in
-its coverage (especially relative to strategy D).  This is not true, if
-uniformity is defined by the variance or skewness or any other simple
-statistic in exposure times; strategy D is extremely uniform (more
-uniform than Poisson, for example).  In any survey, past and future,
-variations in exposure time have been valuable for checking systematic
-and random errors, and don't---in themselves---make it difficult to
-obtain a uniform survey in properties like brightness (since samples
-can be cut on any well-measured property).  In general, in the
-presence of real astronomical variations in distributions of
-luminosity, distance, metallicity, and (more importantly) extinction
-by dust, there is no way to make a survey uniformly sensitive to the
-objects of interest.  As a community we should be prepared to adjust
-our analysis for the non-uniformity of the survey rather than adjust
-(cut) our data to match the uniformity of unrealistically simplified
-analyses.  This is already standard practice in the precise
-cosmological measurement experiments, and will be required practice
-for the next generation of massively-multiple-epoch imaging surveys.
+Ultimately, survey design requires trade-offs between calibration requirements and other requirements related to cadence, telescope overheads, and observing constraints (like alt, az, airmass, and field-rotation constraints).  One requirement that is often over-emphasized, however, is conceptual or apparent ``uniformity''; these different survey strategies have different uniformities of coverage, each with possibly non-obvious consequences.  Many astronomers will see survey strategy A as being ``more uniform'' in its coverage (especially relative to strategy D).  This is not true, if uniformity is defined by the variance or skewness or any other simple statistic in exposure times; strategy D is extremely uniform (more
+uniform than Poisson, for example).  In any survey, past and future, variations in exposure time have been valuable for checking systematic and random errors, and don't---in themselves---make it difficult to obtain a uniform survey in properties like brightness (since samples can be cut on any well-measured property).  In general, in the presence of real astronomical variations in distributions of luminosity, distance, metallicity, and (more importantly) extinction by dust, there is no way to make a survey uniformly sensitive to the objects of interest.  As a community we should be prepared to adjust our analysis for the non-uniformity of the survey rather than adjust (cut) our data to match the uniformity of unrealistically simplified analyses.  This is already standard practice in the precise cosmological measurement experiments, and will be required practice for the next generation of massively-multiple-epoch imaging surveys.
 
 \acknowledgments
 It is a pleasure to thank Rob Fergus (NYU), Jason Kalirai (STScI), Sam Roweis (deceased), and Pieter van Dokkum (Yale) for valuable conversations. 
@@ -342,7 +319,7 @@ Fitted Instrument Response Model & 8$^{\text{th}}$ order polynomial\\
 \colhead{Survey Label} & \colhead{Pointing Center} & \colhead{Orientation} & \colhead{Number of Pointings}}
 \startdata
 A  & Uniform Grid ($12\times12$) & $0^\circ$ & 1296 \\
-B      & Uniform Grid ($12\times12$)     & Each Pass: $\theta +30^\circ$& 1296 \\
+B      & Uniform Grid ($12\times12$)     & Each Pass: $\theta +40^\circ$& 1296 \\
 C   & Pass 1:  Uniform Grid ($12\times12$)  &  & 1290\\
  & Pass 2:  Uniform Grid ($13§\times11$) & $0^\circ$&\\
   & Pass 3:  Uniform Grid ($11§\times13$) & &\\
@@ -356,23 +333,23 @@ D   & Quasi-Random  & Random & 1296\\
 \end{figure}
 
 \begin{figure}
-\plotone{A_10000_ff}
-\figcaption{Survey Strategy A: A comparison of the fitted instrument response model $f_\fit(\vec{x_j} | \vec{q_\fit})$ (black) obtained from self-calibrating the Survey A catalog compared to (a) the true $f_\true(\vec{x} | \vec{q_\true})$ and (c) the best-in-basis $f_\basis(\vec{x_j} | \vec{q_\basis})$ instrument response models (gray). The self-calibration procedure did not converged to the final solution and the results presented here correspond to the instrument response found after 10,000 iterations. The best-in-basis instrument response is the best fit to the true instrument response possible with the basis used to model the instrument response in the self-calibration procedure (in this case an eighth order polynomial). The plots (b) and (d) show the residuals between the two instrument response models plotted in (a) and (c) respectively. With this survey strategy, the center of the focal plane is never connected to other parts with repeat observations of the same sources. \label{fig:A_result}}
+\plotone{A_5000_ff}
+\figcaption{Survey Strategy A: A comparison of the fitted instrument response model $f_\fit(\vec{x_j} | \vec{q_\fit})$ (black) obtained from self-calibrating the Survey A catalog compared to (a) the true $f_\true(\vec{x} | \vec{q_\true})$ and (c) the best-in-basis $f_\basis(\vec{x_j} | \vec{q_\basis})$ instrument response models (gray). The self-calibration procedure did not converged to the final solution and the results presented here correspond to the instrument response found after 5,000 iterations. The best-in-basis instrument response is the best fit to the true instrument response possible with the basis used to model the instrument response in the self-calibration procedure (in this case an eighth order polynomial). The plots (b) and (d) show the residuals between the two instrument response models plotted in (a) and (c) respectively. With this survey strategy, the center of the focal plane is never connected to other parts with repeat observations of the same sources. \label{fig:A_result}}
 \end{figure}
 
 \begin{figure}
-\plotone{B_2477_ff}
-\figcaption{Survey Strategy B: A comparison of the fitted instrument response model $f_\fit(\vec{x_j} | \vec{q_\fit})$ (black) obtained from self-calibrating the Survey B catalog compared to (a) the true $f_\true(\vec{x} | \vec{q_\true})$ and (c) the best-in-basis $f_\basis(\vec{x_j} | \vec{q_\basis})$ instrument response models (gray). The self-calibration procedure converged to the final solution after 2,447 iterations. The plots (b) and (d) show the residuals between the two instrument response models plotted in (a) and (c) respectively. With this survey strategy, it is only regions towards the edge of the focal plane that are well interconnected with repeat observations of the same sources, and therefore the self-calibration procedure can only fit a reasonable instrument response model at these positions.\label{fig:B_result}}
+\plotone{B_1114_ff}
+\figcaption{Survey Strategy B: A comparison of the fitted instrument response model $f_\fit(\vec{x_j} | \vec{q_\fit})$ (black) obtained from self-calibrating the Survey B catalog compared to (a) the true $f_\true(\vec{x} | \vec{q_\true})$ and (c) the best-in-basis $f_\basis(\vec{x_j} | \vec{q_\basis})$ instrument response models (gray). The self-calibration procedure converged to the final solution after 1,114 iterations. The plots (b) and (d) show the residuals between the two instrument response models plotted in (a) and (c) respectively. With this survey strategy, it is only regions towards the edge of the focal plane that are well interconnected with repeat observations of the same sources, and therefore the self-calibration procedure can only fit a reasonable instrument response model at these positions.\label{fig:B_result}}
 \end{figure}
 
 \begin{figure}
-\plotone{C_333_ff}
-\figcaption{Survey Strategy C: A comparison of the fitted instrument response model $f_\fit(\vec{x_j} | \vec{q_\fit})$ (black) obtained from self-calibrating the Survey C catalog compared to (a) the true $f_\true(\vec{x} | \vec{q_\true})$ and (c) the best-in-basis $f_\basis(\vec{x_j} | \vec{q_\basis})$ instrument response models (gray). The self-calibration procedure converged to the final solution after 333 iterations. The plots (b) and (d) show the residuals between the two instrument response models plotted in (a) and (c) respectively. With this regular observing strategies, all regions of the focal plane well interconnected with each other.\label{fig:C_result}}
+\plotone{C_24_ff}
+\figcaption{Survey Strategy C: A comparison of the fitted instrument response model $f_\fit(\vec{x_j} | \vec{q_\fit})$ (black) obtained from self-calibrating the Survey C catalog compared to (a) the true $f_\true(\vec{x} | \vec{q_\true})$ and (c) the best-in-basis $f_\basis(\vec{x_j} | \vec{q_\basis})$ instrument response models (gray). The self-calibration procedure converged to the final solution after 24 iterations. The plots (b) and (d) show the residuals between the two instrument response models plotted in (a) and (c) respectively. With this regular observing strategies, all regions of the focal plane well interconnected with each other.\label{fig:C_result}}
 \end{figure}
 
 \begin{figure}
-\plotone{D_65_ff}
-\figcaption{Survey Strategy D: A comparison of the fitted instrument response model $f_\fit(\vec{x_j} | \vec{q_\fit})$ (black) obtained from self-calibrating the Survey D catalog compared to (a) the true $f_\true(\vec{x} | \vec{q_\true})$ and (b) the best-in-basis $f_\basis(\vec{x_j} | \vec{q_\basis})$ instrument response models (gray). The self-calibration procedure converged to the final solution after 65 iterations. The plots (b) and (d) show the residuals between the two instrument response models plotted in (a) and (c) respectively. With this quasi-random observing strategies, all regions of the focal plane well interconnected with each other.\label{fig:D_result}}
+\plotone{D_11_ff}
+\figcaption{Survey Strategy D: A comparison of the fitted instrument response model $f_\fit(\vec{x_j} | \vec{q_\fit})$ (black) obtained from self-calibrating the Survey D catalog compared to (a) the true $f_\true(\vec{x} | \vec{q_\true})$ and (b) the best-in-basis $f_\basis(\vec{x_j} | \vec{q_\basis})$ instrument response models (gray). The self-calibration procedure converged to the final solution after 11 iterations. The plots (b) and (d) show the residuals between the two instrument response models plotted in (a) and (c) respectively. With this quasi-random observing strategies, all regions of the focal plane well interconnected with each other.\label{fig:D_result}}
 \end{figure}
 
 \newcommand{\surveyfigcaption}{and the self-calibration results: (a) shows the survey footprint diagram (as shown in Figure \ref{fig:simple_surveys}), (b) shows the source coverage for this survey, with (c) showing a histogram of the number of source observations (excluding sources very near the survey boundary) and (d) shows the flux errors for each of the sources after the self-calibration procedure.  In panels (b) and (d) the white gaps are \emph{not} gaps in the survey coverage but rather sky positions at which there do not happen to be observed stars}
@@ -410,10 +387,10 @@ D   & Quasi-Random  & Random & 1296\\
 \colhead{Survey Name} & \colhead{Iterations} & \colhead{Source Error}       & \colhead{True Badness}        & \colhead{Best-in-Basis} \\
                       &                      & \colhead{$S_\rms$ (percent)} & \colhead{$B_\true$ (percent)} & \colhead{$B_\basis$ (percent)}}
 \startdata
-A*  & - & 1.115 & 1.517 & 1.485 \\
-B  & 2477 & 0.107 & 0.114 & 0.024 \\
-C  & 333 & 0.106 & 0.106 & 0.010 \\
-D  & 65 & 0.103 & 0.108 & 0.005 \\
+A*  & - & 1.172 & 1.680 & 1.527 \\
+B  & 1140 & 0.201 & 0.507 & 0.207 \\
+C  & 24 & 0.164 & 0.361 & 0.019 \\
+D  & 11 & 0.136 & 0.364 & 0.010 \\
 \enddata
 \end{deluxetable}
 
