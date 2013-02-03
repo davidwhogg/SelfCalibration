@@ -12,7 +12,7 @@
 \newcommand{\rms}{\text{RMS}}
 \newcommand{\dd}{\text{d}}
 
-\shorttitle{Designing Large-Scale Imaging Surveys for Retrospective Relative Photometric Calibration}
+\shorttitle{Designing Imaging Surveys for Retrospective Relative Photometric Calibration}
 \shortauthors{Holmes et al.}
 
 %% This is the end of the preamble.  Indicate the beginning of the
@@ -23,7 +23,7 @@
 %% one line. However, you may use \\ to force a line break if
 %% you desire.
 
-\title{Designing Large-Scale Imaging Surveys for a Retrospective Relative Photometric Calibration}
+\title{Designing Imaging Surveys for a Retrospective Relative Photometric Calibration}
 
 %% Use \author, \affil, and the \and command to format
 %% author and affiliation information.
@@ -37,25 +37,9 @@
 \altaffiltext{1}{Center for Cosmology and Particle Physics, Department of Physics, New York University, 4 Washington Place, New York, NY 10003, USA.}
 
 \begin{abstract}
-In this paper, we investigate the impact of survey strategy on the performance of self-calibration when the goal is to produce accurate photometric catalogs
-from wide-field imaging surveys. This self-calibration technique utilizes multiple measurements of sources at different focal-plane positions to constrain instruments' large-scale response (flat-field) from survey science data alone. We create an artificial sky of sources
-and synthetically observe it under four basic survey strategies,
-creating an end-to-end simulation of an imaging survey for each. These
-catalog-level simulations include realistic measurement uncertainties
-and a complex focal-plane dependence of the instrument response. In the
-self-calibration step, we simultaneously fit for all the star fluxes
-and the parameters of a position-dependent flat-field.  For realism,
-we deliberately fit with a wrong noise model and a flat-field
-functional basis that does not include the model that generated the
-synthetic data.  We demonstrate that with a favorable survey strategy,
-a complex instrument response can be precisely
-self-calibrated. We show that returning the same sources to very
-different focal-plane positions is the key property of any survey
-strategy designed for accurate retrospective calibration of this type. The results
-of this work suggest the following advice for those considering the
-design of large-scale imaging surveys: Do not use a regular, repeated tiling of
-the sky; instead return the same sources to very different focal-plane
-positions.
+In this paper, we investigate the impact of survey strategy on the performance of self-calibration when the goal is to produce accurate photometric catalogs from wide-field imaging surveys. This self-calibration technique utilizes multiple measurements of sources at different focal-plane positions to constrain instruments' large-scale response (flat-field) from survey science data alone. We create an artificial sky of sources and synthetically observe it under four basic survey strategies, creating an end-to-end simulation of an imaging survey for each. These catalog-level simulations include realistic measurement uncertainties
+and a complex focal-plane dependence of the instrument response. In the self-calibration step, we simultaneously fit for all the star fluxes and the parameters of a position-dependent flat-field.  For realism, we deliberately fit with a wrong noise model and a flat-field functional basis that does not include the model that generated the synthetic data.  We demonstrate that with a favorable survey strategy, a complex instrument response can be precisely self-calibrated. We show that returning the same sources to very
+different focal-plane positions is the key property of any survey strategy designed for accurate retrospective calibration of this type. The results of this work suggest the following advice for those considering the design of large-scale imaging surveys: Do not use a regular, repeated tiling of the sky; instead return the same sources to very different focal-plane positions.
 \end{abstract}
 
 \keywords{Catalogs --- methods: data analysis --- techniques: photometric}
@@ -235,11 +219,11 @@ The best-in-basis badness is always smaller than the true badness, as it does no
 In this paper, we consider four simple but very different survey strategies. We use the end-to-end catalog simulation and self-calibration chain, introduced in Sections \ref{sec:survey_simulations} and \ref{sec:self_cal}, to evaluate the performance of the self-calibration procedure with these strategies. The parameters of these simulations are summarized in Table \ref{tab:parameters}.
 
 \subsection{Survey Description}
-We label the four survey strategies---which all cover the same 64~deg$^2$ patch of sky---with the letters A to D. These survey strategies are summarized in Table \ref{tab:simple_surveys} and are shown in Figure \ref{fig:simple_surveys}. Strategy A is the simplest strategy; the target field is regularly tiled with small overlaps between adjacent pointings ($\sim 5$~percent and $\sim 8$~percent in the camera pointing directions $\alpha$ and $\beta$ respectively). The pointings in the 9 passes over the same field are exactly aligned. Survey B is the same as A, but with each pass over the target field the orientation of the telescope is rotated by $40^\circ$. 
+We label the four survey strategies---which all cover the same 64~deg$^2$ patch of sky---with the letters A to D. These survey strategies are summarized in Table \ref{tab:simple_surveys} and are shown in Figure \ref{fig:simple_surveys}. Strategy A is the simplest strategy; the target field is regularly tiled with small overlaps between adjacent pointings ($\sim 12$~percent in both of the camera pointing directions). The pointings in the 9 passes over the same field are exactly aligned. Survey B is the same as A, but with each pass over the target field the orientation of the telescope is rotated by $40^\circ$. 
 
 Survey C is more complex. The first pass over the field is the same as in Survey A, with $12 \times 12$ pointings. In the next pass, one of the pointings in the $\alpha$ direction is removed and one is added in the $\beta$ and the pointings are respaced uniformly, so the resultant pointing grid is $13 \times 11$. In the third pass over the field this change is reversed and the field is measured on a $11 \times 13$ grid. These three passes are then repeated three times. 
 
-The pointing positions in Survey D are quasi-random: the pointings are the same as with Survey A, but each has a random offset within [-0.35,0.35)~deg applied in both the $\alpha$ and $\beta$ directions. By fixing the pointings within these $0.7~\text{deg} \times 0.7~\text{deg}$ boxes, we ensure that the quasi random strategy has a uniform coverage of the field; that is, the fluctuations in coverage are less than they would be in a Poisson (totally random) process. The orientations of the pointings in Survey D are completely random. 
+The pointing positions in Survey D are quasi-random: the pointings are the same as with Survey A, but each has a random offset within [-0.375,0.375]~deg applied in both the $\alpha$ and $\beta$ directions. By fixing the pointings within these $0.75~\text{deg} \times 0.75~\text{deg}$ boxes, we ensure that the quasi random strategy has a uniform coverage of the field; that is, the fluctuations in coverage are less than they would be in a Poisson (totally random) process. The orientations of the pointings in Survey D are completely random. 
 
 Surveys A and C can be executed without rotating the camera with respect to the celestial coordinates. Surveys B and D can only be executed with systems that permit rotations of the camera.
 
@@ -250,7 +234,7 @@ The survey strategies, the resultant sky coverages and the errors in final self-
 
 The self-calibration procedure performs best with the Survey C and Survey D catalogs. The performance of the self-calibration procedure is worse for the Survey B catalog and it fails completely with the Survey A catalog, where no solution was obtained. The number of iterations of the self-calibration procedure required to converge to the final solution also decreases as the quality of the final fit increases: Survey D required 11 iterations, Survey C 24, Survey B 1,114 and the procedure was iterated 5,000 times with Survey A without reaching a solution.
 
-With the Survey C and D catalogs, the instrument response is accurately recovered. As can be seen from Figures \ref{fig:C_result} and \ref{fig:D_result} (top), the fitted instrument response $f_\fit(\vec{x_j} | \vec{q_\fit})$ does not perfectly reproduce the true instrument response $f_\true(\vec{x} | \vec{q_\true})$, with residuals up to the $\pm 0.5$~percent level. That said, through comparisons with the best fit possible with the eight order polynomial basis used in the self-calibration procedure $f_\basis(\vec{x_j} | \vec{q_\basis})$ (bottom), we find that majority of the remaining errors in our fits are due to limitations in the model basis used. The residuals in this comparison are low; this can also be clearly seen in the factor of $\sim 10$ improvement in the best-in-basis badness $B_\basis$ compared to the true badness $B_\true$. The results from these two survey catalogs are clear: if the correct redundancy is built into the survey, then self-calibration calibration can be used to accurately constrain the relative instrument response, with presumably the majority of the remaining errors coming from the limitations in the model used to represent the instrument response. 
+With the Survey C and D catalogs, the instrument response is accurately recovered. As can be seen from Figures \ref{fig:C_result} and \ref{fig:D_result} (top), the fitted instrument response $f_\fit(\vec{x_j} | \vec{q_\fit})$ does not perfectly reproduce the true instrument response $f_\true(\vec{x} | \vec{q_\true})$. That said, through comparisons with the best fit possible with the eight order polynomial basis used in the self-calibration procedure $f_\basis(\vec{x_j} | \vec{q_\basis})$ (bottom), we find that majority of the remaining errors in our fits are due to limitations in the model basis used. The residuals in this comparison are low; this can also be clearly seen in the significant improvement in the best-in-basis badness $B_\basis$ compared to the true badness $B_\true$. The results from these two survey catalogs are clear: if the correct redundancy is built into the survey, then self-calibration calibration can be used to accurately constrain the relative instrument response, with presumably the majority of the remaining errors coming from the limitations in the model used to represent the instrument response. 
 
 Surveys C and D perform comparably well, although they are very different in their configuration. Two substantial advantages of Survey C over Survey D are: In Survey C the camera would not need to be rotated relative to the sky between pointings; indeed many survey imaging cameras have fixed celestial orientations. Survey D requires generating quasi-random numbers, whereas Survey C has a completely deterministic set of pointing centers. This is a conceptual advantage to Survey C, but possibly also an operational advantage. 
 
@@ -390,7 +374,7 @@ D   & Quasi-Random  & Random & 1296\\
 A*  & - & 1.172 & 1.680 & 1.527 \\
 B  & 1140 & 0.201 & 0.507 & 0.207 \\
 C  & 24 & 0.164 & 0.361 & 0.019 \\
-D  & 11 & 0.136 & 0.364 & 0.010 \\
+D  & 11 & 0.130 & 0.321 & 0.012 \\
 \enddata
 \end{deluxetable}
 

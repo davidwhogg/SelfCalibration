@@ -40,4 +40,6 @@ In Addition to these changes, we also made the following small changes:
 	- The code used in this work is publicly available and we added the github links in Section 2 and the Acknowledgements 
 	- We re-ran the simulations with a higher source density (d = 300 not d = 100 deg^-2), as this makes the survey residual plots (Figure 7 - 11) clearer.
 	- For clarity, we have slightly reworded the abstract.
-	- Finally, we have also corrected a few typos. 
+    - We have added a final paragraph in the discussion on survey depth uniformity
+    - In the simulations, we have changed the camera's field-of-view slightly to 0.75 deg x 0.75 deg
+    - Finally, we have also corrected a few typos. 

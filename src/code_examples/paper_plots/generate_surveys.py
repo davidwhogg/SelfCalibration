@@ -69,28 +69,13 @@ def generate_uniform_survey(sky_limits, FoV, Ncovering,
     return x[:indx, :]
 
 
-def generate_random_survey(sky_limits, FoV, N):
-    nx = np.ceil((sky_limits[1] - sky_limits[0]) / FoV[0]).astype(int)
-    ny = np.ceil((sky_limits[3] - sky_limits[2]) / FoV[1]).astype(int)
-    x_box_size = (sky_limits[1] - sky_limits[0]) / nx
-    y_box_size = (sky_limits[3] - sky_limits[2]) / ny
-    ntheta = np.floor(N / (nx * ny)).astype(int)
-    theta_box_size = 360. / ntheta
-    x = np.zeros((N, 4))
-    x[:, 0] = range(N)
-    # Lay down left edges
-    x[:, 1] = sky_limits[0] + x_box_size * np.mod(np.arange(N), nx)
-    # Lay down bottom edges
-    x[:, 2] = sky_limits[2] + y_box_size \
-                        * np.mod(np.floor(np.arange(N) / nx), ny)
-    # Lay down orientation edges
-    x[:, 3] = 0.0 + theta_box_size \
-                        * np.mod(np.floor(np.arange(N) / (nx * ny)), ntheta)
+def generate_random_survey(srvy, FoV):
+    N = len(srvy[:, 0])    
     # Add random offsets
-    x[:, 1] += np.random.uniform(0., x_box_size, size=N)
-    x[:, 2] += np.random.uniform(0., y_box_size, size=N)
-    x[:, 3] += np.random.uniform(0., theta_box_size, size=N)
-    return x
+    srvy[:, 1] += np.random.uniform(-0.5 * FoV[0], 0.5 * FoV[0], size=N)
+    srvy[:, 2] += np.random.uniform(-0.5 * FoV[1], 0.5 * FoV[1], size=N)
+    srvy[:, 3] += np.random.uniform(0., 360, size=N)
+    return srvy
 
 if __name__ == "__main__":
 
@@ -108,5 +93,5 @@ if __name__ == "__main__":
     xC = generate_uniform_survey(sky_limits, FoV, number_passes, offset=True)
     np.savetxt('C.txt', xC)
 
-    xD = generate_random_survey(sky_limits, FoV, len(xA))
+    xD = generate_random_survey(xA, FoV)
     np.savetxt('D.txt', xD)
